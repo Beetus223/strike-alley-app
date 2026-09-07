@@ -117,14 +117,14 @@ function BookingsPanel() {
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       {(bookings.data ?? []).map((b) => (
-        <article key={b.id} className="neon-panel rounded-2xl p-5">
+        <article key={b.id} className="card-soft rounded-2xl p-5">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h3 className="text-2xl">{b.contact_name}</h3>
-            <span className="rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-accent">
+            <span className="rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-primary">
               {b.status}
             </span>
           </div>
-          <p className="mt-1 text-sm text-accent">{b.booking_type}</p>
+          <p className="mt-1 text-sm text-primary">{b.booking_type}</p>
           <dl className="mt-3 grid grid-cols-2 gap-2 text-sm text-muted-foreground">
             <div>
               <dt className="text-xs uppercase tracking-widest">When</dt>
@@ -243,7 +243,7 @@ function ScoreEntryPanel() {
         </Select>
 
         {leagueId ? (
-          <form onSubmit={handleSubmit} className="neon-panel mt-6 space-y-4 rounded-2xl p-5">
+          <form onSubmit={handleSubmit} className="card-soft mt-6 space-y-4 rounded-2xl p-5">
             <div>
               <Label htmlFor="player_id">Bowler</Label>
               <select
@@ -312,7 +312,7 @@ function ScoreEntryPanel() {
                       {p.last_name}, {p.first_name}
                     </td>
                     <td className="p-3 text-right">{p.games_played}</td>
-                    <td className="p-3 text-right font-display text-lg text-accent">
+                    <td className="p-3 text-right font-display text-lg text-primary">
                       {Number(p.average).toFixed(2)}
                     </td>
                   </tr>
@@ -370,7 +370,7 @@ function RosterPanel() {
       </Select>
 
       {leagueId ? (
-        <form onSubmit={handleSubmit} className="neon-panel mt-6 space-y-4 rounded-2xl p-5">
+        <form onSubmit={handleSubmit} className="card-soft mt-6 space-y-4 rounded-2xl p-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Label htmlFor="first_name">First name</Label>

@@ -34,12 +34,12 @@ function EventsPage() {
       <Section>
         <div className="grid gap-5 md:grid-cols-2">
           {EVENTS.map((e) => (
-            <article key={e.title} className="neon-panel rounded-2xl p-6">
-              <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-accent">
+            <article key={e.title} className="card-soft rounded-2xl p-6">
+              <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-primary">
                 {e.tag}
               </span>
               <h2 className="mt-3 text-3xl">{e.title}</h2>
-              <p className="mt-1 flex items-center gap-2 text-sm text-accent">
+              <p className="mt-1 flex items-center gap-2 text-sm text-primary">
                 <CalendarDays className="h-4 w-4" aria-hidden /> {e.when}
               </p>
               <p className="mt-3 text-muted-foreground">{e.blurb}</p>

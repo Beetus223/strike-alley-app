@@ -35,17 +35,17 @@ function ContactPage() {
           <div className="space-y-6">
             <ul className="space-y-3">
               <li className="flex gap-3">
-                <MapPin className="mt-1 h-5 w-5 text-accent" aria-hidden />
+                <MapPin className="mt-1 h-5 w-5 text-primary" aria-hidden />
                 <span>{CENTRE.address}</span>
               </li>
               <li className="flex gap-3">
-                <Phone className="mt-1 h-5 w-5 text-accent" aria-hidden />
+                <Phone className="mt-1 h-5 w-5 text-primary" aria-hidden />
                 <a className="hover:underline" href={`tel:${CENTRE.phone.replace(/[^0-9]/g, "")}`}>
                   {CENTRE.phone}
                 </a>
               </li>
               <li className="flex gap-3">
-                <Mail className="mt-1 h-5 w-5 text-accent" aria-hidden />
+                <Mail className="mt-1 h-5 w-5 text-primary" aria-hidden />
                 <a className="hover:underline" href={`mailto:${CENTRE.email}`}>
                   {CENTRE.email}
                 </a>

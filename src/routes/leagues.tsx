@@ -38,10 +38,10 @@ function LeaguesPage() {
       <Section>
         <div className="grid gap-6 lg:grid-cols-2">
           {LEAGUES.map((l) => (
-            <article key={l.slug} className="neon-panel rounded-2xl p-6">
+            <article key={l.slug} className="card-soft rounded-2xl p-6">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <h2 className="text-3xl">{l.name}</h2>
-                <span className="rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-accent">
+                <span className="rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-primary">
                   {l.spots}
                 </span>
               </div>

@@ -61,9 +61,9 @@ function RentalsPage() {
       <Section>
         <div className="grid gap-5 sm:grid-cols-2">
           {RENTALS.map((r) => (
-            <article key={r.name} className="neon-panel rounded-2xl p-6">
+            <article key={r.name} className="card-soft rounded-2xl p-6">
               <h2 className="text-3xl">{r.name}</h2>
-              <p className="mt-1 font-display text-3xl text-accent">{r.price}</p>
+              <p className="mt-1 font-display text-3xl text-primary">{r.price}</p>
               <p className="mt-3 text-muted-foreground">{r.detail}</p>
             </article>
           ))}

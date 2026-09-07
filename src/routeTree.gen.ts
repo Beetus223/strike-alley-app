@@ -17,6 +17,7 @@ import { Route as BookRouteImport } from './routes/book'
 import { Route as BowlingRouteImport } from './routes/bowling'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as GlowRouteImport } from './routes/glow'
 import { Route as LeaguesRouteImport } from './routes/leagues'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as PartiesRouteImport } from './routes/parties'
@@ -63,6 +64,11 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GlowRoute = GlowRouteImport.update({
+  id: '/glow',
+  path: '/glow',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LeaguesRoute = LeaguesRouteImport.update({
   id: '/leagues',
   path: '/leagues',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/bowling': typeof BowlingRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
+  '/glow': typeof GlowRoute
   '/leagues': typeof LeaguesRoute
   '/menu': typeof MenuRoute
   '/parties': typeof PartiesRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/bowling': typeof BowlingRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
+  '/glow': typeof GlowRoute
   '/leagues': typeof LeaguesRoute
   '/menu': typeof MenuRoute
   '/parties': typeof PartiesRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/bowling': typeof BowlingRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
+  '/glow': typeof GlowRoute
   '/leagues': typeof LeaguesRoute
   '/menu': typeof MenuRoute
   '/parties': typeof PartiesRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/bowling'
     | '/contact'
     | '/events'
+    | '/glow'
     | '/leagues'
     | '/menu'
     | '/parties'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/bowling'
     | '/contact'
     | '/events'
+    | '/glow'
     | '/leagues'
     | '/menu'
     | '/parties'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/bowling'
     | '/contact'
     | '/events'
+    | '/glow'
     | '/leagues'
     | '/menu'
     | '/parties'
@@ -199,6 +211,7 @@ export interface RootRouteChildren {
   BowlingRoute: typeof BowlingRoute
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
+  GlowRoute: typeof GlowRoute
   LeaguesRoute: typeof LeaguesRoute
   MenuRoute: typeof MenuRoute
   PartiesRoute: typeof PartiesRoute
@@ -261,6 +274,13 @@ declare module '@tanstack/react-router' {
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/glow': {
+      id: '/glow'
+      path: '/glow'
+      fullPath: '/glow'
+      preLoaderRoute: typeof GlowRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/leagues': {
@@ -330,6 +350,7 @@ const rootRouteChildren: RootRouteChildren = {
   BowlingRoute: BowlingRoute,
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
+  GlowRoute: GlowRoute,
   LeaguesRoute: LeaguesRoute,
   MenuRoute: MenuRoute,
   PartiesRoute: PartiesRoute,

@@ -88,7 +88,7 @@ function AuthPage() {
       />
       <Section>
         <div className="mx-auto max-w-md">
-          <form onSubmit={handleSubmit} className="neon-panel space-y-4 rounded-2xl p-6">
+          <form onSubmit={handleSubmit} className="card-soft space-y-4 rounded-2xl p-6">
             {mode === "signup" ? (
               <div>
                 <Label htmlFor="full_name">Full name</Label>
