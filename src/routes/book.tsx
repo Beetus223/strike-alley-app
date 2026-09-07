@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CENTRE } from "@/lib/site-data";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/book")({
   head: () => ({
@@ -46,18 +47,32 @@ function BookPage() {
   const [submitting, setSubmitting] = useState(false);
   const [type, setType] = useState<string>(BOOKING_TYPES[0] ?? "");
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitting(true);
     const form = e.currentTarget;
-    window.setTimeout(() => {
-      setSubmitting(false);
-      form.reset();
-      setType(BOOKING_TYPES[0] ?? "");
-      toast.success("Request sent", {
-        description: "We'll confirm your lane by phone or email within one business day.",
-      });
-    }, 600);
+    const values = new FormData(form);
+    setSubmitting(true);
+    const { error } = await supabase.from("booking_requests").insert({
+      booking_type: type,
+      contact_name: String(values.get("name")),
+      phone: String(values.get("phone")),
+      email: String(values.get("email")),
+      requested_date: String(values.get("date")),
+      requested_time: String(values.get("time")),
+      party_size: Number(values.get("people")),
+      lanes: Number(values.get("lanes") || 1),
+      notes: String(values.get("notes") ?? ""),
+    });
+    setSubmitting(false);
+    if (error) {
+      toast.error("We couldn't send that", { description: error.message });
+      return;
+    }
+    form.reset();
+    setType(BOOKING_TYPES[0] ?? "");
+    toast.success("Request sent", {
+      description: "We'll confirm your lane by phone or email within one business day.",
+    });
   }
 
   return (

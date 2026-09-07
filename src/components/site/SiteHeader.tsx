@@ -42,11 +42,17 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-2 lg:ml-2">
           <a
             href={`tel:${CENTRE.phone.replace(/[^0-9]/g, "")}`}
-            className="hidden items-center gap-2 text-sm text-muted-foreground hover:text-foreground sm:flex"
+            className="hidden items-center gap-2 text-sm text-muted-foreground hover:text-foreground xl:flex"
           >
             <Phone className="h-4 w-4" aria-hidden />
             {CENTRE.phone}
           </a>
+          <Link
+            to={user ? "/dashboard" : "/auth"}
+            className="hidden rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground sm:block"
+          >
+            {user ? "My bowling" : "Sign in"}
+          </Link>
           <Button asChild size="sm" className="font-display text-base tracking-wide">
             <Link to="/book">Book a lane</Link>
           </Button>
