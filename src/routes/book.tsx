@@ -44,7 +44,7 @@ const BOOKING_TYPES = [
 
 function BookPage() {
   const [submitting, setSubmitting] = useState(false);
-  const [type, setType] = useState(BOOKING_TYPES[0]);
+  const [type, setType] = useState<string>(BOOKING_TYPES[0] ?? "");
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
