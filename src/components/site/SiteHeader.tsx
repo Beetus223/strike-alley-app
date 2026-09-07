@@ -84,6 +84,13 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <Link
+            to={user ? "/dashboard" : "/auth"}
+            onClick={() => setOpen(false)}
+            className="rounded-md px-3 py-2.5 text-base font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+          >
+            {user ? "My bowling" : "Sign in"}
+          </Link>
         </nav>
       </div>
     </header>
