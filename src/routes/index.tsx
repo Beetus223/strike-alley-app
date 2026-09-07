@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays, Clock, MapPin, Sparkles, Trophy, Users } from "lucide-react";
-import heroWarm from "@/assets/hero-warm.jpg";
+import heroLanes from "@/assets/hero-lanes-authentic.jpg.asset.json";
 import pinsWarm from "@/assets/pins-warm.jpg";
 import leagueNight from "@/assets/league-night.jpg";
 import { Button } from "@/components/ui/button";
