@@ -135,8 +135,8 @@ function Home() {
       <section className="bg-background">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2">
           <img
-            src={pinsWarm}
-            alt="Five Canadian 5-pin bowling pins with red bands standing on a wooden lane"
+            src={how5Pin.url}
+            alt="An adult and a child bowling together at Vegreville Bowling Centre"
             width={1400}
             height={1000}
             loading="lazy"
