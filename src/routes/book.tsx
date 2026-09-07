@@ -53,7 +53,7 @@ function BookPage() {
     window.setTimeout(() => {
       setSubmitting(false);
       form.reset();
-      setType(BOOKING_TYPES[0]);
+      setType(BOOKING_TYPES[0] ?? "");
       toast.success("Request sent", {
         description: "We'll confirm your lane by phone or email within one business day.",
       });
