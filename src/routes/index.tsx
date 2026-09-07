@@ -62,53 +62,50 @@ const ACTIVITIES = [
 function Home() {
   return (
     <>
-      {/* 1 — Light hero */}
-      <section className="border-b border-border bg-background">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-              Vegreville, Alberta · Eight 5-pin lanes
-            </p>
-            <h1 className="brand-title mt-4 text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
-              Vegreville's local place for bowling, leagues, parties and family fun.
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              We've been rolling five pins on 50 Street for over sixty years. Come by for an
-              afternoon with the kids, a league night with friends, or a party we set up for you.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-              <Button asChild size="lg">
-                <Link to="/book">Book a lane</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link to="/contact">View hours</Link>
-              </Button>
-              <Button asChild size="lg" variant="ghost" className="sm:w-auto">
-                <Link to="/bowling">Explore activities</Link>
-              </Button>
-            </div>
+      {/* 1 — Hero with authentic lanes photo */}
+      <section className="relative overflow-hidden border-b border-border">
+        <img
+          src={heroLanes.url}
+          alt="The wooden lanes and pinsetters at Vegreville Bowling Centre"
+          width={1920}
+          height={1080}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/30" />
+        <div className="relative z-10 mx-auto flex min-h-[520px] max-w-7xl flex-col justify-center px-4 py-16 sm:min-h-[600px] sm:px-6 sm:py-20 lg:min-h-[680px]">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/80">
+            Vegreville, Alberta · Eight 5-pin lanes
+          </p>
+          <h1 className="brand-title mt-4 max-w-3xl text-4xl leading-[1.05] text-white sm:text-5xl lg:text-6xl">
+            Vegreville's local place for bowling, leagues, parties and family fun.
+          </h1>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
+            We've been rolling five pins on 50 Street for over sixty years. Come by for an
+            afternoon with the kids, a league night with friends, or a party we set up for you.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <Button asChild size="lg">
+              <Link to="/book">Book a lane</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white">
+              <Link to="/contact">View hours</Link>
+            </Button>
+            <Button asChild size="lg" variant="ghost" className="text-white hover:bg-white/10 hover:text-white sm:w-auto">
+              <Link to="/bowling">Explore activities</Link>
+            </Button>
+          </div>
 
-            <dl className="mt-10 grid gap-3 sm:grid-cols-3">
-              {QUICK_FACTS.map(({ icon: Icon, label, value }) => (
-                <div key={label} className="card-soft rounded-xl p-4">
-                  <Icon className="h-5 w-5 text-primary" aria-hidden />
-                  <dt className="mt-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    {label}
-                  </dt>
-                  <dd className="font-display text-lg">{value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-          <div className="overflow-hidden rounded-2xl border border-border shadow-[var(--shadow-card)]">
-            <img
-              src={heroWarm}
-              alt="Families bowling on the wooden lanes at Vegreville Bowling Lanes"
-              width={1920}
-              height={1080}
-              className="aspect-[4/3] w-full object-cover"
-            />
-          </div>
+          <dl className="mt-10 grid gap-3 sm:grid-cols-3">
+            {QUICK_FACTS.map(({ icon: Icon, label, value }) => (
+              <div key={label} className="rounded-xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
+                <Icon className="h-5 w-5 text-white" aria-hidden />
+                <dt className="mt-2 text-xs font-semibold uppercase tracking-wider text-white/75">
+                  {label}
+                </dt>
+                <dd className="font-display text-lg text-white">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
