@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as BowlingRouteImport } from './routes/bowling'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as LeaguesRouteImport } from './routes/leagues'
+import { Route as MenuRouteImport } from './routes/menu'
+import { Route as PartiesRouteImport } from './routes/parties'
+import { Route as RentalsRouteImport } from './routes/rentals'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BowlingRoute = BowlingRouteImport.update({
+  id: '/bowling',
+  path: '/bowling',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeaguesRoute = LeaguesRouteImport.update({
+  id: '/leagues',
+  path: '/leagues',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuRoute = MenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartiesRoute = PartiesRouteImport.update({
+  id: '/parties',
+  path: '/parties',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RentalsRoute = RentalsRouteImport.update({
+  id: '/rentals',
+  path: '/rentals',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/bowling': typeof BowlingRoute
+  '/contact': typeof ContactRoute
+  '/events': typeof EventsRoute
+  '/leagues': typeof LeaguesRoute
+  '/menu': typeof MenuRoute
+  '/parties': typeof PartiesRoute
+  '/rentals': typeof RentalsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/bowling': typeof BowlingRoute
+  '/contact': typeof ContactRoute
+  '/events': typeof EventsRoute
+  '/leagues': typeof LeaguesRoute
+  '/menu': typeof MenuRoute
+  '/parties': typeof PartiesRoute
+  '/rentals': typeof RentalsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/bowling': typeof BowlingRoute
+  '/contact': typeof ContactRoute
+  '/events': typeof EventsRoute
+  '/leagues': typeof LeaguesRoute
+  '/menu': typeof MenuRoute
+  '/parties': typeof PartiesRoute
+  '/rentals': typeof RentalsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/bowling'
+    | '/contact'
+    | '/events'
+    | '/leagues'
+    | '/menu'
+    | '/parties'
+    | '/rentals'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/bowling'
+    | '/contact'
+    | '/events'
+    | '/leagues'
+    | '/menu'
+    | '/parties'
+    | '/rentals'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/bowling'
+    | '/contact'
+    | '/events'
+    | '/leagues'
+    | '/menu'
+    | '/parties'
+    | '/rentals'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  BowlingRoute: typeof BowlingRoute
+  ContactRoute: typeof ContactRoute
+  EventsRoute: typeof EventsRoute
+  LeaguesRoute: typeof LeaguesRoute
+  MenuRoute: typeof MenuRoute
+  PartiesRoute: typeof PartiesRoute
+  RentalsRoute: typeof RentalsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bowling': {
+      id: '/bowling'
+      path: '/bowling'
+      fullPath: '/bowling'
+      preLoaderRoute: typeof BowlingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leagues': {
+      id: '/leagues'
+      path: '/leagues'
+      fullPath: '/leagues'
+      preLoaderRoute: typeof LeaguesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parties': {
+      id: '/parties'
+      path: '/parties'
+      fullPath: '/parties'
+      preLoaderRoute: typeof PartiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rentals': {
+      id: '/rentals'
+      path: '/rentals'
+      fullPath: '/rentals'
+      preLoaderRoute: typeof RentalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  BowlingRoute: BowlingRoute,
+  ContactRoute: ContactRoute,
+  EventsRoute: EventsRoute,
+  LeaguesRoute: LeaguesRoute,
+  MenuRoute: MenuRoute,
+  PartiesRoute: PartiesRoute,
+  RentalsRoute: RentalsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
