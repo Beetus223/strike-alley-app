@@ -84,7 +84,7 @@ function BookPage() {
       />
       <Section>
         <div className="grid gap-10 lg:grid-cols-[3fr_2fr]">
-          <form onSubmit={handleSubmit} className="neon-panel rounded-2xl p-6">
+          <form onSubmit={handleSubmit} className="card-soft rounded-2xl p-6">
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <Label htmlFor="booking-type">What are you booking?</Label>

@@ -40,14 +40,14 @@ function PartiesPage() {
       <Section>
         <div className="grid gap-6 lg:grid-cols-3">
           {PARTY_PACKAGES.map((p) => (
-            <article key={p.name} className="neon-panel flex flex-col rounded-2xl p-6">
+            <article key={p.name} className="card-soft flex flex-col rounded-2xl p-6">
               <h2 className="text-3xl">{p.name}</h2>
-              <p className="mt-1 font-display text-4xl text-accent">{p.price}</p>
+              <p className="mt-1 font-display text-4xl text-primary">{p.price}</p>
               <p className="text-sm text-muted-foreground">{p.min}</p>
               <ul className="mt-5 space-y-2.5 text-sm">
                 {p.includes.map((i) => (
                   <li key={i} className="flex gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
                     <span>{i}</span>
                   </li>
                 ))}

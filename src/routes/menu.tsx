@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import snackbar from "@/assets/snackbar.jpg";
+import snackbar from "@/assets/snack-warm.jpg";
 import { PageHeader, Section } from "@/components/site/PageHeader";
 import { MENU } from "@/lib/site-data";
 
@@ -35,7 +35,7 @@ function MenuPage() {
           <div className="grid gap-8 sm:grid-cols-2">
             {MENU.map((group) => (
               <div key={group.section}>
-                <h2 className="text-3xl text-accent">{group.section}</h2>
+                <h2 className="text-3xl text-primary">{group.section}</h2>
                 <ul className="mt-4 divide-y divide-border rounded-xl border border-border">
                   {group.items.map((item) => (
                     <li key={item.name} className="flex justify-between gap-4 p-4">

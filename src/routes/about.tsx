@@ -56,7 +56,7 @@ function AboutPage() {
             <ol className="mt-4 space-y-4">
               {TIMELINE.map((t) => (
                 <li key={t.year} className="flex gap-4">
-                  <span className="font-display text-2xl text-accent">{t.year}</span>
+                  <span className="font-display text-2xl text-primary">{t.year}</span>
                   <span className="text-muted-foreground">{t.text}</span>
                 </li>
               ))}

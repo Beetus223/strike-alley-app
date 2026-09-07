@@ -80,14 +80,14 @@ function Dashboard() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {(players.data ?? []).map((p) => (
-              <div key={p.id} className="neon-panel rounded-2xl p-6">
+              <div key={p.id} className="card-soft rounded-2xl p-6">
                 <p className="text-xs uppercase tracking-widest text-muted-foreground">
                   {p.leagues?.name ?? "League"}
                 </p>
                 <p className="mt-1 text-2xl">
                   {p.first_name} {p.last_name}
                 </p>
-                <p className="mt-4 font-display text-5xl text-accent">{Number(p.average).toFixed(2)}</p>
+                <p className="mt-4 font-display text-5xl text-primary">{Number(p.average).toFixed(2)}</p>
                 <p className="text-sm text-muted-foreground">
                   {p.games_played} games · {p.total_pinfall} pins
                 </p>

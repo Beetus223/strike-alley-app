@@ -176,6 +176,7 @@ export const NAV = [
   { to: "/bowling", label: "Bowling & Prices" },
   { to: "/leagues", label: "Leagues" },
   { to: "/events", label: "Events" },
+  { to: "/glow", label: "Glow Bowling" },
   { to: "/parties", label: "Parties" },
   { to: "/menu", label: "Snack Bar" },
   { to: "/rentals", label: "Rentals" },

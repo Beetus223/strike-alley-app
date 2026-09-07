@@ -46,8 +46,8 @@ function BowlingPage() {
       <Section title="Rates">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PRICING.map((p) => (
-            <div key={p.label} className="neon-panel rounded-xl p-5">
-              <p className="font-display text-3xl text-accent">{p.price}</p>
+            <div key={p.label} className="card-soft rounded-xl p-5">
+              <p className="font-display text-3xl text-primary">{p.price}</p>
               <p className="mt-1 font-medium">{p.label}</p>
               <p className="text-sm text-muted-foreground">{p.note}</p>
             </div>
@@ -71,7 +71,7 @@ function BowlingPage() {
               {SCORING.map((s) => (
                 <div key={s.label} className="flex justify-between px-4 py-3">
                   <dt className="text-muted-foreground">{s.label}</dt>
-                  <dd className="font-display text-xl text-accent">{s.value}</dd>
+                  <dd className="font-display text-xl text-primary">{s.value}</dd>
                 </div>
               ))}
             </dl>
