@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays, Clock, MapPin, Sparkles, Trophy, Users } from "lucide-react";
 import heroLanes from "@/assets/hero-lanes-authentic.jpg.asset.json";
 import how5Pin from "@/assets/how-5-pin-works.jpg.asset.json";
-import leagueNight from "@/assets/league-night.jpg";
+import leagueNight from "@/assets/league-night.jpg.asset.json";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/site/PageHeader";
 import { CENTRE, EVENTS, HOURS, LEAGUES, PRICING } from "@/lib/site-data";
@@ -259,7 +259,7 @@ function Home() {
             </Button>
           </div>
           <img
-            src={leagueNight}
+            src={leagueNight.url}
             alt="Bowlers in team shirts celebrating at the scoring table on league night"
             width={1400}
             height={1000}
