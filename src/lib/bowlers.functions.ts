@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { bowlerLoginEmail } from "@/lib/bowler-id";
 
 /**
  * Staff-only bowler account management.
@@ -10,11 +11,6 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  * bowler can log in with "Bowler ID + password".
  */
 
-export const BOWLER_EMAIL_DOMAIN = "bowlers.vegrevillebowling.ca";
-
-export function bowlerLoginEmail(bowlerId: string) {
-  return `${bowlerId.trim().toLowerCase()}@${BOWLER_EMAIL_DOMAIN}`;
-}
 
 type AdminClient = Awaited<
   typeof import("@/integrations/supabase/client.server")
