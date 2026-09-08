@@ -790,7 +790,7 @@ function useLeagueOptions() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("leagues")
-        .select("id, name")
+        .select("id, name, night")
         .order("sort_order")
         .order("name");
       if (error) throw error;
@@ -799,11 +799,53 @@ function useLeagueOptions() {
   });
 }
 
+const DAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+function toISO(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate(),
+  ).padStart(2, "0")}`;
+}
+
+/** Most recent date (today included) matching the league's scheduled night. */
+function suggestedSessionDate(night: string | null | undefined) {
+  const today = new Date();
+  const idx = DAY_NAMES.findIndex((d) => (night ?? "").toLowerCase().includes(d.toLowerCase()));
+  if (idx < 0) return toISO(today);
+  const diff = (today.getDay() - idx + 7) % 7;
+  const target = new Date(today);
+  target.setDate(today.getDate() - diff);
+  return toISO(target);
+}
+
+function prettyDate(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return iso;
+  return new Date(y, m - 1, d).toLocaleDateString("en-CA", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 function ScoreEntryPanel() {
   const qc = useQueryClient();
   const leagues = useLeagueOptions();
   const [leagueId, setLeagueId] = useState<string>("");
+  const [sessionDate, setSessionDate] = useState<string>("");
+  const [playerId, setPlayerId] = useState<string>("");
   const [historyPlayer, setHistoryPlayer] = useState<{ id: string; name: string } | null>(null);
+
+  const league = (leagues.data ?? []).find((l) => l.id === leagueId);
 
   const players = useQuery({
     queryKey: ["players", leagueId],
@@ -819,19 +861,62 @@ function ScoreEntryPanel() {
     enabled: !!leagueId,
   });
 
-  const addScore = useMutation({
-    mutationFn: async (values: {
-      player_id: string;
-      week_date: string;
-      game_number: number;
-      score: number;
-    }) => {
-      const { error } = await supabase.from("scores").insert({ ...values, league_id: leagueId });
+  // Existing session dates already recorded for this league.
+  const sessions = useQuery({
+    queryKey: ["sessions", leagueId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("scores")
+        .select("week_date")
+        .eq("league_id", leagueId)
+        .order("week_date", { ascending: false });
+      if (error) throw error;
+      return Array.from(new Set((data ?? []).map((r) => r.week_date)));
+    },
+    enabled: !!leagueId,
+  });
+
+  function chooseLeague(id: string) {
+    setLeagueId(id);
+    setPlayerId("");
+    const night = (leagues.data ?? []).find((l) => l.id === id)?.night;
+    setSessionDate(suggestedSessionDate(night));
+  }
+
+  // Scores already saved for the selected bowler in this session.
+  const sessionScores = useQuery({
+    queryKey: ["session-scores", playerId, sessionDate],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("scores")
+        .select("game_number, score")
+        .eq("player_id", playerId)
+        .eq("week_date", sessionDate)
+        .order("game_number");
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!playerId && !!sessionDate,
+  });
+
+  const saveGames = useMutation({
+    mutationFn: async (games: { game_number: number; score: number }[]) => {
+      const { error } = await supabase.from("scores").upsert(
+        games.map((g) => ({
+          ...g,
+          player_id: playerId,
+          league_id: leagueId,
+          week_date: sessionDate,
+        })),
+        { onConflict: "player_id,week_date,game_number" },
+      );
       if (error) throw error;
     },
-    onSuccess: () => {
-      toast.success("Score saved — average recalculated");
+    onSuccess: (_d, games) => {
+      toast.success(`${games.length} game${games.length === 1 ? "" : "s"} saved — average updated`);
       void qc.invalidateQueries({ queryKey: ["players", leagueId] });
+      void qc.invalidateQueries({ queryKey: ["sessions", leagueId] });
+      void qc.invalidateQueries({ queryKey: ["session-scores"] });
       void qc.invalidateQueries({ queryKey: ["history"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -840,26 +925,33 @@ function ScoreEntryPanel() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    addScore.mutate({
-      player_id: String(form.get("player_id")),
-      week_date: String(form.get("week_date")),
-      game_number: Number(form.get("game_number")),
-      score: Number(form.get("score")),
-    });
+    const games: { game_number: number; score: number }[] = [];
+    for (let n = 1; n <= 5; n += 1) {
+      const raw = String(form.get(`game_${n}`) ?? "").trim();
+      if (raw !== "") games.push({ game_number: n, score: Number(raw) });
+    }
+    if (games.length === 0) {
+      toast.error("Enter at least one game score");
+      return;
+    }
+    saveGames.mutate(games);
     e.currentTarget.reset();
   }
+
+  const existing = new Map((sessionScores.data ?? []).map((s) => [s.game_number, s.score]));
 
   return (
     <div className="space-y-8">
       <PanelIntro>
-        Pick a league, choose the bowler, then enter the game score. Averages update on their own as
-        soon as a score is saved. Click a bowler’s name to see every game they’ve bowled.
+        Pick a league, confirm the bowling night, then choose a bowler and type all of their games
+        for that night at once. Every score is filed under the same session date, and averages
+        update on their own. Click a bowler’s name to see their games grouped by night.
       </PanelIntro>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div>
           <Label htmlFor="league">League</Label>
-          <Select value={leagueId} onValueChange={setLeagueId}>
+          <Select value={leagueId} onValueChange={chooseLeague}>
             <SelectTrigger id="league" className="mt-2 w-full">
               <SelectValue placeholder="Choose a league" />
             </SelectTrigger>
@@ -873,15 +965,51 @@ function ScoreEntryPanel() {
           </Select>
 
           {leagueId ? (
-            <form onSubmit={handleSubmit} className="card-soft mt-6 space-y-4 rounded-2xl p-5">
+            <div className="card-soft mt-6 space-y-5 rounded-2xl p-5">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="session_date">Session date</Label>
+                  <Input
+                    id="session_date"
+                    type="date"
+                    value={sessionDate}
+                    onChange={(e) => setSessionDate(e.target.value)}
+                    className="mt-2"
+                  />
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {sessionDate ? prettyDate(sessionDate) : "Pick a night"}
+                    {league?.night ? ` · ${league.name} bowls ${league.night}` : ""}
+                  </p>
+                </div>
+                <div>
+                  <Label htmlFor="past_session">Past sessions</Label>
+                  <select
+                    id="past_session"
+                    className="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    value={(sessions.data ?? []).includes(sessionDate) ? sessionDate : ""}
+                    onChange={(e) => {
+                      if (e.target.value) setSessionDate(e.target.value);
+                    }}
+                  >
+                    <option value="">New session…</option>
+                    {(sessions.data ?? []).map((d) => (
+                      <option key={d} value={d}>
+                        {prettyDate(d)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <Label htmlFor="player_id">Bowler</Label>
                 <select
                   id="player_id"
-                  name="player_id"
-                  required
+                  value={playerId}
+                  onChange={(e) => setPlayerId(e.target.value)}
                   className="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 >
+                  <option value="">Choose a bowler…</option>
                   {(players.data ?? []).map((p) => (
                     <option key={p.id} value={p.id}>
                       {p.last_name}, {p.first_name}
@@ -889,41 +1017,39 @@ function ScoreEntryPanel() {
                   ))}
                 </select>
               </div>
-              <div className="grid gap-4 sm:grid-cols-3">
-                <div>
-                  <Label htmlFor="week_date">Week</Label>
-                  <Input id="week_date" name="week_date" type="date" required className="mt-2" />
-                </div>
-                <div>
-                  <Label htmlFor="game_number">Game #</Label>
-                  <Input
-                    id="game_number"
-                    name="game_number"
-                    type="number"
-                    min={1}
-                    max={5}
-                    defaultValue={1}
-                    required
-                    className="mt-2"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="score">Score (0–450)</Label>
-                  <Input
-                    id="score"
-                    name="score"
-                    type="number"
-                    min={0}
-                    max={450}
-                    required
-                    className="mt-2"
-                  />
-                </div>
-              </div>
-              <Button type="submit" className="w-full" disabled={addScore.isPending}>
-                Save score
-              </Button>
-            </form>
+
+              {playerId && sessionDate ? (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <div key={n}>
+                        <Label htmlFor={`game_${n}`}>Game {n}</Label>
+                        <Input
+                          id={`game_${n}`}
+                          name={`game_${n}`}
+                          type="number"
+                          min={0}
+                          max={450}
+                          placeholder={existing.has(n) ? String(existing.get(n)) : "—"}
+                          className="mt-2"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Leave a box empty if that game wasn’t bowled. Games already saved for this night
+                    show as faded numbers — retyping one replaces it.
+                  </p>
+                  <Button type="submit" className="w-full" disabled={saveGames.isPending}>
+                    Save games for {sessionDate ? prettyDate(sessionDate) : "this session"}
+                  </Button>
+                </form>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Choose a bowler to start entering games.
+                </p>
+              )}
+            </div>
           ) : null}
         </div>
 
@@ -1013,9 +1139,17 @@ function PlayerHistory({
       toast.success("Score removed — average recalculated");
       void qc.invalidateQueries({ queryKey: ["history", player.id] });
       void qc.invalidateQueries({ queryKey: ["players"] });
+      void qc.invalidateQueries({ queryKey: ["session-scores"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const sessions = new Map<string, { id: string; game_number: number; score: number }[]>();
+  for (const s of history.data ?? []) {
+    const list = sessions.get(s.week_date) ?? [];
+    list.push({ id: s.id, game_number: s.game_number, score: s.score });
+    sessions.set(s.week_date, list);
+  }
 
   return (
     <div className="card-soft rounded-2xl p-5">
@@ -1027,40 +1161,43 @@ function PlayerHistory({
       </div>
       {history.isLoading ? (
         <p className="mt-3 text-muted-foreground">Loading…</p>
-      ) : (history.data ?? []).length === 0 ? (
+      ) : sessions.size === 0 ? (
         <p className="mt-3 text-muted-foreground">No games entered yet.</p>
       ) : (
-        <div className="mt-4 overflow-x-auto rounded-xl border border-border">
-          <table className="w-full text-sm">
-            <thead className="bg-secondary text-left">
-              <tr>
-                <th className="p-3">Week</th>
-                <th className="p-3 text-right">Game</th>
-                <th className="p-3 text-right">Score</th>
-                <th className="p-3" />
-              </tr>
-            </thead>
-            <tbody>
-              {(history.data ?? []).map((s) => (
-                <tr key={s.id} className="border-t border-border">
-                  <td className="p-3">{s.week_date}</td>
-                  <td className="p-3 text-right">{s.game_number}</td>
-                  <td className="p-3 text-right font-display text-lg text-primary">{s.score}</td>
-                  <td className="p-3 text-right">
-                    <button
-                      type="button"
-                      className="text-xs text-muted-foreground underline-offset-4 hover:underline"
-                      onClick={() => {
-                        if (confirm("Delete this score?")) remove.mutate(s.id);
-                      }}
-                    >
-                      delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mt-4 space-y-4">
+          {Array.from(sessions.entries()).map(([date, games]) => {
+            const total = games.reduce((sum, g) => sum + g.score, 0);
+            return (
+              <div key={date} className="overflow-hidden rounded-xl border border-border">
+                <div className="flex flex-wrap items-center justify-between gap-2 bg-secondary px-4 py-2">
+                  <span className="font-semibold">{prettyDate(date)}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {games.length} game{games.length === 1 ? "" : "s"} · {total} pins · avg{" "}
+                    {(total / games.length).toFixed(1)}
+                  </span>
+                </div>
+                <ul className="divide-y divide-border">
+                  {games.map((g) => (
+                    <li key={g.id} className="flex items-center justify-between gap-3 px-4 py-2">
+                      <span className="text-sm">Game {g.game_number}</span>
+                      <span className="flex items-center gap-4">
+                        <span className="font-display text-lg text-primary">{g.score}</span>
+                        <button
+                          type="button"
+                          className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+                          onClick={() => {
+                            if (confirm("Delete this score?")) remove.mutate(g.id);
+                          }}
+                        >
+                          delete
+                        </button>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
