@@ -790,7 +790,7 @@ function useLeagueOptions() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("leagues")
-        .select("id, name")
+        .select("id, name, night")
         .order("sort_order")
         .order("name");
       if (error) throw error;
