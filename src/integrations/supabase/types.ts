@@ -101,6 +101,48 @@ export type Database = {
         }
         Relationships: []
       }
+      bowlers: {
+        Row: {
+          bowler_id: string
+          created_at: string
+          email: string | null
+          first_name: string
+          id: string
+          is_active: boolean
+          last_name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          bowler_id: string
+          created_at?: string
+          email?: string | null
+          first_name: string
+          id?: string
+          is_active?: boolean
+          last_name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          bowler_id?: string
+          created_at?: string
+          email?: string | null
+          first_name?: string
+          id?: string
+          is_active?: boolean
+          last_name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           category: string
@@ -191,6 +233,41 @@ export type Database = {
         }
         Relationships: []
       }
+      league_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          league_id: string
+          notes: string | null
+          session_date: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          league_id: string
+          notes?: string | null
+          session_date: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          league_id?: string
+          notes?: string | null
+          session_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "league_sessions_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leagues: {
         Row: {
           created_at: string
@@ -254,10 +331,12 @@ export type Database = {
       players: {
         Row: {
           average: number
+          bowler_ref: string | null
           created_at: string
           first_name: string
           games_played: number
           id: string
+          is_active: boolean
           last_name: string
           league_id: string
           profile_id: string | null
@@ -266,10 +345,12 @@ export type Database = {
         }
         Insert: {
           average?: number
+          bowler_ref?: string | null
           created_at?: string
           first_name: string
           games_played?: number
           id?: string
+          is_active?: boolean
           last_name: string
           league_id: string
           profile_id?: string | null
@@ -278,10 +359,12 @@ export type Database = {
         }
         Update: {
           average?: number
+          bowler_ref?: string | null
           created_at?: string
           first_name?: string
           games_played?: number
           id?: string
+          is_active?: boolean
           last_name?: string
           league_id?: string
           profile_id?: string | null
@@ -289,6 +372,13 @@ export type Database = {
           total_pinfall?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "players_bowler_ref_fkey"
+            columns: ["bowler_ref"]
+            isOneToOne: false
+            referencedRelation: "bowlers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "players_league_id_fkey"
             columns: ["league_id"]
@@ -384,6 +474,7 @@ export type Database = {
           league_id: string
           player_id: string
           score: number
+          session_id: string | null
           week_date: string
         }
         Insert: {
@@ -394,6 +485,7 @@ export type Database = {
           league_id: string
           player_id: string
           score: number
+          session_id?: string | null
           week_date: string
         }
         Update: {
@@ -404,6 +496,7 @@ export type Database = {
           league_id?: string
           player_id?: string
           score?: number
+          session_id?: string | null
           week_date?: string
         }
         Relationships: [
@@ -419,6 +512,13 @@ export type Database = {
             columns: ["player_id"]
             isOneToOne: false
             referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scores_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "league_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -478,6 +578,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_bowler_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
