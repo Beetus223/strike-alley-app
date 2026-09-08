@@ -854,29 +854,40 @@ function ScoreEntryPanel() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("players")
-        .select("id, first_name, last_name, average, games_played, total_pinfall")
+        .select(
+          "id, first_name, last_name, average, games_played, total_pinfall, bowlers(bowler_id)",
+        )
         .eq("league_id", leagueId)
         .order("last_name");
       if (error) throw error;
-      return data;
+      return data as unknown as {
+        id: string;
+        first_name: string;
+        last_name: string;
+        average: number;
+        games_played: number;
+        total_pinfall: number;
+        bowlers: { bowler_id: string } | null;
+      }[];
     },
     enabled: !!leagueId,
   });
 
-  // Existing session dates already recorded for this league.
+  // Bowling sessions already recorded for this league.
   const sessions = useQuery({
     queryKey: ["sessions", leagueId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("scores")
-        .select("week_date")
+        .from("league_sessions")
+        .select("session_date")
         .eq("league_id", leagueId)
-        .order("week_date", { ascending: false });
+        .order("session_date", { ascending: false });
       if (error) throw error;
-      return Array.from(new Set((data ?? []).map((r) => r.week_date)));
+      return (data ?? []).map((r) => r.session_date);
     },
     enabled: !!leagueId,
   });
+
 
   function chooseLeague(id: string) {
     setLeagueId(id);
