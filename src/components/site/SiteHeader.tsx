@@ -13,11 +13,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6">
-        <Link
-          to="/"
-          className="flex shrink-0 items-center gap-3"
-          onClick={() => setOpen(false)}
-        >
+        <Link to="/" className="flex shrink-0 items-center gap-3" onClick={() => setOpen(false)}>
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-display text-lg font-bold text-primary-foreground">
             5
           </span>

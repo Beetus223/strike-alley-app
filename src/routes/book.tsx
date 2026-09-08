@@ -172,7 +172,7 @@ function BookPage() {
                 <li>Each lane fits up to 6 bowlers comfortably.</li>
                 <li>Parties need one week's notice and a $50 deposit.</li>
                 <li>League nights book out lanes 1–8 after 7 PM, Monday and Thursday.</li>
-                <li>Glow bowling starts at 8 PM Friday and Saturday.</li>
+                <li>Glow bowling runs 7 PM – 10 PM Friday and Saturday.</li>
               </ul>
             </div>
             <div className="rounded-2xl border border-border p-6">

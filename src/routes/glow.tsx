@@ -11,7 +11,7 @@ export const Route = createFileRoute("/glow")({
       {
         name: "description",
         content:
-          "Glow bowling every Friday and Saturday from 8 PM in Vegreville: blacklights, music and eight lit-up 5-pin lanes. $6.50 per person, per game.",
+          "Glow bowling every Friday and Saturday from 7 PM in Vegreville: blacklights, music and eight lit-up 5-pin lanes. $6.50 per person, per game.",
       },
       { property: "og:title", content: "Glow Bowling Fridays & Saturdays | Vegreville Bowling" },
       {
@@ -26,13 +26,13 @@ export const Route = createFileRoute("/glow")({
 const NIGHT_DETAILS = [
   { icon: Ticket, label: "Per person, per game", value: "$6.50" },
   { icon: Users, label: "Lane capacity", value: "6 bowlers" },
-  { icon: Music, label: "Start time", value: "8 PM Fri & Sat" },
+  { icon: Music, label: "Start time", value: "7 PM Fri & Sat" },
 ];
 
 const HIGHLIGHTS = [
   {
     title: "Blacklights on all eight lanes",
-    body: "The whole house goes dark at 8 PM. Glowing pins, glowing balls and the house lights down until close.",
+    body: "The whole house goes dark at 7 PM. Glowing pins, glowing balls and the house lights down until close.",
   },
   {
     title: "Music you can actually hear",
@@ -55,7 +55,7 @@ function GlowPage() {
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2">
           <div>
             <p className="glow-accent text-xs font-semibold uppercase tracking-[0.28em]">
-              Friday & Saturday · 8 PM until close
+              Friday & Saturday · 7 PM – 10 PM
             </p>
             <h1 className="glow-text brand-title mt-4 text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
               Glow Bowling
@@ -117,7 +117,7 @@ function GlowPage() {
         </div>
         <div className="glow-panel mt-10 flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-xl text-white">Lanes go quickly after 8 PM</h3>
+            <h3 className="text-xl text-white">Lanes go quickly after 7 PM</h3>
             <p className="mt-1 text-sm text-white/70">
               Reserve ahead, or call {CENTRE.phone} and we'll hold one for you.
             </p>

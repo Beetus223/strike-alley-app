@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { PageHeader, Section } from "@/components/site/PageHeader";
-import { LEAGUES } from "@/lib/site-data";
+import { useLeagues } from "@/lib/content";
 
 export const Route = createFileRoute("/leagues")({
   head: () => ({
@@ -15,7 +15,8 @@ export const Route = createFileRoute("/leagues")({
       { property: "og:title", content: "Leagues & Standings | Vegreville Bowling Lanes" },
       {
         property: "og:description",
-        content: "Four 5-pin leagues running September through April, with handicap divisions for every level.",
+        content:
+          "Four 5-pin leagues running September through April, with handicap divisions for every level.",
       },
     ],
   }),
@@ -23,6 +24,8 @@ export const Route = createFileRoute("/leagues")({
 });
 
 function LeaguesPage() {
+  const { data: leagues } = useLeagues();
+
   return (
     <>
       <PageHeader
@@ -37,18 +40,20 @@ function LeaguesPage() {
 
       <Section>
         <div className="grid gap-6 lg:grid-cols-2">
-          {LEAGUES.map((l) => (
-            <article key={l.slug} className="card-soft rounded-2xl p-6">
+          {(leagues ?? []).map((l) => (
+            <article key={l.id} className="card-soft rounded-2xl p-6">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <h2 className="text-3xl">{l.name}</h2>
-                <span className="rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-primary">
-                  {l.spots}
-                </span>
+                {l.spots ? (
+                  <span className="rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-primary">
+                    {l.spots}
+                  </span>
+                ) : null}
               </div>
               <p className="mt-3 text-muted-foreground">{l.description}</p>
               <dl className="mt-5 grid gap-3 sm:grid-cols-2">
                 {[
-                  ["Night", `${l.night} at ${l.time}`],
+                  ["Night", `${l.night} at ${l.start_time}`],
                   ["Season", l.season],
                   ["Format", l.format],
                   ["Fee", l.fee],
