@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/select";
 import { PageHeader, Section } from "@/components/site/PageHeader";
 import { Field, PanelIntro, TextField } from "@/components/site/AdminField";
+import { BowlersPanel } from "@/components/site/BowlersPanel";
+
 import {
   useAnnouncements,
   useEvents,
