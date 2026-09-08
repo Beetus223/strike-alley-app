@@ -15,7 +15,9 @@ export function PageHeader({
     <section className="soft-band border-b border-border">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
         {eyebrow ? (
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">{eyebrow}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            {eyebrow}
+          </p>
         ) : null}
         <h1 className="brand-title mt-3 text-4xl sm:text-5xl lg:text-6xl">{title}</h1>
         {intro ? (

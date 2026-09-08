@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { PageHeader, Section } from "@/components/site/PageHeader";
-import { PRICING, CENTRE } from "@/lib/site-data";
+import { usePricing } from "@/lib/content";
+import { CENTRE } from "@/lib/site-data";
 
 export const Route = createFileRoute("/bowling")({
   head: () => ({
@@ -15,7 +16,8 @@ export const Route = createFileRoute("/bowling")({
       { property: "og:title", content: "Bowling & Prices | Vegreville Bowling Lanes" },
       {
         property: "og:description",
-        content: "Game rates, hourly lanes, glow bowling and accessibility info for our eight 5-pin lanes.",
+        content:
+          "Game rates, hourly lanes, glow bowling and accessibility info for our eight 5-pin lanes.",
       },
     ],
   }),
@@ -31,6 +33,8 @@ const SCORING = [
 ];
 
 function BowlingPage() {
+  const { data: pricing } = usePricing();
+
   return (
     <>
       <PageHeader
@@ -45,8 +49,8 @@ function BowlingPage() {
 
       <Section title="Rates">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {PRICING.map((p) => (
-            <div key={p.label} className="card-soft rounded-xl p-5">
+          {(pricing ?? []).map((p) => (
+            <div key={p.id} className="card-soft rounded-xl p-5">
               <p className="font-display text-3xl text-primary">{p.price}</p>
               <p className="mt-1 font-medium">{p.label}</p>
               <p className="text-sm text-muted-foreground">{p.note}</p>
@@ -64,8 +68,9 @@ function BowlingPage() {
           <div>
             <h2 className="text-4xl">How 5-pin scoring works</h2>
             <p className="mt-3 text-muted-foreground">
-              Five pins stand in a V. Knock them all down and you score 15 — the highest single-frame
-              count in the game. You get three balls per frame, and ten frames per game.
+              Five pins stand in a V. Knock them all down and you score 15 — the highest
+              single-frame count in the game. You get three balls per frame, and ten frames per
+              game.
             </p>
             <dl className="mt-6 divide-y divide-border rounded-xl border border-border">
               {SCORING.map((s) => (
@@ -84,8 +89,8 @@ function BowlingPage() {
                 398, set by Dwayne Kozak in 2019.
               </li>
               <li>
-                <strong className="text-foreground">Balls:</strong> 5-pin balls fit in your palm — no
-                finger holes and no weight classes, so kids and adults use the same ball.
+                <strong className="text-foreground">Balls:</strong> 5-pin balls fit in your palm —
+                no finger holes and no weight classes, so kids and adults use the same ball.
               </li>
               <li>
                 <strong className="text-foreground">Bumpers & ramps:</strong> free on any lane, just

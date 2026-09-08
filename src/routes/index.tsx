@@ -5,7 +5,9 @@ import how5Pin from "@/assets/how-5-pin-works.jpg.asset.json";
 import leagueNight from "@/assets/league-night.jpg.asset.json";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/site/PageHeader";
-import { CENTRE, EVENTS, HOURS, LEAGUES, PRICING } from "@/lib/site-data";
+import { HoursTable } from "@/components/site/HoursTable";
+import { formatWhen, useAnnouncements, useEvents, useLeagues, usePricing } from "@/lib/content";
+import { CENTRE } from "@/lib/site-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,9 +29,9 @@ export const Route = createFileRoute("/")({
 });
 
 const QUICK_FACTS = [
-  { icon: Clock, label: "Open today", value: "4 PM – 10 PM" },
-  { icon: Users, label: "Lane capacity", value: "6 bowlers" },
-  { icon: Sparkles, label: "Glow bowling", value: "Fri & Sat, 8 PM" },
+  { icon: Clock, label: "Open today", value: "10:30 AM – 10 PM" },
+  { icon: Users, label: "6 lanes", value: "Up to 6 bowlers per lane" },
+  { icon: Sparkles, label: "Glow bowling", value: "Fri & Sat, 7 PM" },
 ];
 
 const ACTIVITIES = [
@@ -60,8 +62,25 @@ const ACTIVITIES = [
 ];
 
 function Home() {
+  const { data: events } = useEvents();
+  const { data: pricing } = usePricing();
+  const { data: leagues } = useLeagues();
+  const { data: announcements } = useAnnouncements();
+
   return (
     <>
+      {(announcements ?? []).length > 0 ? (
+        <div className="border-b border-border bg-secondary">
+          <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
+            {(announcements ?? []).map((a) => (
+              <p key={a.id} className="text-sm">
+                <span className="font-semibold text-primary">{a.title}</span>{" "}
+                <span className="text-muted-foreground">{a.message}</span>
+              </p>
+            ))}
+          </div>
+        </div>
+      ) : null}
       {/* 1 — Hero with authentic lanes photo */}
       <section className="relative overflow-hidden border-b border-border">
         <img
@@ -80,24 +99,37 @@ function Home() {
             Vegreville's local place for bowling, leagues, parties and family fun.
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
-            We've been rolling five pins on 50 Street for over sixty years. Come by for an
-            afternoon with the kids, a league night with friends, or a party we set up for you.
+            We've been rolling five pins on 50 Street for over sixty years. Come by for an afternoon
+            with the kids, a league night with friends, or a party we set up for you.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <Button asChild size="lg">
               <Link to="/book">Book a lane</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+            >
               <Link to="/contact">View hours</Link>
             </Button>
-            <Button asChild size="lg" variant="ghost" className="text-white hover:bg-white/10 hover:text-white sm:w-auto">
+            <Button
+              asChild
+              size="lg"
+              variant="ghost"
+              className="text-white hover:bg-white/10 hover:text-white sm:w-auto"
+            >
               <Link to="/bowling">Explore activities</Link>
             </Button>
           </div>
 
           <dl className="mt-10 grid gap-3 sm:grid-cols-3">
             {QUICK_FACTS.map(({ icon: Icon, label, value }) => (
-              <div key={label} className="rounded-xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
+              <div
+                key={label}
+                className="rounded-xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm"
+              >
                 <Icon className="h-5 w-5 text-white" aria-hidden />
                 <dt className="mt-2 text-xs font-semibold uppercase tracking-wider text-white/75">
                   {label}
@@ -188,20 +220,20 @@ function Home() {
         description="Something different on the lanes most nights of the week."
       >
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {EVENTS.map((e) => (
+          {(events ?? []).map((e) => (
             <article
-              key={e.title}
+              key={e.id}
               className="flex flex-col rounded-xl border border-white/12 bg-white/[0.04] p-6 transition-colors hover:border-white/25 hover:bg-white/[0.07]"
             >
               <span className="w-fit rounded-full border border-gold/50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gold">
-                {e.tag}
+                {e.category}
               </span>
               <h3 className="mt-4 text-xl text-ink-foreground">{e.title}</h3>
               <p className="mt-1 flex items-center gap-2 text-sm text-ink-muted">
                 <CalendarDays className="h-4 w-4" aria-hidden />
-                {e.when}
+                {formatWhen(e)}
               </p>
-              <p className="mt-3 text-sm leading-relaxed text-ink-muted">{e.blurb}</p>
+              <p className="mt-3 text-sm leading-relaxed text-ink-muted">{e.description}</p>
             </article>
           ))}
         </div>
@@ -224,8 +256,8 @@ function Home() {
         description="Taxes included. Cash, debit and tap accepted at the counter."
       >
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {PRICING.map((p) => (
-            <div key={p.label} className="card-soft rounded-xl p-6">
+          {(pricing ?? []).map((p) => (
+            <div key={p.id} className="card-soft rounded-xl p-6">
               <p className="font-display text-3xl text-primary">{p.price}</p>
               <p className="mt-1 font-semibold">{p.label}</p>
               <p className="text-sm text-muted-foreground">{p.note}</p>
@@ -242,12 +274,12 @@ function Home() {
               <Trophy className="h-8 w-8 shrink-0 text-primary" aria-hidden /> League nights
             </h2>
             <ul className="mt-7 space-y-4">
-              {LEAGUES.map((l) => (
-                <li key={l.slug} className="card-soft rounded-xl p-5">
+              {(leagues ?? []).map((l) => (
+                <li key={l.id} className="card-soft rounded-xl p-5">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <h3 className="text-lg">{l.name}</h3>
                     <span className="text-sm font-semibold text-primary">
-                      {l.night} · {l.time}
+                      {l.night} · {l.start_time}
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-muted-foreground">{l.format}</p>
@@ -272,14 +304,7 @@ function Home() {
       {/* 7 — Light: find us */}
       <Section title="Find us" description={CENTRE.address}>
         <div className="grid gap-8 lg:grid-cols-2">
-          <dl className="card-soft divide-y divide-border rounded-xl">
-            {HOURS.map((h) => (
-              <div key={h.day} className="flex justify-between gap-4 px-5 py-3 text-sm">
-                <dt className="text-muted-foreground">{h.day}</dt>
-                <dd className="font-medium">{h.open}</dd>
-              </div>
-            ))}
-          </dl>
+          <HoursTable />
           <div className="card-soft rounded-xl p-6">
             <h3 className="flex items-center gap-2 text-xl">
               <MapPin className="h-5 w-5 text-primary" aria-hidden /> Downtown Vegreville

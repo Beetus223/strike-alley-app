@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { PageHeader, Section } from "@/components/site/PageHeader";
-import { CENTRE, HOURS } from "@/lib/site-data";
+import { HoursTable } from "@/components/site/HoursTable";
+import { CENTRE } from "@/lib/site-data";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -53,15 +54,8 @@ function ContactPage() {
             </ul>
             <div>
               <h2 className="text-3xl">Hours</h2>
-              <dl className="mt-4 divide-y divide-border rounded-xl border border-border">
-                {HOURS.map((h) => (
-                  <div key={h.day} className="flex justify-between gap-4 px-4 py-3 text-sm">
-                    <dt className="text-muted-foreground">{h.day}</dt>
-                    <dd>{h.open}</dd>
-                  </div>
-                ))}
-              </dl>
-              <p className="mt-3 text-sm text-muted-foreground">
+              <HoursTable className="mt-4" />
+              <p className="mt-2 text-sm text-muted-foreground">
                 Hours shift during tournaments and holidays — check our Facebook page or call ahead.
               </p>
             </div>

@@ -8,14 +8,68 @@ export const CENTRE = {
   mapQuery: "5026+50+Street+Vegreville+AB",
 };
 
+export const HOURS_NOTE =
+  "Walk-ins are welcome but not guaranteed. Reservations are recommended and guarantee your lane.";
+
+const LATE_NOTE = "We may stay open later for larger reservations or particularly busy nights.";
+
 export const HOURS = [
-  { day: "Monday", open: "Closed (private bookings)" },
-  { day: "Tuesday", open: "4:00 PM – 10:00 PM" },
-  { day: "Wednesday", open: "4:00 PM – 10:00 PM" },
-  { day: "Thursday", open: "4:00 PM – 11:00 PM" },
-  { day: "Friday", open: "3:00 PM – 12:00 AM" },
-  { day: "Saturday", open: "12:00 PM – 12:00 AM" },
-  { day: "Sunday", open: "12:00 PM – 8:00 PM" },
+  {
+    day: "Monday",
+    open: "5:30 PM – 9:00 PM",
+    publicBowling: "5:30 PM – 6:30 PM",
+    food: "5:30 PM – 8:30 PM",
+    glow: null as string | null,
+    note: null as string | null,
+  },
+  {
+    day: "Tuesday",
+    open: "10:30 AM – 10:00 PM",
+    publicBowling: "10:30 AM – 1:00 PM and 3:00 PM – 4:15 PM",
+    food: "10:30 AM – 9:30 PM",
+    glow: null as string | null,
+    note: null as string | null,
+  },
+  {
+    day: "Wednesday",
+    open: "10:30 AM – 10:00 PM",
+    publicBowling: "10:30 AM – 1:00 PM",
+    food: "10:30 AM – 9:30 PM",
+    glow: null as string | null,
+    note: null as string | null,
+  },
+  {
+    day: "Thursday",
+    open: "10:30 AM – 10:00 PM",
+    publicBowling: "10:30 AM – 6:30 PM",
+    food: "10:30 AM – 9:30 PM",
+    glow: null as string | null,
+    note: null as string | null,
+  },
+  {
+    day: "Friday",
+    open: "10:30 AM – 10:00 PM",
+    publicBowling: "10:30 AM – 10:00 PM",
+    food: "10:30 AM – 9:30 PM",
+    glow: "7:00 PM – 10:00 PM" as string | null,
+    note: LATE_NOTE as string | null,
+  },
+  {
+    day: "Saturday",
+    open: "10:30 AM – 10:00 PM",
+    publicBowling: "10:30 AM – 10:00 PM",
+    food: "10:30 AM – 9:30 PM",
+    glow: "7:00 PM – 10:00 PM" as string | null,
+    note: LATE_NOTE as string | null,
+  },
+  {
+    day: "Sunday",
+    open: "12:00 PM – 8:00 PM",
+    publicBowling: "12:00 PM – 8:00 PM",
+    food: "12:00 PM – 7:30 PM",
+    glow: null as string | null,
+    note: null as string | null,
+  },
 ];
 
 export const PRICING = [
@@ -23,8 +77,12 @@ export const PRICING = [
   { label: "Youth / senior game", price: "$4.25", note: "12 and under, 65+" },
   { label: "Shoe rental", price: "$3.00", note: "all sizes, kids to size 15" },
   { label: "Lane by the hour", price: "$32.00", note: "up to 6 bowlers, shoes extra" },
-  { label: "Glow bowling (Fri/Sat after 8 PM)", price: "$6.50", note: "per person, per game" },
-  { label: "Family four-pack", price: "$62.00", note: "2 hours, 4 pairs of shoes, 1 pitcher of pop" },
+  { label: "Glow bowling (Fri/Sat after 7 PM)", price: "$6.50", note: "per person, per game" },
+  {
+    label: "Family four-pack",
+    price: "$62.00",
+    note: "2 hours, 4 pairs of shoes, 1 pitcher of pop",
+  },
 ];
 
 export const LEAGUES = [
@@ -81,7 +139,7 @@ export const LEAGUES = [
 export const EVENTS = [
   {
     title: "Glow Bowl Fridays",
-    when: "Every Friday, 8:00 PM – midnight",
+    when: "Every Friday, 7:00 PM – 10:00 PM",
     blurb: "Lights down, black lights up, DJ playlist and $6.50 games all night.",
     tag: "Weekly",
   },
@@ -94,7 +152,8 @@ export const EVENTS = [
   {
     title: "Vegreville Pysanka Open",
     when: "July 11 – 12",
-    blurb: "Our annual 5-pin singles tournament during Pysanka Festival weekend. 64-bowler field, $1,500 top prize.",
+    blurb:
+      "Our annual 5-pin singles tournament during Pysanka Festival weekend. 64-bowler field, $1,500 top prize.",
     tag: "Tournament",
   },
   {
@@ -121,7 +180,7 @@ export const MENU = [
       { name: "Nacho Basket", price: "$12.50", desc: "Cheese, jalapeños, salsa and sour cream" },
       { name: "Perogy Bowl", price: "$10.50", desc: "Local perogies, bacon, onion, sour cream" },
       { name: "Onion Rings", price: "$7.00", desc: "Beer battered" },
-      { name: "Pizza (12\")", price: "$16.00", desc: "Pepperoni, Hawaiian or cheese" },
+      { name: 'Pizza (12")', price: "$16.00", desc: "Pepperoni, Hawaiian or cheese" },
     ],
   },
   {

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader, Section } from "@/components/site/PageHeader";
-import { EVENTS } from "@/lib/site-data";
+import { formatWhen, useEvents } from "@/lib/content";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -24,6 +24,8 @@ export const Route = createFileRoute("/events")({
 });
 
 function EventsPage() {
+  const { data: events } = useEvents();
+
   return (
     <>
       <PageHeader
@@ -33,16 +35,16 @@ function EventsPage() {
       />
       <Section>
         <div className="grid gap-5 md:grid-cols-2">
-          {EVENTS.map((e) => (
-            <article key={e.title} className="card-soft rounded-2xl p-6">
+          {(events ?? []).map((e) => (
+            <article key={e.id} className="card-soft rounded-2xl p-6">
               <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-primary">
-                {e.tag}
+                {e.category}
               </span>
               <h2 className="mt-3 text-3xl">{e.title}</h2>
               <p className="mt-1 flex items-center gap-2 text-sm text-primary">
-                <CalendarDays className="h-4 w-4" aria-hidden /> {e.when}
+                <CalendarDays className="h-4 w-4" aria-hidden /> {formatWhen(e)}
               </p>
-              <p className="mt-3 text-muted-foreground">{e.blurb}</p>
+              <p className="mt-3 text-muted-foreground">{e.description}</p>
             </article>
           ))}
         </div>

@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          created_at: string
+          ends_on: string | null
+          id: string
+          is_active: boolean
+          message: string
+          starts_on: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          is_active?: boolean
+          message: string
+          starts_on?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          is_active?: boolean
+          message?: string
+          starts_on?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       booking_requests: {
         Row: {
           booking_type: string
@@ -68,6 +101,96 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          end_date: string | null
+          end_time: string | null
+          featured: boolean
+          id: string
+          is_active: boolean
+          schedule_text: string | null
+          sort_order: number
+          start_date: string | null
+          start_time: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          end_time?: string | null
+          featured?: boolean
+          id?: string
+          is_active?: boolean
+          schedule_text?: string | null
+          sort_order?: number
+          start_date?: string | null
+          start_time?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          end_time?: string | null
+          featured?: boolean
+          id?: string
+          is_active?: boolean
+          schedule_text?: string | null
+          sort_order?: number
+          start_date?: string | null
+          start_time?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hours_of_operation: {
+        Row: {
+          created_at: string
+          day_label: string
+          day_of_week: number
+          food_service: string | null
+          glow_bowling: string | null
+          id: string
+          note: string | null
+          open_hours: string
+          public_bowling: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          day_label: string
+          day_of_week: number
+          food_service?: string | null
+          glow_bowling?: string | null
+          id?: string
+          note?: string | null
+          open_hours?: string
+          public_bowling?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          day_label?: string
+          day_of_week?: number
+          food_service?: string | null
+          glow_bowling?: string | null
+          id?: string
+          note?: string | null
+          open_hours?: string
+          public_bowling?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       leagues: {
         Row: {
           created_at: string
@@ -77,12 +200,16 @@ export type Database = {
           handicap_base: number
           handicap_percent: number
           id: string
+          is_active: boolean
           name: string
           night: string
           registration_open: boolean
           season: string
           slug: string
+          sort_order: number
+          spots: string | null
           start_time: string
+          updated_at: string
         }
         Insert: {
           created_at?: string
@@ -92,12 +219,16 @@ export type Database = {
           handicap_base?: number
           handicap_percent?: number
           id?: string
+          is_active?: boolean
           name: string
           night: string
           registration_open?: boolean
           season: string
           slug: string
+          sort_order?: number
+          spots?: string | null
           start_time: string
+          updated_at?: string
         }
         Update: {
           created_at?: string
@@ -107,12 +238,16 @@ export type Database = {
           handicap_base?: number
           handicap_percent?: number
           id?: string
+          is_active?: boolean
           name?: string
           night?: string
           registration_open?: boolean
           season?: string
           slug?: string
+          sort_order?: number
+          spots?: string | null
           start_time?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -176,6 +311,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pricing_items: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          is_active: boolean
+          label: string
+          note: string | null
+          price: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label: string
+          note?: string | null
+          price: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          note?: string | null
+          price?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
