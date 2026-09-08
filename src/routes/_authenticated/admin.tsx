@@ -119,7 +119,7 @@ function AdminPage() {
             <ScoreEntryPanel />
           </TabsContent>
           <TabsContent value="roster" className="mt-6">
-            <RosterPanel />
+            <BowlersPanel />
           </TabsContent>
           <TabsContent value="bookings" className="mt-6">
             <BookingsPanel />
