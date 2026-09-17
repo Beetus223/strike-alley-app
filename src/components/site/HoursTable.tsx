@@ -1,9 +1,10 @@
-import { useHours } from "@/lib/content";
+import { useHours, useSeasonalHours } from "@/lib/content";
 import { HOURS_NOTE } from "@/lib/site-data";
 
 /** Detailed hours: open, public bowling, food service and glow per day. */
 export function HoursTable({ className = "" }: { className?: string }) {
   const { data: hours } = useHours();
+  const { data: seasonalSchedules } = useSeasonalHours();
 
   return (
     <div className={className}>
@@ -26,6 +27,41 @@ export function HoursTable({ className = "" }: { className?: string }) {
         ))}
       </dl>
       <p className="mt-3 text-sm text-muted-foreground">{HOURS_NOTE}</p>
+      {(seasonalSchedules ?? []).map((schedule) => (
+        <section key={schedule.id} className="mt-8" aria-labelledby={`seasonal-hours-${schedule.id}`}>
+          <div className="mb-4 border-l-4 border-primary pl-4">
+            <h3 id={`seasonal-hours-${schedule.id}`} className="text-2xl">
+              {schedule.title}
+            </h3>
+            <p className="mt-1 font-semibold">{schedule.date_label}</p>
+            <p className="mt-2 inline-flex bg-primary px-3 py-1 text-sm font-bold text-primary-foreground">
+              {schedule.reservation_notice}
+            </p>
+          </div>
+          <h4 className="mb-3 text-sm font-bold uppercase text-muted-foreground">Food Service Hours</h4>
+          <dl className="card-soft divide-y divide-border rounded-xl">
+            {schedule.seasonal_hours.map((day) => {
+              const closed = day.food_service?.trim().toUpperCase() === "CLOSED";
+              return (
+                <div key={day.id} className="px-5 py-3.5">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <dt className="font-semibold">{day.day_label}</dt>
+                    <dd className={closed ? "font-bold text-primary" : "font-medium"}>
+                      {closed ? "CLOSED" : day.food_service}
+                    </dd>
+                  </div>
+                  {!closed && (day.note || day.bowler_hours) ? (
+                    <ul className="mt-1.5 space-y-0.5 text-sm text-muted-foreground">
+                      {day.note ? <li>{day.note}</li> : null}
+                      {day.bowler_hours ? <li><span className="font-semibold text-foreground">Bowlers:</span> {day.bowler_hours}</li> : null}
+                    </ul>
+                  ) : null}
+                </div>
+              );
+            })}
+          </dl>
+        </section>
+      ))}
     </div>
   );
 }

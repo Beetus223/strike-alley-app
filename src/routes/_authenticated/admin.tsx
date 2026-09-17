@@ -26,11 +26,14 @@ import {
   useHours,
   useLeagues,
   usePricing,
+  useSeasonalHours,
   type AnnouncementItem,
   type EventItem,
   type HoursItem,
   type LeagueItem,
   type PricingItem,
+  type SeasonalHoursDay,
+  type SeasonalHoursSchedule,
 } from "@/lib/content";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -490,6 +493,7 @@ function LeagueForm({
 function HoursPanel() {
   const invalidate = useContentInvalidate();
   const hours = useHours();
+  const seasonal = useSeasonalHours(true);
 
   const save = useMutation({
     mutationFn: async ({ id, values }: { id: string; values: Record<string, unknown> }) => {
@@ -503,6 +507,33 @@ function HoursPanel() {
       toast.success("Hours updated");
       invalidate();
     },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const saveSeasonalSchedule = useMutation({
+    mutationFn: async ({ id, values }: { id: string; values: Record<string, unknown> }) => {
+      const { error } = await supabase.from("seasonal_hour_schedules").update(values as never).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Seasonal schedule updated"); invalidate(); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const saveSeasonalDay = useMutation({
+    mutationFn: async ({ id, values }: { id: string; values: Record<string, unknown> }) => {
+      const { error } = await supabase.from("seasonal_hours").update(values as never).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Seasonal hours updated"); invalidate(); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const removeSeasonal = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("seasonal_hour_schedules").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Seasonal schedule removed"); invalidate(); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -546,6 +577,72 @@ function HoursPanel() {
           <Button type="submit">Save {h.day_label}</Button>
         </form>
       ))}
+
+      <div className="border-t border-border pt-8">
+        <h2 className="text-3xl">Seasonal hours</h2>
+        <PanelIntro>
+          Seasonal schedules stay separate from regular hours. Turn one off to hide it from the
+          website, edit any wording below, or remove it when it is no longer needed.
+        </PanelIntro>
+        <div className="space-y-6">
+          {(seasonal.data ?? []).map((schedule: SeasonalHoursSchedule) => (
+            <details key={schedule.id} className="card-soft rounded-2xl p-5" open>
+              <summary className="cursor-pointer font-display text-2xl">{schedule.title}</summary>
+              <form
+                className="mt-5 space-y-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const form = new FormData(e.currentTarget);
+                  saveSeasonalSchedule.mutate({ id: schedule.id, values: {
+                    title: String(form.get("title")),
+                    date_label: String(form.get("date_label")),
+                    reservation_notice: String(form.get("reservation_notice")),
+                    is_active: form.get("is_active") === "on",
+                  }});
+                }}
+              >
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Schedule title" name="title" defaultValue={schedule.title} required />
+                  <Field label="Date range" name="date_label" defaultValue={schedule.date_label} required />
+                  <Field label="Reservation notice" name="reservation_notice" defaultValue={schedule.reservation_notice} required />
+                  <div className="flex items-center gap-3 pt-7">
+                    <Switch id={`seasonal-${schedule.id}`} name="is_active" defaultChecked={schedule.is_active} />
+                    <Label htmlFor={`seasonal-${schedule.id}`}>Show on the website</Label>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <Button type="submit">Save schedule</Button>
+                  <Button type="button" variant="destructive" onClick={() => {
+                    if (confirm(`Remove “${schedule.title}” and all of its daily hours?`)) removeSeasonal.mutate(schedule.id);
+                  }}>Remove schedule</Button>
+                </div>
+              </form>
+
+              <div className="mt-6 space-y-3 border-t border-border pt-5">
+                {schedule.seasonal_hours.map((day: SeasonalHoursDay) => (
+                  <form key={day.id} className="rounded-xl border border-border p-4" onSubmit={(e) => {
+                    e.preventDefault();
+                    const form = new FormData(e.currentTarget);
+                    saveSeasonalDay.mutate({ id: day.id, values: {
+                      food_service: str(form, "food_service"),
+                      bowler_hours: str(form, "bowler_hours"),
+                      note: str(form, "note"),
+                    }});
+                  }}>
+                    <h3 className="text-xl">{day.day_label}</h3>
+                    <div className="mt-3 grid gap-4 sm:grid-cols-3">
+                      <Field label="Food service" name="food_service" defaultValue={day.food_service} />
+                      <Field label="Bowlers" name="bowler_hours" defaultValue={day.bowler_hours} />
+                      <Field label="Note" name="note" defaultValue={day.note} />
+                    </div>
+                    <Button type="submit" size="sm" className="mt-4">Save {day.day_label}</Button>
+                  </form>
+                ))}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

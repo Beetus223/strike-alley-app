@@ -523,6 +523,83 @@ export type Database = {
           },
         ]
       }
+      seasonal_hour_schedules: {
+        Row: {
+          created_at: string
+          date_label: string
+          id: string
+          is_active: boolean
+          reservation_notice: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date_label: string
+          id?: string
+          is_active?: boolean
+          reservation_notice: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date_label?: string
+          id?: string
+          is_active?: boolean
+          reservation_notice?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seasonal_hours: {
+        Row: {
+          bowler_hours: string | null
+          created_at: string
+          day_label: string
+          day_of_week: number
+          food_service: string | null
+          id: string
+          note: string | null
+          schedule_id: string
+          updated_at: string
+        }
+        Insert: {
+          bowler_hours?: string | null
+          created_at?: string
+          day_label: string
+          day_of_week: number
+          food_service?: string | null
+          id?: string
+          note?: string | null
+          schedule_id: string
+          updated_at?: string
+        }
+        Update: {
+          bowler_hours?: string | null
+          created_at?: string
+          day_label?: string
+          day_of_week?: number
+          food_service?: string | null
+          id?: string
+          note?: string | null
+          schedule_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seasonal_hours_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "seasonal_hour_schedules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teams: {
         Row: {
           created_at: string
@@ -579,14 +656,6 @@ export type Database = {
     }
     Functions: {
       generate_bowler_id: { Args: never; Returns: string }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "staff" | "player"
