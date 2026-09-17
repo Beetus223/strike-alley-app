@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
-import partyImg from "@/assets/party.jpg";
+import partyImg from "@/assets/party-details.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { PageHeader, Section } from "@/components/site/PageHeader";
 import { PARTY_PACKAGES } from "@/lib/site-data";
