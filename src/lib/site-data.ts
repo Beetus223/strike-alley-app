@@ -383,41 +383,114 @@ export const MENU: MenuGroup[] = [
   },
 ];
 
-export const PARTY_PACKAGES = [
+export interface PartyPackage {
+  name: string;
+  capacity: string;
+  price: string;
+  value?: string;
+  tag?: string;
+  includes: string[];
+  note?: string;
+}
+
+export const PARTY_PACKAGES: PartyPackage[] = [
   {
-    name: "Strike Party",
-    price: "$18 / guest",
-    min: "Minimum 6 guests",
+    name: "Package 3 — Galaxy Bowl Party",
+    capacity: "8–60 People",
+    price: "$225.00 + GST",
+    value: "$300.00 value",
+    tag: "PRIVATE PARTY",
     includes: [
-      "90 minutes of bowling on your own lane",
-      "Shoe rental for every guest",
-      "Hot dog, fries and a drink each",
-      "Reserved party table and host",
+      "2 hours of unlimited bowling",
+      "Party area rental",
+      "6 lanes",
+      "Pool tables",
+      "Air hockey table",
+      "Shoe rental",
+      "3 L of pop or juice",
+      "Water",
+      "Party table set up with plates, cups, napkins, utensils, etc.",
+      "Complimentary birthday gift",
+      "Host helps with the party",
+      "Mom/Dad coordinates the party",
     ],
+    note: "See additional options available to add to your party package.",
   },
   {
-    name: "Glow Party",
-    price: "$24 / guest",
-    min: "Minimum 8 guests",
+    name: "Package 2 — Double Strike Party",
+    capacity: "8–15 People",
+    price: "$150.00 + GST",
+    value: "$180.00 value",
     includes: [
-      "2 hours of glow bowling",
-      "Shoe rental and glow wristbands",
-      "Pizza, pop pitchers and soft serve",
-      "Music requests and lane-side decorations",
+      "1.5 hours of unlimited bowling",
+      "Party area rental",
+      "Balloons and decorations",
+      "2 × 2 L of juice or pop",
+      "Water",
+      "Shoe rental",
+      "3 lanes",
+      "Party table set up for you with cups, plates, napkins, etc.",
+      "Complimentary birthday gift",
+      "Parent/Guardian coordinates the party",
     ],
+    note: "See additional options available to add to your party package.",
   },
   {
-    name: "Whole House Rental",
-    price: "$450 flat",
-    min: "Up to 48 people",
+    name: "Package 1 — Party With Me",
+    capacity: "0–10 People",
+    price: "$100.00 + GST",
+    value: "$130.00 value",
     includes: [
-      "All 8 lanes for 3 hours",
-      "Shoes for everyone",
-      "Private snack bar service",
-      "Sound system and scoreboard messages",
+      "1 hour of unlimited bowling",
+      "Party area rental",
+      "1 × 2 L of juice or pop",
+      "Water",
+      "Shoe rental",
+      "2 lanes",
+      "Party table at the lanes with plates, napkins, and cups",
+      "Complimentary birthday gift",
+      "Parent/Guardian coordinates the party",
     ],
+    note: "See additional options available to add to your party package.",
   },
 ];
+
+export const PARTY_EVENT_TYPES = [
+  "Adult Parties",
+  "Christmas Parties",
+  "Family Gatherings",
+  "Sports Teams",
+  "Company Events",
+  "Team Building",
+  "Birthday Parties",
+  "& More",
+];
+
+export const LANE_BOOKING = {
+  title: "Just Want to Book Lanes & Seating?",
+  intro:
+    "You can also simply book the lanes and table-side seating for your group.",
+  options: [
+    {
+      label: "Private party",
+      price: "$125.00 per hour",
+      detail: "Includes all 6 lanes.",
+    },
+    {
+      label: "Per lane",
+      price: "$37.00 per lane, per hour",
+      detail: "+$2.00 shoe rental",
+    },
+  ],
+  includes: [
+    "6 lanes",
+    "Pool tables",
+    "Air hockey table",
+    "Party host",
+    "Table-side party seating",
+  ],
+  note: "See additional options available to add to your party package.",
+};
 
 export const NAV = [
   { to: "/", label: "Home" },
