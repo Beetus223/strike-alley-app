@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Phone } from "lucide-react";
-import snackbar from "@/assets/snack-warm.jpg";
+import snackbar from "@/assets/loaded-gyro-poutine-fries.png.asset.json";
 import { PageHeader, Section } from "@/components/site/PageHeader";
 import { MENU, SNACK_BAR_PHONE } from "@/lib/site-data";
 
