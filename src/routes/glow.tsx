@@ -94,7 +94,7 @@ function GlowPage() {
             </dl>
           </div>
           <img
-            src={glowLanes}
+            src={glowLanes.url}
             alt="Bowling lanes lit with pink and blue neon during a glow bowling night"
             width={1920}
             height={1080}
