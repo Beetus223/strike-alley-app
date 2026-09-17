@@ -75,8 +75,8 @@ function MenuPage() {
 
           <div>
             <img
-              src={snackbar}
-              alt="Burgers, fries, nachos and milkshakes on the snack bar counter"
+              src={snackbar.url}
+              alt="Loaded gyro poutine fries with seasoned meat, tomatoes, cheese curds, and garlic sauce"
               width={1200}
               height={900}
               loading="lazy"
