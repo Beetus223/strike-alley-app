@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Music, Sparkles, Ticket, Users } from "lucide-react";
-import glowLanes from "@/assets/hero-lanes.jpg";
+import glowLanes from "@/assets/neon-glow-bowling-alley.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { CENTRE } from "@/lib/site-data";
 
@@ -94,7 +94,7 @@ function GlowPage() {
             </dl>
           </div>
           <img
-            src={glowLanes}
+            src={glowLanes.url}
             alt="Bowling lanes lit with pink and blue neon during a glow bowling night"
             width={1920}
             height={1080}
