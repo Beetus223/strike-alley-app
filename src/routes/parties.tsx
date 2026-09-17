@@ -191,36 +191,26 @@ function PartiesPage() {
       </Section>
 
       <section className="border-t border-border bg-surface">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:py-20">
-          <img
-            src={partyImg.url}
-            alt="Birthday cake celebration with party guests at Vegreville Bowling Lanes"
-            width={1200}
-            height={900}
-            loading="lazy"
-            className="w-full rounded-2xl object-cover"
-          />
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-              Not planning a birthday party?
-            </p>
-            <h2 className="brand-title mt-3 text-3xl sm:text-4xl">
-              Other Events & Group Bookings
-            </h2>
-            <p className="mt-4 text-lg font-medium leading-relaxed">
-              No problem!
-            </p>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
-              We welcome adult parties, Christmas parties, family gatherings, sports teams, company events, team-building events, group celebrations, and other special events.
-            </p>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
-              Other events can be custom-made to best fit your group and party needs. We can also cater your event in-house with a custom menu to fit your preferences.
-            </p>
-            <div className="mt-8">
-              <Button asChild size="lg">
-                <Link to="/book">Request a party date</Link>
-              </Button>
-            </div>
+        <div className="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6 sm:py-20">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            Not planning a birthday party?
+          </p>
+          <h2 className="brand-title mt-3 text-3xl sm:text-4xl">
+            Other Events & Group Bookings
+          </h2>
+          <p className="mt-4 text-lg font-medium leading-relaxed">
+            No problem!
+          </p>
+          <p className="mt-4 leading-relaxed text-muted-foreground">
+            We welcome adult parties, Christmas parties, family gatherings, sports teams, company events, team-building events, group celebrations, and other special events.
+          </p>
+          <p className="mt-4 leading-relaxed text-muted-foreground">
+            Other events can be custom-made to best fit your group and party needs. We can also cater your event in-house with a custom menu to fit your preferences.
+          </p>
+          <div className="mt-8 flex justify-center">
+            <Button asChild size="lg">
+              <Link to="/book">Request a party date</Link>
+            </Button>
           </div>
         </div>
       </section>
