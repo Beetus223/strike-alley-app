@@ -34,6 +34,26 @@ export type HoursItem = {
   note: string | null;
 };
 
+export type SeasonalHoursDay = {
+  id: string;
+  schedule_id: string;
+  day_of_week: number;
+  day_label: string;
+  food_service: string | null;
+  bowler_hours: string | null;
+  note: string | null;
+};
+
+export type SeasonalHoursSchedule = {
+  id: string;
+  title: string;
+  date_label: string;
+  reservation_notice: string;
+  is_active: boolean;
+  sort_order: number;
+  seasonal_hours: SeasonalHoursDay[];
+};
+
 export type PricingItem = {
   id: string;
   label: string;
@@ -105,6 +125,26 @@ const FALLBACK_HOURS: HoursItem[] = HOURS.map((h) => ({
   note: h.note,
 }));
 
+const FALLBACK_SUMMER_HOURS: SeasonalHoursSchedule[] = [
+  {
+    id: "summer-2025",
+    title: "SUMMER PUBLIC BOWLING HOURS",
+    date_label: "July 1 – August 31, 2025",
+    reservation_notice: "RESERVATION ONLY",
+    is_active: true,
+    sort_order: 1,
+    seasonal_hours: [
+      { id: "summer-mon", schedule_id: "summer-2025", day_of_week: 1, day_label: "Monday", food_service: "CLOSED", bowler_hours: null, note: null },
+      { id: "summer-tue", schedule_id: "summer-2025", day_of_week: 2, day_label: "Tuesday", food_service: "10:30 a.m. – 8:30 p.m.", bowler_hours: "Until 9:30 p.m.", note: "Take out or eat in." },
+      { id: "summer-wed", schedule_id: "summer-2025", day_of_week: 3, day_label: "Wednesday", food_service: "10:30 a.m. – 8:30 p.m.", bowler_hours: "Until 9:30 p.m.", note: "Take out or eat in." },
+      { id: "summer-thu", schedule_id: "summer-2025", day_of_week: 4, day_label: "Thursday", food_service: "10:30 a.m. – 8:30 p.m.", bowler_hours: "Until 9:30 p.m.", note: "Take out or eat in." },
+      { id: "summer-fri", schedule_id: "summer-2025", day_of_week: 5, day_label: "Friday", food_service: "10:30 a.m. – 8:30 p.m.", bowler_hours: "Until 9:30 p.m.", note: "Take out or eat in." },
+      { id: "summer-sat", schedule_id: "summer-2025", day_of_week: 6, day_label: "Saturday", food_service: "11:00 a.m. – 8:00 p.m.", bowler_hours: "Until 9:30 p.m.", note: "Take out or eat in." },
+      { id: "summer-sun", schedule_id: "summer-2025", day_of_week: 0, day_label: "Sunday", food_service: "12:00 p.m. – 7:00 p.m.", bowler_hours: null, note: null },
+    ],
+  },
+];
+
 const FALLBACK_PRICING: PricingItem[] = PRICING.map((p, i) => ({
   id: p.label,
   label: p.label,
@@ -160,6 +200,28 @@ export function useHours() {
       );
     },
     initialData: FALLBACK_HOURS,
+  });
+}
+
+export function useSeasonalHours(includeInactive = false) {
+  return useQuery({
+    queryKey: ["content", "seasonal-hours", includeInactive],
+    queryFn: async () => {
+      let query = supabase
+        .from("seasonal_hour_schedules")
+        .select("*, seasonal_hours(*)")
+        .order("sort_order");
+      if (!includeInactive) query = query.eq("is_active", true);
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data as SeasonalHoursSchedule[]).map((schedule) => ({
+        ...schedule,
+        seasonal_hours: [...schedule.seasonal_hours].sort(
+          (a, b) => WEEK_ORDER.indexOf(a.day_of_week) - WEEK_ORDER.indexOf(b.day_of_week),
+        ),
+      }));
+    },
+    initialData: includeInactive ? undefined : FALLBACK_SUMMER_HOURS,
   });
 }
 
