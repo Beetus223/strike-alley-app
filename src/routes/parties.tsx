@@ -42,6 +42,22 @@ function PartiesPage() {
         </Button>
       </PageHeader>
 
+      <section className="border-b border-border bg-surface">
+        <div className="mx-auto max-w-7xl px-4 pb-14 pt-6 sm:px-6 sm:pb-20 sm:pt-8">
+          <div className="relative overflow-hidden rounded-2xl">
+            <img
+              src={partyImg.url}
+              alt="Birthday cake celebration with party guests at Vegreville Bowling Lanes"
+              width={1200}
+              height={675}
+              loading="eager"
+              className="aspect-[21/9] w-full object-cover"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+          </div>
+        </div>
+      </section>
+
       <Section title="All Ages Welcome!">
         <div className="mx-auto max-w-4xl">
           <p className="text-center text-lg leading-relaxed text-muted-foreground">
