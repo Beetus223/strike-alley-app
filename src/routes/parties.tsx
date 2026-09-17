@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
-import partyImg from "@/assets/party.jpg";
+import partyImg from "@/assets/party-details.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { PageHeader, Section } from "@/components/site/PageHeader";
 import { PARTY_PACKAGES } from "@/lib/site-data";
@@ -63,7 +63,7 @@ function PartiesPage() {
       <section className="border-t border-border bg-surface">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-2">
           <img
-            src={partyImg}
+            src={partyImg.url}
             alt="Children celebrating a birthday with pizza and balloons at a bowling party table"
             width={1200}
             height={900}
