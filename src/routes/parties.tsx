@@ -2,10 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import partyImg from "@/assets/party-details.png.asset.json";
 import { Button } from "@/components/ui/button";
-import { PageHeader, Section } from "@/components/site/PageHeader";
+import { Section } from "@/components/site/PageHeader";
 import {
   LANE_BOOKING,
-  PARTY_EVENT_TYPES,
   PARTY_PACKAGES,
 } from "@/lib/site-data";
 
@@ -32,60 +31,48 @@ export const Route = createFileRoute("/parties")({
 function PartiesPage() {
   return (
     <>
-      <PageHeader
-        eyebrow="Special Packaging"
-        title="Parties & Group Bookings"
-        intro="Parties & Group Bookings of all kinds are our specialty!"
-      >
-        <Button asChild size="lg">
-          <Link to="/book">Request a party date</Link>
-        </Button>
-      </PageHeader>
-
       <section className="border-b border-border bg-surface">
-        <div className="mx-auto max-w-7xl px-4 pb-14 pt-6 sm:px-6 sm:pb-20 sm:pt-8">
+        <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 sm:pt-8">
           <div className="relative overflow-hidden rounded-2xl">
             <img
               src={partyImg.url}
               alt="Birthday cake celebration with party guests at Vegreville Bowling Lanes"
               width={1200}
-              height={675}
+              height={450}
               loading="eager"
-              className="aspect-[21/9] w-full object-cover"
+              className="aspect-[16/6] w-full object-cover object-[center_25%]"
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                Special Packaging
+              </p>
+              <h1 className="brand-title mt-2 text-3xl text-white sm:text-5xl lg:text-6xl">
+                Parties & Group Bookings
+              </h1>
+              <p className="mt-2 text-lg text-white/90 sm:text-xl">
+                All ages welcome. Let's celebrate!
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      <Section title="All Ages Welcome!">
-        <div className="mx-auto max-w-4xl">
-          <p className="text-center text-lg leading-relaxed text-muted-foreground">
-            We welcome all kinds of celebrations and group events, including:
+      <section className="border-b border-border bg-surface">
+        <div className="mx-auto max-w-4xl px-4 py-14 text-center sm:px-6 sm:py-20">
+          <p className="text-lg leading-relaxed text-muted-foreground">
+            Parties & Group Bookings of all kinds are our specialty!
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            {PARTY_EVENT_TYPES.map((type) => (
-              <span
-                key={type}
-                className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold uppercase tracking-wide text-primary"
-              >
-                {type}
-              </span>
-            ))}
-          </div>
-          <p className="mt-8 text-center leading-relaxed text-muted-foreground">
-            For your next birthday, choose from one of our packages below. Other events and parties can be custom-made to best suit your group and your needs.
-          </p>
-          <p className="mt-4 text-center leading-relaxed text-muted-foreground">
-            We can also cater your event in-house with a custom menu designed around what you and your guests like.
+          <p className="mt-4 leading-relaxed text-muted-foreground">
+            We welcome birthday parties, family gatherings, sports teams, company events, team building, Christmas parties and celebrations of all kinds.
           </p>
           <div className="mt-8 flex justify-center">
             <Button asChild size="lg">
-              <Link to="/book">Reserve your party today</Link>
+              <Link to="/book">Request a party date</Link>
             </Button>
           </div>
         </div>
-      </Section>
+      </section>
 
       <Section
         title="Birthday Packages"
