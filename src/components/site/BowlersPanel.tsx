@@ -469,11 +469,33 @@ function BowlerHistory({ memberships }: { memberships: Membership[] }) {
     grouped.set(key, entry);
   }
 
+  // Highest individual game per league membership, from full score history.
+  const highestByPlayer = new Map<string, number>();
+  for (const s of history.data ?? []) {
+    const current = highestByPlayer.get(s.player_id) ?? 0;
+    if (s.score > current) highestByPlayer.set(s.player_id, s.score);
+  }
+
   if (ids.length === 0) return null;
 
   return (
     <div>
       <h4 className="font-display text-xl">Bowling history</h4>
+      {highestByPlayer.size > 0 ? (
+        <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+          {memberships.map((m) =>
+            highestByPlayer.has(m.id) ? (
+              <li key={m.id}>
+                {m.leagues?.name ?? "League"}: highest game{" "}
+                <span className="font-display text-base text-primary">
+                  {highestByPlayer.get(m.id)}
+                </span>{" "}
+                · average {Number(m.average).toFixed(1)}
+              </li>
+            ) : null,
+          )}
+        </ul>
+      ) : null}
       {grouped.size === 0 ? (
         <p className="mt-2 text-sm text-muted-foreground">No games entered yet.</p>
       ) : (

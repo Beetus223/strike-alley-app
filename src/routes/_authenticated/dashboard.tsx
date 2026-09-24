@@ -93,6 +93,13 @@ function Dashboard() {
     enabled: playerIds.length > 0,
   });
 
+  // Highest individual game per league membership, from the full score history.
+  const highestByPlayer = new Map<string, number>();
+  for (const s of scores.data ?? []) {
+    const current = highestByPlayer.get(s.player_id) ?? 0;
+    if (s.score > current) highestByPlayer.set(s.player_id, s.score);
+  }
+
   const leagueName = (playerId: string) =>
     (memberships.data ?? []).find((m) => m.id === playerId)?.leagues?.name ?? "League";
 
@@ -147,10 +154,25 @@ function Dashboard() {
                   {m.leagues?.night ?? ""} {m.leagues?.start_time ?? ""}
                 </p>
                 <p className="mt-1 text-2xl">{m.leagues?.name ?? "League"}</p>
-                <p className="mt-4 font-display text-5xl text-primary">
-                  {Number(m.average).toFixed(1)}
-                </p>
-                <p className="text-sm text-muted-foreground">
+                <div className="mt-4 flex items-end gap-8">
+                  <div>
+                    <p className="font-display text-5xl text-primary">
+                      {Number(m.average).toFixed(1)}
+                    </p>
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                      Average
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-display text-5xl text-primary">
+                      {highestByPlayer.get(m.id) ?? "—"}
+                    </p>
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                      Highest game
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
                   {m.games_played} games · {m.total_pinfall} pins
                 </p>
               </div>
