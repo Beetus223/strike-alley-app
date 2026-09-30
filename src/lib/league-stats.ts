@@ -277,7 +277,12 @@ export function buildReport(args: {
         const hc = teamGames(t.id, d, true);
         seasonHdcp! += sum(hc.totals) - series;
       }
-      const m = matchups.find((x) => x.team_id === t.id && x.session_date === d);
+      const reverse = matchups.find(
+        (x) => x.opponent_team_id === t.id && x.session_date === d,
+      );
+      const m =
+        matchups.find((x) => x.team_id === t.id && x.session_date === d && (x.opponent_team_id || s.winloss_method === "manual")) ??
+        (reverse ? { ...reverse, team_id: t.id, opponent_team_id: reverse.team_id } : undefined);
       if (!m) continue;
       if (s.winloss_method === "manual") {
         w += Number(m.manual_wins ?? 0);
