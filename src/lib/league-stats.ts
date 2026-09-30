@@ -231,7 +231,7 @@ export function buildReport(args: {
         slots += 1;
         for (let n = 1; n <= gps; n += 1) {
           const g = sess.games.get(n);
-          if (g != null) totals[n - 1] += g + hc;
+          if (g != null) totals[n - 1] = (totals[n - 1] ?? 0) + g + hc;
         }
       } else {
         let fill: number | null = null;
@@ -241,13 +241,13 @@ export function buildReport(args: {
         } else if (s.absent_rule === "fixed") fill = s.absent_value;
         if (fill != null) {
           slots += 1;
-          for (let n = 0; n < gps; n += 1) totals[n] += fill + hc;
+          for (let n = 0; n < gps; n += 1) totals[n] = (totals[n] ?? 0) + fill + hc;
         }
       }
     }
     if (s.vacant_rule === "fixed" && s.vacant_value != null && s.team_size) {
       const vacant = Math.max(0, s.team_size - roster.length);
-      for (let n = 0; n < gps; n += 1) totals[n] += vacant * s.vacant_value;
+      for (let n = 0; n < gps; n += 1) totals[n] = (totals[n] ?? 0) + vacant * s.vacant_value;
       slots += vacant;
     }
     return { totals, bowled, slots };
@@ -287,7 +287,7 @@ export function buildReport(args: {
         const useH = s.winloss_use_handicap && hdcpOn;
         const mine = teamGames(t.id, d, useH);
         const opp = teamGames(m.opponent_team_id, d, useH);
-        const comps = mine.totals.map((v, i) => [v, opp.totals[i]] as const);
+        const comps: [number, number][] = mine.totals.map((v, i) => [v, opp.totals[i] ?? 0]);
         if (s.series_point) comps.push([sum(mine.totals), sum(opp.totals)]);
         for (const [a, b] of comps) {
           if (a > b) w += 1;
@@ -316,7 +316,7 @@ export function buildReport(args: {
     };
   });
 
-  const key = (t: TeamLine) => {
+  const key = (t: TeamLine): [number, number] => {
     switch (s.standings_rule) {
       case "wins":
         return [t.wins ?? 0, t.seasonPins];
