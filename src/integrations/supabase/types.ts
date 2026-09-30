@@ -268,6 +268,95 @@ export type Database = {
           },
         ]
       }
+      league_settings: {
+        Row: {
+          absent_rule: string
+          absent_value: number | null
+          created_at: string
+          games_per_session: number
+          handicap_base: number | null
+          handicap_basis: string
+          handicap_enabled: boolean
+          handicap_method: string
+          handicap_percent: number | null
+          handicap_scope: string
+          league_id: string
+          notes: string | null
+          season_end: string | null
+          season_label: string | null
+          season_start: string | null
+          series_point: boolean
+          standings_rule: string
+          team_size: number | null
+          tie_rule: string
+          updated_at: string
+          vacant_rule: string
+          vacant_value: number | null
+          winloss_method: string
+          winloss_use_handicap: boolean
+        }
+        Insert: {
+          absent_rule?: string
+          absent_value?: number | null
+          created_at?: string
+          games_per_session?: number
+          handicap_base?: number | null
+          handicap_basis?: string
+          handicap_enabled?: boolean
+          handicap_method?: string
+          handicap_percent?: number | null
+          handicap_scope?: string
+          league_id: string
+          notes?: string | null
+          season_end?: string | null
+          season_label?: string | null
+          season_start?: string | null
+          series_point?: boolean
+          standings_rule?: string
+          team_size?: number | null
+          tie_rule?: string
+          updated_at?: string
+          vacant_rule?: string
+          vacant_value?: number | null
+          winloss_method?: string
+          winloss_use_handicap?: boolean
+        }
+        Update: {
+          absent_rule?: string
+          absent_value?: number | null
+          created_at?: string
+          games_per_session?: number
+          handicap_base?: number | null
+          handicap_basis?: string
+          handicap_enabled?: boolean
+          handicap_method?: string
+          handicap_percent?: number | null
+          handicap_scope?: string
+          league_id?: string
+          notes?: string | null
+          season_end?: string | null
+          season_label?: string | null
+          season_start?: string | null
+          series_point?: boolean
+          standings_rule?: string
+          team_size?: number | null
+          tie_rule?: string
+          updated_at?: string
+          vacant_rule?: string
+          vacant_value?: number | null
+          winloss_method?: string
+          winloss_use_handicap?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "league_settings_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: true
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leagues: {
         Row: {
           created_at: string
@@ -600,24 +689,85 @@ export type Database = {
           },
         ]
       }
+      team_matchups: {
+        Row: {
+          created_at: string
+          id: string
+          manual_losses: number | null
+          manual_ties: number | null
+          manual_wins: number | null
+          opponent_team_id: string | null
+          session_id: string
+          team_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          manual_losses?: number | null
+          manual_ties?: number | null
+          manual_wins?: number | null
+          opponent_team_id?: string | null
+          session_id: string
+          team_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          manual_losses?: number | null
+          manual_ties?: number | null
+          manual_wins?: number | null
+          opponent_team_id?: string | null
+          session_id?: string
+          team_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_matchups_opponent_team_id_fkey"
+            columns: ["opponent_team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_matchups_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "league_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_matchups_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teams: {
         Row: {
           created_at: string
           id: string
           league_id: string
           name: string
+          team_number: number | null
         }
         Insert: {
           created_at?: string
           id?: string
           league_id: string
           name: string
+          team_number?: number | null
         }
         Update: {
           created_at?: string
           id?: string
           league_id?: string
           name?: string
+          team_number?: number | null
         }
         Relationships: [
           {
