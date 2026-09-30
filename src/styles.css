@@ -233,6 +233,7 @@
     border: 0 !important; border-radius: 0; padding: 0 !important;
     background: #fff !important; color: #000 !important; box-shadow: none !important;
   }
+  [role="tablist"], header.sticky, nav, footer:not(#league-report footer) { display: none !important; }
   #league-report * { color: #000 !important; background: transparent !important; border-color: #999 !important; }
   .rpt-table { font-size: 9pt; }
   .rpt-table thead { display: table-header-group; }
