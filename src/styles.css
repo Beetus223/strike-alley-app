@@ -213,3 +213,29 @@
 .glow-zone .glow-accent {
   color: var(--glow-cyan);
 }
+
+/* ---------------------------------------------------------- league report */
+.league-report h3 { font-family: var(--font-display, inherit); font-size: 1.35rem; margin-bottom: 0.5rem; }
+.rpt-section { margin-top: 1.5rem; }
+.rpt-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.rpt-table th { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground); border-bottom: 1px solid var(--border); padding: 0.35rem; text-align: center; }
+.rpt-table td { border-bottom: 1px solid var(--border); padding: 0.35rem; text-align: center; }
+.rpt-table .text-left { text-align: left; }
+.rpt-total td { font-weight: 700; }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+  html, body { background: #fff !important; }
+  body * { visibility: hidden; }
+  #league-report, #league-report * { visibility: visible; }
+  #league-report {
+    position: absolute; left: 0; top: 0; width: 100%;
+    border: 0 !important; border-radius: 0; padding: 0 !important;
+    background: #fff !important; color: #000 !important; box-shadow: none !important;
+  }
+  #league-report * { color: #000 !important; background: transparent !important; border-color: #999 !important; }
+  .rpt-table { font-size: 9pt; }
+  .rpt-table thead { display: table-header-group; }
+  .rpt-table tr { break-inside: avoid; page-break-inside: avoid; }
+  .league-report h3 { break-after: avoid; page-break-after: avoid; }
+}

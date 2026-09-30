@@ -22,8 +22,6 @@ import {
   fmtAvg,
   fmtPct,
   fullName,
-  handicapConfigured,
-  inSeason,
   type LeagueReport,
   type LeagueSettings,
   type Matchup,
@@ -1030,7 +1028,6 @@ function ReportView({
 }) {
   const gps = r.gamesPerSession;
   const week = r.sessionDates.indexOf(date) + 1;
-  const teamName = (id: string | null) => teams.find((t) => t.id === id)?.name ?? "—";
   const groups: { id: string | null; name: string }[] = [
     ...teams.map((t) => ({ id: t.id as string | null, name: t.name })),
     { id: null, name: "Bowlers without a team" },
@@ -1189,7 +1186,7 @@ function ReportView({
         })}
         <footer className="mt-6 border-t border-border pt-3 text-xs text-muted-foreground">
           Averages are total pins ÷ games bowled (fractions dropped). A series is a full night of{" "}
-          {gps} games. {settings.notes ?? ""} Team: {teamName(null) === "—" ? "" : ""}
+          {gps} games. {settings.notes ?? ""}
         </footer>
       </article>
     </div>
@@ -1230,4 +1227,3 @@ function RecordTable({ title, rows, empty }: { title: string; rows: LeagueReport
   );
 }
 
-export { inSeason, handicapConfigured };
