@@ -19,6 +19,7 @@ import {
 import { PageHeader, Section } from "@/components/site/PageHeader";
 import { Field, PanelIntro, TextField } from "@/components/site/AdminField";
 import { BowlersPanel } from "@/components/site/BowlersPanel";
+import { LeagueReportsPanel } from "@/components/site/LeagueReportsPanel";
 
 import {
   useAnnouncements,
@@ -102,6 +103,7 @@ function AdminPage() {
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="announcements">Announcements</TabsTrigger>
             <TabsTrigger value="scores">Scores & averages</TabsTrigger>
+            <TabsTrigger value="reports">League Reports</TabsTrigger>
             <TabsTrigger value="roster">Bowlers</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
           </TabsList>
@@ -122,6 +124,9 @@ function AdminPage() {
           </TabsContent>
           <TabsContent value="scores" className="mt-6">
             <ScoreEntryPanel />
+          </TabsContent>
+          <TabsContent value="reports" className="mt-6">
+            <LeagueReportsPanel />
           </TabsContent>
           <TabsContent value="roster" className="mt-6">
             <BowlersPanel />

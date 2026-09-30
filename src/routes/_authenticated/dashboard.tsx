@@ -93,6 +93,43 @@ function Dashboard() {
     enabled: playerIds.length > 0,
   });
 
+  const leagueIds = (memberships.data ?? []).map((m) => m.league_id);
+  const leagueSettings = useQuery({
+    queryKey: ["my-league-settings", leagueIds.join(",")],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("league_settings")
+        .select("league_id, games_per_session, season_label, season_start, season_end")
+        .in("league_id", leagueIds);
+      if (error) throw error;
+      return data;
+    },
+    enabled: leagueIds.length > 0,
+  });
+
+  // Per-membership season stats + highest series, derived from individual games.
+  const statsFor = (m: Membership) => {
+    const cfg = (leagueSettings.data ?? []).find((x) => x.league_id === m.league_id);
+    const gps = cfg?.games_per_session ?? 3;
+    const mine = (scores.data ?? []).filter((s) => s.player_id === m.id);
+    const season = mine.filter(
+      (s) =>
+        (!cfg?.season_start || s.week_date >= cfg.season_start) &&
+        (!cfg?.season_end || s.week_date <= cfg.season_end),
+    );
+    const byNight = new Map<string, number[]>();
+    for (const s of mine) byNight.set(s.week_date, [...(byNight.get(s.week_date) ?? []), s.score]);
+    const series = [...byNight.values()].filter((g) => g.length === gps).map((g) => g.reduce((a, b) => a + b, 0));
+    const pins = season.reduce((a, s) => a + s.score, 0);
+    return {
+      label: cfg?.season_label ?? null,
+      highSeries: series.length ? Math.max(...series) : null,
+      seasonPins: pins,
+      seasonGames: season.length,
+      seasonAvg: season.length ? pins / season.length : null,
+    };
+  };
+
   // Highest individual game per league membership, from the full score history.
   const highestByPlayer = new Map<string, number>();
   for (const s of scores.data ?? []) {
@@ -172,9 +209,27 @@ function Dashboard() {
                     </p>
                   </div>
                 </div>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {m.games_played} games · {m.total_pinfall} pins
-                </p>
+                {(() => {
+                  const st = statsFor(m);
+                  return (
+                    <>
+                      <div className="mt-4">
+                        <p className="font-display text-3xl text-primary">{st.highSeries ?? "—"}</p>
+                        <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                          Highest series
+                        </p>
+                      </div>
+                      <p className="mt-3 text-sm text-muted-foreground">
+                        {m.games_played} games · {m.total_pinfall} pins
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {st.label ? `${st.label} season` : "Season"}: {st.seasonPins} pins ·{" "}
+                        {st.seasonGames} games · avg{" "}
+                        {st.seasonAvg == null ? "—" : st.seasonAvg.toFixed(1)}
+                      </p>
+                    </>
+                  );
+                })()}
               </div>
             ))}
           </div>
@@ -206,7 +261,7 @@ function Dashboard() {
                     ))}
                   </ul>
                   <footer className="flex justify-between bg-secondary/50 px-5 py-2 text-sm text-muted-foreground">
-                    <span>{total} pins</span>
+                    <span>Total {total}</span>
                     <span>Session average {(total / s.games.length).toFixed(1)}</span>
                   </footer>
                 </article>
