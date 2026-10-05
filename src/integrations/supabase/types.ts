@@ -766,6 +766,7 @@ export type Database = {
           bowler_id: string
           created_at: string
           division_id: string | null
+          entering_average: number | null
           id: string
           is_active: boolean
           is_substitute: boolean
@@ -775,6 +776,7 @@ export type Database = {
           bowler_id: string
           created_at?: string
           division_id?: string | null
+          entering_average?: number | null
           id?: string
           is_active?: boolean
           is_substitute?: boolean
@@ -784,6 +786,7 @@ export type Database = {
           bowler_id?: string
           created_at?: string
           division_id?: string | null
+          entering_average?: number | null
           id?: string
           is_active?: boolean
           is_substitute?: boolean

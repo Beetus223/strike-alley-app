@@ -1,0 +1,1 @@
+ALTER TABLE public.lm_team_members ADD COLUMN IF NOT EXISTS entering_average numeric;
