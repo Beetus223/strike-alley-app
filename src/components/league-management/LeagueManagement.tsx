@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Field, PanelIntro, TextField } from "@/components/site/AdminField";
+import {
+  bowlerStats, calcMatch, f0, fPts, lineups, standings,
+  type MatchOutcome, type MemberRef, type RawScore, type Rules, type StandingRow,
+} from "@/lib/lm-engine";
 
 type LmLeague = Tables<"lm_leagues">;
 type LmTeam = Tables<"lm_teams">;
@@ -14,18 +18,19 @@ type LmDivision = Tables<"lm_divisions">;
 type LmNight = Tables<"lm_league_nights">;
 type LmMatchup = Tables<"lm_matchups">;
 type LmMember = Tables<"lm_team_members">;
+type LmScore = Tables<"lm_night_scores">;
 type Bowler = Pick<Tables<"bowlers">, "id" | "bowler_id" | "first_name" | "last_name" | "is_active">;
 
 const SECTIONS = [
   "Dashboard",
   "League Setup",
+  "League Rules",
   "Teams",
   "Bowlers",
   "League Nights",
   "Score Entry",
   "Standings",
   "League Reports",
-  "League Rules",
   "History",
 ] as const;
 type SectionName = (typeof SECTIONS)[number];
@@ -189,7 +194,7 @@ function LeagueSection({ section, league }: { section: SectionName; league: LmLe
     case "Teams":
       return <Teams league={league} {...d} />;
     case "Bowlers":
-      return <BowlersView {...d} />;
+      return <BowlersView league={league} {...d} />;
     case "League Nights":
       return <Nights league={league} {...d} />;
     case "Score Entry":
@@ -197,24 +202,11 @@ function LeagueSection({ section, league }: { section: SectionName; league: LmLe
     case "League Rules":
       return <Rules league={league} />;
     case "Standings":
-      return (
-        <Foundation
-          title="Team standings"
-          items={["Position", "Team", "Wins / Losses", "Win %", "Points", "Pins", "Pins against", "Games", "Average", "Division"]}
-          note="Standings will be calculated automatically from saved league-night scores once the points engine is built in the next step. Nothing is calculated or guessed yet."
-          count={`${d.nights.filter((x) => x.status === "completed").length} completed night(s) on record`}
-        />
-      );
+      return <Standings league={league} {...d} />;
     case "League Reports":
-      return (
-        <Foundation
-          title="Reports"
-          items={["Weekly standings", "Team standings", "Individual statistics", "Weekly scores", "High game / series", "High 4-game block", "Weekly recap", "Season statistics", "Bowler, team and league history", "Print / PDF"]}
-          note="Printable Bowl 101-style reports will be added in a later step. The existing League Reports tab on the Staff Dashboard keeps working in the meantime."
-        />
-      );
+      return <Reports league={league} {...d} />;
     case "History":
-      return <History {...d} />;
+      return <History league={league} {...d} />;
     default:
       return null;
   }
@@ -231,23 +223,6 @@ function Empty({ children }: { children: ReactNode }) {
 function Card({ children }: { children: ReactNode }) {
   return <div className="rounded-xl border border-border bg-surface p-5">{children}</div>;
 }
-function Foundation({ title, items, note, count }: { title: string; items: string[]; note: string; count?: string }) {
-  return (
-    <Card>
-      <h3 className="text-xl">{title}</h3>
-      <p className="mt-2 text-sm text-muted-foreground">{note}</p>
-      {count && <p className="mt-2 text-sm font-semibold">{count}</p>}
-      <ul className="mt-4 flex flex-wrap gap-2">
-        {items.map((i) => (
-          <li key={i} className="rounded-full border border-border px-3 py-1 text-xs">
-            {i}
-          </li>
-        ))}
-      </ul>
-    </Card>
-  );
-}
-
 // ---------------- Dashboard
 function Dashboard({ leagues, go }: { leagues: LmLeague[]; go: (s: SectionName) => void }) {
   const steps: [SectionName, string][] = [
@@ -478,8 +453,8 @@ function Rules({ league }: { league: LmLeague }) {
       }}
     >
       <p className="text-sm text-muted-foreground sm:col-span-2">
-        Rules belong to this league only. Leave anything unclear blank and keep "Needs confirmation"
-        ticked — nothing is calculated from these yet.
+        Rules belong to this league only. Score Entry, Standings and Reports use these numbers
+        automatically. Leave anything unclear blank and keep "Needs confirmation" ticked.
       </p>
       <div>
         <Label htmlFor="hm">Handicap method</Label>
@@ -523,7 +498,7 @@ function Teams({ league, divisions, teams, members }: Bits & { league: LmLeague 
     supabase.from("lm_teams").insert({ league_id: league.id, name: s(form, "name") ?? "Team", team_number: n(form, "team_number") }),
   "Team added");
   const updTeam = useSave((v: { id: string; patch: Partial<LmTeam> }) => supabase.from("lm_teams").update(v.patch).eq("id", v.id), "Team updated");
-  const addMember = useSave((v: { team_id: string; bowler_id: string; division_id: string | null; is_substitute: boolean }) =>
+  const addMember = useSave((v: { team_id: string; bowler_id: string; division_id: string | null; is_substitute: boolean; entering_average: number | null }) =>
     supabase.from("lm_team_members").insert(v), "Bowler added to team");
   const updMember = useSave((v: { id: string; patch: Partial<LmMember> }) => supabase.from("lm_team_members").update(v.patch).eq("id", v.id), "Updated");
 
@@ -601,7 +576,7 @@ function Teams({ league, divisions, teams, members }: Bits & { league: LmLeague 
                 const f = new FormData(e.currentTarget);
                 const bid = s(f, "bowler_id");
                 if (!bid) return;
-                addMember.mutate({ team_id: t.id, bowler_id: bid, division_id: s(f, "division_id"), is_substitute: f.get("sub") === "on" });
+                addMember.mutate({ team_id: t.id, bowler_id: bid, division_id: s(f, "division_id"), is_substitute: f.get("sub") === "on", entering_average: n(f, "entering_average") });
                 e.currentTarget.reset();
               }}>
                 <select name="bowler_id" aria-label="Bowler" className="h-10 min-w-48 flex-1 rounded-md border border-input bg-background px-2 text-sm">
@@ -614,6 +589,7 @@ function Teams({ league, divisions, teams, members }: Bits & { league: LmLeague 
                   <option value="">Division</option>
                   {divisions.map((d) => <option key={d.id} value={d.id}>{d.code}</option>)}
                 </select>
+                <Input name="entering_average" type="number" min={0} max={450} placeholder="Entering avg" aria-label="Entering average" className="h-10 w-32" />
                 <label className="flex items-center gap-1 text-xs"><input type="checkbox" name="sub" /> Sub</label>
                 <Button type="submit">Add</Button>
               </form>
@@ -621,44 +597,6 @@ function Teams({ league, divisions, teams, members }: Bits & { league: LmLeague 
           );
         })}
       </div>
-    </div>
-  );
-}
-
-// ---------------- Bowlers
-function BowlersView({ teams, members, divisions }: Bits) {
-  const bowlers = useBowlers();
-  const byId = new Map((bowlers.data ?? []).map((b) => [b.id, b]));
-  return (
-    <div className="space-y-4">
-      <PanelIntro>
-        League bowlers use the existing bowler accounts — no duplicates. Create new accounts or reset
-        passwords in the Staff Dashboard's Bowlers tab, then add them to a team here. Averages, high
-        game, high series and high 4-game block will appear once the scoring engine is added.
-      </PanelIntro>
-      {members.length === 0 ? <Empty>No bowlers on teams in this league yet.</Empty> : (
-        <div className="overflow-x-auto rounded-xl border border-border">
-          <table className="w-full text-sm">
-            <thead className="bg-surface text-left"><tr>
-              {["Bowler ID", "Name", "Team", "Division", "Status"].map((h) => <th key={h} className="px-3 py-2">{h}</th>)}
-            </tr></thead>
-            <tbody>
-              {members.map((m) => {
-                const b = byId.get(m.bowler_id);
-                return (
-                  <tr key={m.id} className="border-t border-border">
-                    <td className="px-3 py-2 font-mono">{b?.bowler_id}</td>
-                    <td className="px-3 py-2">{b ? bowlerName(b) : "—"}</td>
-                    <td className="px-3 py-2">{teams.find((t) => t.id === m.team_id)?.name}</td>
-                    <td className="px-3 py-2">{divisions.find((d) => d.id === m.division_id)?.code ?? "—"}</td>
-                    <td className="px-3 py-2">{m.is_active ? (m.is_substitute ? "Substitute" : "Regular") : "Inactive"}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 }
@@ -749,98 +687,295 @@ function Nights({ league, nights, teams }: Bits & { league: LmLeague }) {
   );
 }
 
-// ---------------- Score Entry
-function ScoreEntry({ league, nights, teams, members, divisions }: Bits & { league: LmLeague }) {
+
+// ---------------- engine glue
+function useLeagueEngine(league: LmLeague, bits: Bits) {
   const bowlers = useBowlers();
-  const [nightId, setNightId] = useState<string>("");
-  const [matchId, setMatchId] = useState<string>("");
-  const night = nights.find((x) => x.id === nightId);
-  const matchups = useMatchups(nightId ? [nightId] : []);
-  const match = (matchups.data ?? []).find((m) => m.id === matchId);
-  const scores = useQuery({
-    queryKey: ["lm", "night-scores", nightId],
-    enabled: !!nightId,
+  const extra = useQuery({
+    queryKey: ["lm", "engine", league.id, bits.nights.map((x) => x.id).join(",")],
     queryFn: async () => {
-      const { data, error } = await supabase.from("lm_night_scores").select("*").eq("night_id", nightId);
-      if (error) throw error;
-      return data;
+      const ids = bits.nights.map((x) => x.id);
+      const [rules, scores, matchups] = await Promise.all([
+        supabase.from("lm_league_rules").select("*").eq("league_id", league.id).maybeSingle(),
+        ids.length ? supabase.from("lm_night_scores").select("*").in("night_id", ids).order("created_at") : Promise.resolve({ data: [] as LmScore[], error: null }),
+        ids.length ? supabase.from("lm_matchups").select("*").in("night_id", ids) : Promise.resolve({ data: [] as LmMatchup[], error: null }),
+      ]);
+      for (const r of [rules, scores, matchups]) if (r.error) throw r.error;
+      return { rules: rules.data as Rules | null, scores: (scores.data ?? []) as LmScore[], matchups: (matchups.data ?? []) as LmMatchup[] };
     },
   });
+  const names = useMemo(() => new Map((bowlers.data ?? []).map((b) => [b.id, bowlerName(b)])), [bowlers.data]);
+  const memberRefs: MemberRef[] = bits.members.map((m) => ({
+    team_id: m.team_id, bowler_id: m.bowler_id, is_active: m.is_active,
+    entering_average: m.entering_average == null ? null : Number(m.entering_average),
+    division_code: bits.divisions.find((d) => d.id === m.division_id)?.code ?? null,
+  }));
+  const gpn = league.games_per_night;
+  const outcome = (night: LmNight, match: LmMatchup, nightScores?: RawScore[]): MatchOutcome => {
+    const all = extra.data?.scores ?? [];
+    const scores = nightScores ?? all.filter((x) => x.night_id === night.id);
+    const { a, b } = lineups(match, night, memberRefs, scores, all, bits.nights, names, gpn);
+    return { night, match, result: calcMatch(a, b, gpn, extra.data?.rules ?? null) };
+  };
+  const completed = bits.nights.filter((x) => x.status === "completed");
+  const outcomesFor = (nights: LmNight[]) =>
+    nights.flatMap((nt) => (extra.data?.matchups ?? []).filter((m) => m.night_id === nt.id).map((m) => outcome(nt, m)));
+  const completedScores = (extra.data?.scores ?? []).filter((x) => completed.some((n) => n.id === x.night_id));
+  return {
+    ready: !!extra.data && !bowlers.isLoading,
+    rules: extra.data?.rules ?? null,
+    scores: extra.data?.scores ?? [],
+    matchups: extra.data?.matchups ?? [],
+    names, memberRefs, gpn, outcome, outcomesFor, completed, completedScores, bowlers: bowlers.data ?? [],
+  };
+}
+
+// ---------------- Bowlers
+function BowlersView({ league, ...bits }: Bits & { league: LmLeague }) {
+  const eng = useLeagueEngine(league, bits);
+  const [q, setQ] = useState("");
+  const inv = useInvalidate();
+  const add = useMutation({
+    mutationFn: async (f: FormData) => {
+      const first = s(f, "first_name"), last = s(f, "last_name");
+      if (!first || !last) throw new Error("First and last name are required.");
+      for (let i = 0; i < 8; i++) {
+        const id = `VB-${Math.floor(10000 + Math.random() * 90000)}`;
+        const { error } = await supabase.from("bowlers").insert({ bowler_id: id, first_name: first, last_name: last, email: s(f, "email"), phone: s(f, "phone") });
+        if (!error) return id;
+        if (error.code !== "23505") throw new Error(error.message);
+      }
+      throw new Error("Could not create a unique Bowler ID. Try again.");
+    },
+    onSuccess: (id) => { toast.success(`Bowler added — Bowler ID ${id}`); inv(); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const upd = useSave((v: { id: string; patch: Partial<Tables<"bowlers">> }) => supabase.from("bowlers").update(v.patch).eq("id", v.id), "Bowler updated");
+  const stats = new Map(bowlerStats(eng.completedScores, eng.gpn).map((x) => [x.bowler_id, x]));
+  const list = eng.bowlers.filter((b) => `${bowlerName(b)} ${b.bowler_id}`.toLowerCase().includes(q.toLowerCase()));
+
+  return (
+    <div className="space-y-6">
+      <PanelIntro>Add every league bowler once here. Then put them on a team in Teams. Stats below come only from completed league nights in this league.</PanelIntro>
+      <form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 lg:items-end" onSubmit={(e) => { e.preventDefault(); add.mutate(new FormData(e.currentTarget)); e.currentTarget.reset(); }}>
+        <Field label="First name" name="first_name" required />
+        <Field label="Last name" name="last_name" required />
+        <Field label="Email (optional)" name="email" type="email" />
+        <Field label="Phone (optional)" name="phone" />
+        <Button type="submit" size="lg" disabled={add.isPending}>Add bowler</Button>
+      </form>
+      <div className="max-w-sm"><Label htmlFor="bq">Search by name or Bowler ID</Label><Input id="bq" className="mt-2" value={q} onChange={(e) => setQ(e.target.value)} /></div>
+      {list.length === 0 ? <Empty>No bowlers yet.</Empty> : (
+        <div className="overflow-x-auto rounded-xl border border-border">
+          <table className="w-full text-sm">
+            <thead className="bg-surface text-left"><tr>
+              {["Bowler ID", "Name", "Team", "Div", "Status", "Games", "Pins", "Average", "High game", "High series", "High 4-game block", ""].map((h) => <th key={h} className="px-3 py-2 whitespace-nowrap">{h}</th>)}
+            </tr></thead>
+            <tbody>
+              {list.map((b) => {
+                const m = bits.members.find((x) => x.bowler_id === b.id && x.is_active);
+                const st = stats.get(b.id);
+                return (
+                  <tr key={b.id} className="border-t border-border">
+                    <td className="px-3 py-2 font-mono">{b.bowler_id}</td>
+                    <td className="px-3 py-2 font-semibold">{bowlerName(b)}</td>
+                    <td className="px-3 py-2">{bits.teams.find((t) => t.id === m?.team_id)?.name ?? "—"}</td>
+                    <td className="px-3 py-2">{bits.divisions.find((d) => d.id === m?.division_id)?.code ?? "—"}</td>
+                    <td className="px-3 py-2">{!b.is_active ? "Inactive" : m?.is_substitute ? "Substitute" : m ? "Regular" : "Not on a team"}</td>
+                    <td className="px-3 py-2 tabular-nums">{st?.games ?? 0}</td>
+                    <td className="px-3 py-2 tabular-nums">{st?.pins ?? 0}</td>
+                    <td className="px-3 py-2 tabular-nums">{f0(st?.average ?? (m?.entering_average != null ? Number(m.entering_average) : null))}</td>
+                    <td className="px-3 py-2 tabular-nums">{f0(st?.highGame)}</td>
+                    <td className="px-3 py-2 tabular-nums">{f0(st?.highSeries)}</td>
+                    <td className="px-3 py-2 tabular-nums">{f0(st?.highBlock)}</td>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      <Button size="sm" variant="outline" onClick={() => {
+                        const first = window.prompt("First name", b.first_name); if (first == null) return;
+                        const last = window.prompt("Last name", b.last_name); if (last == null) return;
+                        upd.mutate({ id: b.id, patch: { first_name: first.trim() || b.first_name, last_name: last.trim() || b.last_name } });
+                      }}>Edit</Button>
+                      <Button size="sm" variant="ghost" onClick={() => upd.mutate({ id: b.id, patch: { is_active: !b.is_active } })}>{b.is_active ? "Make inactive" : "Reactivate"}</Button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------- match result display (shared by Score Entry, Reports, History)
+function MatchResultView({ o, gpn, rules }: { o: MatchOutcome; gpn: number; rules: Rules | null }) {
+  const r = o.result;
+  const useH = !!rules?.points_with_handicap;
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h4 className="text-xl">{o.match.team_a_name} <span className="text-muted-foreground">vs</span> {o.match.team_b_name}</h4>
+        <p className="font-display text-2xl">{fPts(r.pointsA)} – {fPts(r.pointsB)} <span className="text-sm text-muted-foreground">points</span></p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="rpt-table w-full text-sm">
+          <thead><tr className="text-left">
+            <th className="pr-2">Div</th><th className="pr-2">Bowler</th><th className="pr-2">Avg</th><th className="pr-2">Hdcp</th>
+            {Array.from({ length: gpn }, (_, i) => <th key={i} className="px-1">G{i + 1}</th>)}
+            <th className="px-1">Series</th><th className="px-1">Pts</th>
+          </tr></thead>
+          <tbody>
+            {r.divisions.flatMap((d) => (["a", "b"] as const).map((k) => {
+              const bw = d[k]; const hc = d.hc[k]; const idx = k === "a" ? 0 : 1;
+              const pts = d.gamePts.reduce((s2, p) => s2 + p[idx], 0) + d.seriesPts[idx];
+              const scratch = (bw?.games ?? []).filter((x): x is number => x != null).reduce((a, b) => a + b, 0);
+              return (
+                <tr key={d.division + k} className={`border-t border-border ${k === "b" ? "" : "border-t-2"}`}>
+                  <td className="pr-2">{d.division}</td>
+                  <td className="pr-2 font-semibold">{bw?.name ?? <span className="text-muted-foreground">no bowler</span>}</td>
+                  <td className="pr-2 tabular-nums">{f0(bw?.average)}</td>
+                  <td className="pr-2 tabular-nums">{hc || ""}</td>
+                  {Array.from({ length: gpn }, (_, i) => <td key={i} className="px-1 tabular-nums">{bw?.games[i] ?? "—"}{hc && bw?.games[i] != null ? <span className="text-muted-foreground"> ({(bw.games[i] ?? 0) + hc})</span> : null}</td>)}
+                  <td className="px-1 tabular-nums">{scratch || "—"}</td>
+                  <td className="px-1 tabular-nums font-semibold">{fPts(pts)}</td>
+                </tr>
+              );
+            }))}
+          </tbody>
+        </table>
+      </div>
+      <ul className="text-xs text-muted-foreground">
+        {r.divisions.map((d) => <li key={d.division}>Division {d.division}: {d.hc.explain}</li>)}
+        <li>Team totals — scratch {r.teamTotalA} vs {r.teamTotalB}; with handicap {r.teamHdcpA} vs {r.teamHdcpB}. Team points {fPts(r.teamPts[0])} – {fPts(r.teamPts[1])} ({useH ? "with handicap" : "scratch"}).</li>
+      </ul>
+    </div>
+  );
+}
+
+// ---------------- Score Entry
+function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
+  const eng = useLeagueEngine(league, bits);
+  const { nights, teams, members, divisions } = bits;
+  const [nightId, setNightId] = useState<string>("");
+  const [matchId, setMatchId] = useState<string>("");
+  const [draft, setDraft] = useState<Record<string, string>>({});
+  const [review, setReview] = useState(false);
+  const night = nights.find((x) => x.id === nightId);
+  const nightMatches = eng.matchups.filter((m) => m.night_id === nightId);
+  const match = nightMatches.find((m) => m.id === matchId);
   const inv = useInvalidate();
   const gpn = league.games_per_night;
   const locked = night?.status === "completed";
+  const saved = (bid: string, g: number) => eng.scores.find((x) => x.night_id === nightId && x.bowler_id === bid && x.game_number === g)?.score;
+  const key = (bid: string, g: number) => `${bid}-${g}`;
+  const val = (bid: string, g: number) => draft[key(bid, g)] ?? (saved(bid, g)?.toString() ?? "");
 
-  const save = useMutation({
-    mutationFn: async (form: FormData) => {
-      if (!match || !night) return;
-      const rows: TablesInsert<"lm_night_scores">[] = [];
-      const clears: { bowler_id: string; game_number: number }[] = [];
-      for (const teamId of [match.team_a_id, match.team_b_id]) {
-        const team = teams.find((t) => t.id === teamId);
-        if (!team) continue;
-        for (const m of members.filter((x) => x.team_id === team.id && x.is_active)) {
-          const b = bowlers.data?.find((x) => x.id === m.bowler_id);
-          for (let g = 1; g <= gpn; g++) {
-            const raw = String(form.get(`${m.bowler_id}-${g}`) ?? "").trim();
-            if (raw === "") { clears.push({ bowler_id: m.bowler_id, game_number: g }); continue; }
-            const score = Number(raw);
-            if (!Number.isInteger(score) || score < 0 || score > 450) throw new Error(`Scores must be 0–450 (${b ? bowlerName(b) : ""}, game ${g}).`);
-            rows.push({
-              night_id: night.id, matchup_id: match.id, team_id: team.id, bowler_id: m.bowler_id,
-              team_name: team.name, bowler_name: b ? bowlerName(b) : null,
-              division_code: divisions.find((d) => d.id === m.division_id)?.code ?? null,
-              game_number: g, score,
-            });
-          }
+  const roster = (teamId: string | null) =>
+    members.filter((x) => x.team_id === teamId && x.is_active)
+      .sort((a, b) => (divisions.find((d) => d.id === a.division_id)?.sort_order ?? 99) - (divisions.find((d) => d.id === b.division_id)?.sort_order ?? 99));
+
+  const buildRows = () => {
+    if (!match || !night) return { rows: [] as TablesInsert<"lm_night_scores">[], clears: [] as { bowler_id: string; game_number: number }[] };
+    const rows: TablesInsert<"lm_night_scores">[] = [];
+    const clears: { bowler_id: string; game_number: number }[] = [];
+    for (const teamId of [match.team_a_id, match.team_b_id]) {
+      const team = teams.find((t) => t.id === teamId);
+      if (!team) continue;
+      for (const m of roster(team.id)) {
+        const name = eng.names.get(m.bowler_id) ?? null;
+        for (let g = 1; g <= gpn; g++) {
+          const raw = val(m.bowler_id, g).trim();
+          if (raw === "") { clears.push({ bowler_id: m.bowler_id, game_number: g }); continue; }
+          const score = Number(raw);
+          if (!Number.isInteger(score) || score < 0 || score > 450) throw new Error(`Scores must be whole numbers 0–450 (${name ?? ""}, game ${g}).`);
+          rows.push({
+            night_id: night.id, matchup_id: match.id, team_id: team.id, bowler_id: m.bowler_id,
+            team_name: team.name, bowler_name: name,
+            division_code: divisions.find((d) => d.id === m.division_id)?.code ?? null,
+            game_number: g, score,
+          });
         }
       }
-      if (rows.length) {
-        const { error } = await supabase.from("lm_night_scores").upsert(rows, { onConflict: "night_id,bowler_id,game_number" });
+    }
+    return { rows, clears };
+  };
+
+  let preview: MatchOutcome | null = null;
+  let previewError: string | null = null;
+  if (review && match && night) {
+    try {
+      const { rows } = buildRows();
+      const others = eng.scores.filter((x) => x.night_id === night.id && x.matchup_id !== match.id);
+      preview = eng.outcome(night, match, [...others, ...(rows as RawScore[])]);
+    } catch (e) { previewError = (e as Error).message; }
+  }
+
+  const save = useMutation({
+    mutationFn: async (complete: boolean) => {
+      if (!match || !night || !preview) return;
+      const { rows, clears } = buildRows();
+      // snapshot the average and handicap used tonight so history never changes
+      const info = new Map<string, { avg: number | null; hc: number }>();
+      for (const d of preview.result.divisions) {
+        if (d.a) info.set(d.a.bowler_id, { avg: d.a.average, hc: d.hc.a });
+        if (d.b) info.set(d.b.bowler_id, { avg: d.b.average, hc: d.hc.b });
+      }
+      const full = rows.map((r) => {
+        const i = info.get(r.bowler_id!);
+        return { ...r, average_at_time: i?.avg == null ? null : Math.floor(i.avg), handicap_at_time: i?.hc ?? 0 };
+      });
+      if (full.length) {
+        const { error } = await supabase.from("lm_night_scores").upsert(full, { onConflict: "night_id,bowler_id,game_number" });
         if (error) throw new Error(error.message);
       }
       for (const c of clears) {
-        await supabase.from("lm_night_scores").delete().eq("night_id", night.id).eq("bowler_id", c.bowler_id).eq("game_number", c.game_number);
+        const { error } = await supabase.from("lm_night_scores").delete().eq("night_id", night.id).eq("bowler_id", c.bowler_id).eq("game_number", c.game_number);
+        if (error) throw new Error(error.message);
+      }
+      if (complete) {
+        const { error } = await supabase.from("lm_league_nights").update({ status: "completed", completed_at: new Date().toISOString() }).eq("id", night.id);
+        if (error) throw new Error(error.message);
       }
     },
-    onSuccess: () => { toast.success("Scores saved"); inv(); },
+    onSuccess: (_d, complete) => { toast.success(complete ? "Saved and night marked completed" : "Scores saved"); setDraft({}); setReview(false); inv(); },
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const existing = (bid: string, g: number) => scores.data?.find((x) => x.bowler_id === bid && x.game_number === g)?.score;
-
   return (
     <div className="space-y-5">
-      <PanelIntro>Pick the week and matchup, then type the raw scores. Handicap and points will be worked out automatically in the next step — nothing is calculated yet.</PanelIntro>
+      <PanelIntro>1. Pick the week and matchup. 2. Type the raw scratch scores. 3. Press Calculate to see handicap and points. 4. Save. You never type handicaps or points.</PanelIntro>
       <div className="grid max-w-2xl gap-4 sm:grid-cols-2">
         <div>
           <Label htmlFor="se-night">Week / date</Label>
-          <select id="se-night" className={selectCls} value={nightId} onChange={(e) => { setNightId(e.target.value); setMatchId(""); }}>
+          <select id="se-night" className={selectCls} value={nightId} onChange={(e) => { setNightId(e.target.value); setMatchId(""); setDraft({}); setReview(false); }}>
             <option value="">Choose…</option>
             {[...nights].reverse().map((x) => <option key={x.id} value={x.id}>Week {x.week_number ?? "—"} · {x.night_date} ({STATUS_LABEL[x.status]})</option>)}
           </select>
         </div>
         <div>
           <Label htmlFor="se-match">Matchup</Label>
-          <select id="se-match" className={selectCls} value={matchId} onChange={(e) => setMatchId(e.target.value)} disabled={!nightId}>
+          <select id="se-match" className={selectCls} value={matchId} onChange={(e) => { setMatchId(e.target.value); setDraft({}); setReview(false); }} disabled={!nightId}>
             <option value="">Choose…</option>
-            {(matchups.data ?? []).map((m) => <option key={m.id} value={m.id}>{m.team_a_name} vs {m.team_b_name}</option>)}
+            {nightMatches.map((m) => <option key={m.id} value={m.id}>{m.team_a_name} vs {m.team_b_name}</option>)}
           </select>
         </div>
       </div>
-      {nightId && (matchups.data ?? []).length === 0 && <Empty>Add matchups for this night in League Nights.</Empty>}
+      {nightId && nightMatches.length === 0 && <Empty>Add matchups for this night in League Nights.</Empty>}
       {locked && <p className="font-semibold text-primary">This night is completed and locked. Reopen it in League Nights to make corrections.</p>}
+      {!eng.rules || eng.rules.handicap_method === "not_configured" ? (
+        <p className="text-sm text-muted-foreground">Handicap is not configured for this league yet — set it in League Rules.</p>
+      ) : null}
       {match && (
-        <form key={`${matchId}-${scores.dataUpdatedAt}`} onSubmit={(e) => { e.preventDefault(); save.mutate(new FormData(e.currentTarget)); }} className="space-y-4">
+        <div className="space-y-4">
           <div className="grid gap-4 xl:grid-cols-2">
             {[match.team_a_id, match.team_b_id].map((teamId) => {
               const team = teams.find((t) => t.id === teamId);
               if (!team) return null;
-              const roster = members.filter((x) => x.team_id === team.id && x.is_active)
-                .sort((a, b) => (divisions.find((d) => d.id === a.division_id)?.sort_order ?? 99) - (divisions.find((d) => d.id === b.division_id)?.sort_order ?? 99));
+              const r = roster(team.id);
               return (
                 <Card key={team.id}>
                   <h3 className="text-2xl">{team.name}</h3>
-                  {roster.length === 0 && <p className="text-sm text-muted-foreground">No bowlers on this team.</p>}
+                  {r.length === 0 && <p className="text-sm text-muted-foreground">No bowlers on this team. Add them in Teams.</p>}
                   <div className="mt-3 overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead><tr className="text-left">
@@ -848,16 +983,17 @@ function ScoreEntry({ league, nights, teams, members, divisions }: Bits & { leag
                         {Array.from({ length: gpn }, (_, i) => <th key={i} className="px-1 py-1">G{i + 1}</th>)}
                       </tr></thead>
                       <tbody>
-                        {roster.map((m) => {
-                          const b = bowlers.data?.find((x) => x.id === m.bowler_id);
+                        {r.map((m) => {
+                          const name = eng.names.get(m.bowler_id) ?? "—";
                           return (
                             <tr key={m.id} className="border-t border-border">
                               <td className="py-2 pr-2">{divisions.find((d) => d.id === m.division_id)?.code ?? "—"}</td>
-                              <td className="py-2 pr-2 font-semibold">{b ? bowlerName(b) : "—"}</td>
+                              <td className="py-2 pr-2 font-semibold">{name}{m.is_substitute && <span className="ml-1 text-xs text-accent">sub</span>}</td>
                               {Array.from({ length: gpn }, (_, i) => (
                                 <td key={i} className="px-1 py-1">
-                                  <Input aria-label={`${b ? bowlerName(b) : ""} game ${i + 1}`} name={`${m.bowler_id}-${i + 1}`} type="number" min={0} max={450}
-                                    inputMode="numeric" disabled={locked} defaultValue={existing(m.bowler_id, i + 1) ?? ""} className="h-10 w-20" />
+                                  <Input aria-label={`${name} game ${i + 1}`} type="number" min={0} max={450} inputMode="numeric" disabled={locked}
+                                    value={val(m.bowler_id, i + 1)} onChange={(e) => { setDraft((d) => ({ ...d, [key(m.bowler_id, i + 1)]: e.target.value })); setReview(false); }}
+                                    className="h-11 w-20 text-base" />
                                 </td>
                               ))}
                             </tr>
@@ -870,36 +1006,130 @@ function ScoreEntry({ league, nights, teams, members, divisions }: Bits & { leag
               );
             })}
           </div>
-          <Button type="submit" size="lg" disabled={locked || save.isPending}>Save scores</Button>
-        </form>
+          <div className="flex flex-wrap gap-3">
+            <Button size="lg" variant="outline" onClick={() => setReview(true)} disabled={!eng.ready}>Calculate</Button>
+          </div>
+          {previewError && <p className="font-semibold text-destructive">{previewError}</p>}
+          {preview && (
+            <Card>
+              <p className="mb-3 text-xs font-bold text-primary">REVIEW — NOT SAVED YET</p>
+              <MatchResultView o={preview} gpn={gpn} rules={eng.rules} />
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Button size="lg" disabled={locked || save.isPending} onClick={() => save.mutate(false)}>Save scores</Button>
+                <Button size="lg" variant="outline" disabled={locked || save.isPending} onClick={() => {
+                  if (window.confirm("Save and mark this whole night completed? It will be locked.")) save.mutate(true);
+                }}>Save &amp; complete night</Button>
+              </div>
+            </Card>
+          )}
+        </div>
       )}
     </div>
   );
 }
 
+// ---------------- Standings
+function StandingsTable({ rows }: { rows: StandingRow[] }) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="rpt-table w-full text-sm">
+        <thead><tr className="text-left">{["Pos", "#", "Team", "W", "L", "T", "Win %", "Points", "Pins", "Pins against", "Games", "Avg"].map((h) => <th key={h} className="px-2 py-1">{h}</th>)}</tr></thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={r.team_id} className="border-t border-border tabular-nums">
+              <td className="px-2 py-1">{i + 1}</td><td className="px-2 py-1">{r.number ?? ""}</td>
+              <td className="px-2 py-1 font-semibold">{r.name}</td>
+              <td className="px-2 py-1">{r.wins}</td><td className="px-2 py-1">{r.losses}</td><td className="px-2 py-1">{r.ties}</td>
+              <td className="px-2 py-1">{r.pct == null ? "—" : r.pct.toFixed(3).replace(/^0/, "")}</td>
+              <td className="px-2 py-1 font-semibold">{fPts(r.points)}</td>
+              <td className="px-2 py-1">{r.pins}</td><td className="px-2 py-1">{r.pinsAgainst}</td>
+              <td className="px-2 py-1">{r.games}</td><td className="px-2 py-1">{f0(r.average)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Standings({ league, ...bits }: Bits & { league: LmLeague }) {
+  const eng = useLeagueEngine(league, bits);
+  if (!eng.ready) return <p className="text-muted-foreground">Loading…</p>;
+  const rows = standings(bits.teams, eng.outcomesFor(eng.completed), eng.completedScores);
+  return (
+    <div className="space-y-4">
+      <PanelIntro>Worked out automatically from completed league nights. A team wins a matchup by earning more points that night.</PanelIntro>
+      {bits.teams.length === 0 ? <Empty>No teams yet.</Empty> : <Card><StandingsTable rows={rows} /></Card>}
+      <p className="text-sm text-muted-foreground">{eng.completed.length} completed night(s) counted.</p>
+    </div>
+  );
+}
+
+// ---------------- Reports
+function Reports({ league, ...bits }: Bits & { league: LmLeague }) {
+  const eng = useLeagueEngine(league, bits);
+  const [nightId, setNightId] = useState("");
+  if (!eng.ready) return <p className="text-muted-foreground">Loading…</p>;
+  const done = eng.completed;
+  const night = done.find((x) => x.id === nightId) ?? done[done.length - 1];
+  if (!night) return <Empty>Reports appear once a league night is marked completed.</Empty>;
+  const upTo = done.filter((x) => x.night_date <= night.night_date);
+  const upToScores = eng.completedScores.filter((x) => upTo.some((n) => n.id === x.night_id));
+  const rows = standings(bits.teams, eng.outcomesFor(upTo), upToScores);
+  const tonight = eng.outcomesFor([night]);
+  const stats = bowlerStats(upToScores, eng.gpn);
+  const top = (k: "highGame" | "highSeries" | "highBlock") => [...stats].filter((x) => x[k] != null).sort((a, b) => (b[k] ?? 0) - (a[k] ?? 0))[0];
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="w-72">
+          <Label htmlFor="rp-night">Week</Label>
+          <select id="rp-night" className={selectCls} value={night.id} onChange={(e) => setNightId(e.target.value)}>
+            {[...done].reverse().map((x) => <option key={x.id} value={x.id}>Week {x.week_number ?? "—"} · {x.night_date}</option>)}
+          </select>
+        </div>
+        <Button size="lg" onClick={() => window.print()}>Print League Report</Button>
+      </div>
+      <article id="league-report" className="space-y-6 rounded-xl border border-border bg-surface p-5">
+        <header>
+          <h3 className="text-3xl">{league.name}</h3>
+          <p className="text-sm text-muted-foreground">{league.season ?? ""} · Week {night.week_number ?? "—"} · {night.night_date}</p>
+        </header>
+        <section><h4 className="text-xl">Standings</h4><StandingsTable rows={rows} /></section>
+        <section className="space-y-5"><h4 className="text-xl">Results this week</h4>
+          {tonight.length === 0 ? <p className="text-sm">No matchups recorded.</p> : tonight.map((o) => <MatchResultView key={o.match.id} o={o} gpn={eng.gpn} rules={eng.rules} />)}
+        </section>
+        <section><h4 className="text-xl">Season highs (scratch)</h4>
+          <ul className="text-sm">
+            {top("highGame") && <li>High game: {top("highGame")!.name} — {top("highGame")!.highGame}</li>}
+            {top("highSeries") && <li>High series: {top("highSeries")!.name} — {top("highSeries")!.highSeries}</li>}
+            {top("highBlock") && <li>High 4-game block: {top("highBlock")!.name} — {top("highBlock")!.highBlock}</li>}
+          </ul>
+        </section>
+        <section><h4 className="text-xl">Bowler statistics</h4>
+          <div className="overflow-x-auto">
+            <table className="rpt-table w-full text-sm">
+              <thead><tr className="text-left">{["Bowler", "Team", "Div", "Games", "Pins", "Avg", "High game", "High series", "High 4-game block"].map((h) => <th key={h} className="px-2 py-1">{h}</th>)}</tr></thead>
+              <tbody>{stats.map((x) => (
+                <tr key={x.bowler_id} className="border-t border-border tabular-nums">
+                  <td className="px-2 py-1 font-semibold">{x.name}</td><td className="px-2 py-1">{x.team}</td><td className="px-2 py-1">{x.division}</td>
+                  <td className="px-2 py-1">{x.games}</td><td className="px-2 py-1">{x.pins}</td><td className="px-2 py-1">{f0(x.average)}</td>
+                  <td className="px-2 py-1">{f0(x.highGame)}</td><td className="px-2 py-1">{f0(x.highSeries)}</td><td className="px-2 py-1">{f0(x.highBlock)}</td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        </section>
+      </article>
+    </div>
+  );
+}
+
 // ---------------- History
-function History({ nights }: Bits) {
-  const done = nights.filter((x) => x.status === "completed");
+function History({ league, ...bits }: Bits & { league: LmLeague }) {
+  const eng = useLeagueEngine(league, bits);
   const [open, setOpen] = useState<string | null>(null);
-  const scores = useQuery({
-    queryKey: ["lm", "history-scores", open],
-    enabled: !!open,
-    queryFn: async () => {
-      const { data, error } = await supabase.from("lm_night_scores").select("*").eq("night_id", open!).order("team_name").order("bowler_name").order("game_number");
-      if (error) throw error;
-      return data;
-    },
-  });
-  const grouped = useMemo(() => {
-    const m = new Map<string, { team: string; bowler: string; div: string | null; games: number[] }>();
-    for (const r of scores.data ?? []) {
-      const k = `${r.team_name}|${r.bowler_id}`;
-      const e = m.get(k) ?? { team: r.team_name ?? "—", bowler: r.bowler_name ?? "—", div: r.division_code, games: [] };
-      e.games[r.game_number - 1] = r.score;
-      m.set(k, e);
-    }
-    return [...m.values()];
-  }, [scores.data]);
+  const done = eng.completed;
   return (
     <div className="space-y-3">
       <PanelIntro>Completed weeks are stored exactly as bowled — team and bowler names are saved as they were that night.</PanelIntro>
@@ -910,19 +1140,9 @@ function History({ nights }: Bits) {
             <h3 className="text-xl">Week {night.week_number ?? "—"} · {night.night_date}</h3>
           </button>
           {open === night.id && (
-            grouped.length === 0 ? <p className="mt-2 text-sm text-muted-foreground">No scores saved.</p> : (
-              <table className="mt-3 w-full text-sm">
-                <tbody>
-                  {grouped.map((g, i) => (
-                    <tr key={i} className="border-t border-border">
-                      <td className="py-1 pr-2">{g.team}</td><td className="py-1 pr-2">{g.div ?? ""}</td>
-                      <td className="py-1 pr-2 font-semibold">{g.bowler}</td>
-                      <td className="py-1 tabular-nums">{g.games.map((x) => x ?? "—").join(" · ")}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )
+            <div className="mt-4 space-y-5">
+              {eng.outcomesFor([night]).map((o) => <MatchResultView key={o.match.id} o={o} gpn={eng.gpn} rules={eng.rules} />)}
+            </div>
           )}
         </Card>
       ))}
