@@ -1,0 +1,1 @@
+ALTER TABLE public.lm_leagues ADD COLUMN IF NOT EXISTS uses_divisions boolean NOT NULL DEFAULT true;
