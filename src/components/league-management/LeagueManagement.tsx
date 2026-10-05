@@ -2,7 +2,7 @@ import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -729,7 +729,7 @@ function Nights({ league, nights, teams }: Bits & { league: LmLeague }) {
                   e.preventDefault();
                   const f = new FormData(e.currentTarget);
                   const a = s(f, "a"), b = s(f, "b");
-                  if (!a || !b || a === b) return toast.error("Pick two different teams.");
+                  if (!a || !b || a === b) { toast.error("Pick two different teams."); return; }
                   addMatch.mutate({ night_id: night.id, a, b });
                 }}>
                   {(["a", "b"] as const).map((k) => (
@@ -773,7 +773,7 @@ function ScoreEntry({ league, nights, teams, members, divisions }: Bits & { leag
   const save = useMutation({
     mutationFn: async (form: FormData) => {
       if (!match || !night) return;
-      const rows: Tables<"lm_night_scores">["Insert"][] = [];
+      const rows: TablesInsert<"lm_night_scores">[] = [];
       const clears: { bowler_id: string; game_number: number }[] = [];
       for (const teamId of [match.team_a_id, match.team_b_id]) {
         const team = teams.find((t) => t.id === teamId);
