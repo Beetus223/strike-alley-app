@@ -182,7 +182,7 @@ export function LeagueManagement() {
           {needsLeague && !league && (
             <Empty>Create an internal league in League Setup first.</Empty>
           )}
-          {needsLeague && league && <LeagueSection section={section} league={league} />}
+          {needsLeague && league && <div className={league.uses_divisions ? "" : "no-divisions"}><LeagueSection section={section} league={league} /></div>}
         </div>
       </div>
     </div>
@@ -1309,7 +1309,8 @@ function LaneScorecards({ league, ...bits }: Bits & { league: LmLeague }) {
       <div id="lane-scorecards" className="space-y-6">
         {shown.map((m) => (
           <ScorecardSheet key={m.id} leagueName={league.name} season={league.season} week={night.week_number}
-            date={night.night_date} lane={m.lanes} gpn={gpn} sides={build(m)} handicapNote={handicapNote} />
+            date={night.night_date} lane={m.lanes} gpn={gpn} sides={build(m)} handicapNote={handicapNote}
+            showDivision={league.uses_divisions} showHandicap={hcpOn} />
         ))}
       </div>
     </div>

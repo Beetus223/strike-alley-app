@@ -279,3 +279,5 @@
   .lane-card:last-child { page-break-after: auto; break-after: auto; }
   .lc-table th { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+.no-divisions .lm-div { display: none; }
