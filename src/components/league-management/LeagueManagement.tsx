@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Field, PanelIntro, TextField } from "@/components/site/AdminField";
+import { EditBowlerDialog } from "./EditBowlerDialog";
 import {
   bowlerStats, calcMatch, f0, fPts, lineups, standings,
   type MatchOutcome, type MemberRef, type RawScore, type Rules, type StandingRow,
@@ -491,6 +492,22 @@ function Rules({ league }: { league: LmLeague }) {
 // ---------------- Teams
 type Bits = { divisions: LmDivision[]; teams: LmTeam[]; nights: LmNight[]; members: LmMember[] };
 
+/** Opens the shared Edit Bowler dialog for a bowler across all their memberships in this league. */
+function useEditBowler(members: LmMember[]) {
+  const [id, setId] = useState<string | null>(null);
+  const mine = members.filter((m) => m.bowler_id === id);
+  const avgRow = mine.find((m) => m.is_active && m.entering_average != null) ?? mine.find((m) => m.entering_average != null);
+  const dialog = (
+    <EditBowlerDialog
+      bowlerId={id}
+      memberIds={mine.map((m) => m.id)}
+      currentAverage={avgRow?.entering_average != null ? Number(avgRow.entering_average) : null}
+      onClose={() => setId(null)}
+    />
+  );
+  return { open: setId, dialog };
+}
+
 function Teams({ league, divisions, teams, members }: Bits & { league: LmLeague }) {
   const bowlers = useBowlers();
   const byId = useMemo(() => new Map((bowlers.data ?? []).map((b) => [b.id, b])), [bowlers.data]);
@@ -501,9 +518,11 @@ function Teams({ league, divisions, teams, members }: Bits & { league: LmLeague 
   const addMember = useSave((v: { team_id: string; bowler_id: string; division_id: string | null; is_substitute: boolean; entering_average: number | null }) =>
     supabase.from("lm_team_members").insert(v), "Bowler added to team");
   const updMember = useSave((v: { id: string; patch: Partial<LmMember> }) => supabase.from("lm_team_members").update(v.patch).eq("id", v.id), "Updated");
+  const edit = useEditBowler(members);
 
   return (
     <div className="space-y-6">
+      {edit.dialog}
       <PanelIntro>
         Renaming a team or changing its roster only affects future weeks. Saved league nights keep
         the names as they were.
@@ -558,7 +577,9 @@ function Teams({ league, divisions, teams, members }: Bits & { league: LmLeague 
                         {b ? bowlerName(b) : "Unknown"} <span className="text-muted-foreground">{b?.bowler_id}</span>
                         {m.is_substitute && <span className="ml-1 text-xs text-accent">sub</span>}
                         {!m.is_active && <span className="ml-1 text-xs text-destructive">inactive</span>}
+                        <span className="ml-2 text-xs text-muted-foreground">Avg {m.entering_average != null ? f0(Number(m.entering_average)) : "—"}</span>
                       </span>
+                      <Button size="sm" variant="outline" onClick={() => edit.open(m.bowler_id)}>Edit</Button>
                       <select aria-label="Division" className="h-9 rounded-md border border-input bg-background px-2" value={m.division_id ?? ""}
                         onChange={(e) => updMember.mutate({ id: m.id, patch: { division_id: e.target.value || null } })}>
                         <option value="">No division</option>
@@ -752,10 +773,12 @@ function BowlersView({ league, ...bits }: Bits & { league: LmLeague }) {
   });
   const upd = useSave((v: { id: string; patch: Partial<Tables<"bowlers">> }) => supabase.from("bowlers").update(v.patch).eq("id", v.id), "Bowler updated");
   const stats = new Map(bowlerStats(eng.completedScores, eng.gpn).map((x) => [x.bowler_id, x]));
+  const edit = useEditBowler(bits.members);
   const list = eng.bowlers.filter((b) => `${bowlerName(b)} ${b.bowler_id}`.toLowerCase().includes(q.toLowerCase()));
 
   return (
     <div className="space-y-6">
+      {edit.dialog}
       <PanelIntro>Add every league bowler once here. Then put them on a team in Teams. Stats below come only from completed league nights in this league.</PanelIntro>
       <form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 lg:items-end" onSubmit={(e) => { e.preventDefault(); add.mutate(new FormData(e.currentTarget)); e.currentTarget.reset(); }}>
         <Field label="First name" name="first_name" required />
@@ -789,11 +812,7 @@ function BowlersView({ league, ...bits }: Bits & { league: LmLeague }) {
                     <td className="px-3 py-2 tabular-nums">{f0(st?.highSeries)}</td>
                     <td className="px-3 py-2 tabular-nums">{f0(st?.highBlock)}</td>
                     <td className="px-3 py-2 whitespace-nowrap">
-                      <Button size="sm" variant="outline" onClick={() => {
-                        const first = window.prompt("First name", b.first_name); if (first == null) return;
-                        const last = window.prompt("Last name", b.last_name); if (last == null) return;
-                        upd.mutate({ id: b.id, patch: { first_name: first.trim() || b.first_name, last_name: last.trim() || b.last_name } });
-                      }}>Edit</Button>
+                      <Button size="sm" variant="outline" onClick={() => edit.open(b.id)}>Edit</Button>
                       <Button size="sm" variant="ghost" onClick={() => upd.mutate({ id: b.id, patch: { is_active: !b.is_active } })}>{b.is_active ? "Make inactive" : "Reactivate"}</Button>
                     </td>
                   </tr>
