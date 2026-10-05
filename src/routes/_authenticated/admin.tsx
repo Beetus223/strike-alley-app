@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -95,6 +95,17 @@ function AdminPage() {
         intro="Everything on the website — events, hours, prices, leagues and scores — is edited here. Changes show up on the public pages right away."
       />
       <Section>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/40 bg-surface p-4">
+          <div>
+            <p className="font-display text-2xl">League Management</p>
+            <p className="text-sm text-muted-foreground">
+              Internal league secretary tools: setup, teams, league nights, score entry and history.
+            </p>
+          </div>
+          <Button asChild size="lg">
+            <Link to="/league-management">Open League Management</Link>
+          </Button>
+        </div>
         <Tabs defaultValue="events">
           <TabsList className="flex h-auto flex-wrap justify-start gap-1">
             <TabsTrigger value="events">Events</TabsTrigger>
