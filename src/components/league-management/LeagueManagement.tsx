@@ -192,7 +192,7 @@ export function LeagueManagement() {
 function LeagueSection({ section, league }: { section: SectionName; league: LmLeague }) {
   const bits = useLeagueBits(league.id);
   if (bits.isLoading || !bits.data) return <p className="text-muted-foreground">Loading…</p>;
-  const d = bits.data;
+  const d = league.uses_divisions ? bits.data : { ...bits.data, divisions: [] };
   switch (section) {
     case "Teams":
       return <Teams league={league} {...d} />;
@@ -303,7 +303,8 @@ function LeagueSetup({ leagues }: { leagues: LmLeague[] }) {
         games_per_night: n(form, "games_per_night") ?? 4,
         team_count: n(form, "team_count"),
         bowlers_per_team: n(form, "bowlers_per_team"),
-        division_count: n(form, "division_count") ?? 0,
+        uses_divisions: form.get("uses_divisions") !== "no",
+        division_count: form.get("uses_divisions") === "no" ? 0 : (n(form, "division_count") ?? 0),
         is_active: form.get("is_active") === "on",
         notes: s(form, "notes"),
         public_league_id: s(form, "public_league_id"),
@@ -363,7 +364,14 @@ function LeagueSetup({ leagues }: { leagues: LmLeague[] }) {
         <Field label="Games per night" name="games_per_night" type="number" defaultValue={l?.games_per_night ?? 4} />
         <Field label="Number of teams" name="team_count" type="number" defaultValue={l?.team_count} />
         <Field label="Bowlers per team" name="bowlers_per_team" type="number" defaultValue={l?.bowlers_per_team} />
-        <Field label="Number of divisions" name="division_count" type="number" defaultValue={l?.division_count ?? 4} hint="Divisions A, B, C… are created automatically." />
+        <div>
+          <Label htmlFor="ud">Does this league use divisions?</Label>
+          <select id="ud" name="uses_divisions" className={selectCls} defaultValue={l && !l.uses_divisions ? "no" : "yes"}>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+        <Field label="Number of divisions (if used)" name="division_count" type="number" defaultValue={l?.division_count ?? 4} hint="Divisions A, B, C… are created automatically." />
         <div>
           <Label htmlFor="pl">Linked public listing (optional)</Label>
           <select id="pl" name="public_league_id" className={selectCls} defaultValue={l?.public_league_id ?? ""}>
@@ -400,7 +408,7 @@ function LeagueSetup({ leagues }: { leagues: LmLeague[] }) {
             <p className="text-xs font-bold text-primary">{l.league_code}</p>
             <h3 className="text-2xl">{l.name}</h3>
             <p className="text-sm text-muted-foreground">
-              {[l.season, l.bowling_day != null ? DAYS[l.bowling_day] : null, l.start_time, `${l.games_per_night} games`, `${l.division_count} divisions`]
+              {[l.season, l.bowling_day != null ? DAYS[l.bowling_day] : null, l.start_time, `${l.games_per_night} games`, l.uses_divisions ? `${l.division_count} divisions` : "No divisions"]
                 .filter(Boolean)
                 .join(" · ")}
             </p>
@@ -584,11 +592,11 @@ function Teams({ league, divisions, teams, members }: Bits & { league: LmLeague 
                         <span className="ml-2 text-xs text-muted-foreground">Avg {m.entering_average != null ? f0(Number(m.entering_average)) : "—"}</span>
                       </span>
                       <Button size="sm" variant="outline" onClick={() => edit.open(m.bowler_id)}>Edit</Button>
-                      <select aria-label="Division" className="h-9 rounded-md border border-input bg-background px-2" value={m.division_id ?? ""}
+                      {divisions.length > 0 && <select aria-label="Division" className="h-9 rounded-md border border-input bg-background px-2" value={m.division_id ?? ""}
                         onChange={(e) => updMember.mutate({ id: m.id, patch: { division_id: e.target.value || null } })}>
                         <option value="">No division</option>
                         {divisions.map((d) => <option key={d.id} value={d.id}>{d.name ?? d.code}</option>)}
-                      </select>
+                      </select>}
                       <Button size="sm" variant="ghost" onClick={() => updMember.mutate({ id: m.id, patch: { is_active: !m.is_active } })}>
                         {m.is_active ? "Remove" : "Restore"}
                       </Button>
@@ -610,10 +618,10 @@ function Teams({ league, divisions, teams, members }: Bits & { league: LmLeague 
                     <option key={b.id} value={b.id}>{bowlerName(b)} ({b.bowler_id})</option>
                   ))}
                 </select>
-                <select name="division_id" aria-label="Division" className="h-10 rounded-md border border-input bg-background px-2 text-sm">
+                {divisions.length > 0 && <select name="division_id" aria-label="Division" className="h-10 rounded-md border border-input bg-background px-2 text-sm">
                   <option value="">Division</option>
                   {divisions.map((d) => <option key={d.id} value={d.id}>{d.code}</option>)}
-                </select>
+                </select>}
                 <Input name="entering_average" type="number" min={0} max={450} placeholder="Entering avg" aria-label="Entering average" className="h-10 w-32" />
                 <label className="flex items-center gap-1 text-xs"><input type="checkbox" name="sub" /> Sub</label>
                 <Button type="submit">Add</Button>
@@ -815,7 +823,7 @@ function BowlersView({ league, ...bits }: Bits & { league: LmLeague }) {
         <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full text-sm">
             <thead className="bg-surface text-left"><tr>
-              {["Bowler ID", "Name", "Team", "Div", "Status", "Games", "Pins", "Average", "High game", "High series", "High 4-game block", ""].map((h) => <th key={h} className="px-3 py-2 whitespace-nowrap">{h}</th>)}
+              {["Bowler ID", "Name", "Team", ...(bits.divisions.length ? ["Div"] : []), "Status", "Games", "Pins", "Average", "High game", "High series", "High 4-game block", ""].map((h) => <th key={h} className="px-3 py-2 whitespace-nowrap">{h}</th>)}
             </tr></thead>
             <tbody>
               {list.map((b) => {
@@ -826,7 +834,7 @@ function BowlersView({ league, ...bits }: Bits & { league: LmLeague }) {
                     <td className="px-3 py-2 font-mono">{b.bowler_id}</td>
                     <td className="px-3 py-2 font-semibold">{bowlerName(b)}</td>
                     <td className="px-3 py-2">{bits.teams.find((t) => t.id === m?.team_id)?.name ?? "—"}</td>
-                    <td className="px-3 py-2">{bits.divisions.find((d) => d.id === m?.division_id)?.code ?? "—"}</td>
+                    {bits.divisions.length > 0 && <td className="px-3 py-2">{bits.divisions.find((d) => d.id === m?.division_id)?.code ?? "—"}</td>}
                     <td className="px-3 py-2">{!b.is_active ? "Inactive" : m?.is_substitute ? "Substitute" : m ? "Regular" : "Not on a team"}</td>
                     <td className="px-3 py-2 tabular-nums">{st?.games ?? 0}</td>
                     <td className="px-3 py-2 tabular-nums">{st?.pins ?? 0}</td>
@@ -862,7 +870,7 @@ function MatchResultView({ o, gpn, rules }: { o: MatchOutcome; gpn: number; rule
       <div className="overflow-x-auto">
         <table className="rpt-table w-full text-sm">
           <thead><tr className="text-left">
-            <th className="pr-2">Div</th><th className="pr-2">Bowler</th><th className="pr-2">Avg</th><th className="pr-2">Hdcp</th>
+            <th className="pr-2 lm-div">Div</th><th className="pr-2">Bowler</th><th className="pr-2">Avg</th><th className="pr-2">Hdcp</th>
             {Array.from({ length: gpn }, (_, i) => <th key={i} className="px-1">G{i + 1}</th>)}
             <th className="px-1">Series</th><th className="px-1">Pts</th>
           </tr></thead>
@@ -872,7 +880,7 @@ function MatchResultView({ o, gpn, rules }: { o: MatchOutcome; gpn: number; rule
                 const scratch = bw.games.filter((x): x is number => x != null).reduce((a, b) => a + b, 0);
                 return (
                   <tr key={k + bw.bowler_id} className={`border-t border-border ${j === 0 ? "border-t-2" : ""}`}>
-                    <td className="pr-2">{bw.division ?? "—"}</td>
+                    <td className="pr-2 lm-div">{bw.division ?? "—"}</td>
                     <td className="pr-2 font-semibold">{bw.name}</td>
                     <td className="pr-2 tabular-nums">{bw.average == null ? <span className="text-muted-foreground">not est.</span> : f0(bw.average)}</td>
                     <td className="pr-2"></td>
@@ -1060,7 +1068,7 @@ function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
                   <div className="mt-3 overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead><tr className="text-left">
-                        <th className="py-1 pr-2">Div</th><th className="py-1 pr-2">Bowler</th>
+                        {divisions.length > 0 && <th className="py-1 pr-2">Div</th>}<th className="py-1 pr-2">Bowler</th>
                         {Array.from({ length: gpn }, (_, i) => <th key={i} className="px-1 py-1">G{i + 1}</th>)}
                       </tr></thead>
                       <tbody>
@@ -1068,7 +1076,7 @@ function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
                           const name = eng.names.get(m.bowler_id) ?? "—";
                           return (
                             <tr key={m.id} className="border-t border-border">
-                              <td className="py-2 pr-2">{divisions.find((d) => d.id === m.division_id)?.code ?? "—"}</td>
+                              {divisions.length > 0 && <td className="py-2 pr-2">{divisions.find((d) => d.id === m.division_id)?.code ?? "—"}</td>}
                               <td className="py-2 pr-2 font-semibold">{name}{m.is_substitute && <span className="ml-1 text-xs text-accent">sub</span>}</td>
                               {Array.from({ length: gpn }, (_, i) => (
                                 <td key={i} className="px-1 py-1">
@@ -1190,10 +1198,10 @@ function Reports({ league, ...bits }: Bits & { league: LmLeague }) {
         <section><h4 className="text-xl">Bowler statistics</h4>
           <div className="overflow-x-auto">
             <table className="rpt-table w-full text-sm">
-              <thead><tr className="text-left">{["Bowler", "Team", "Div", "Games", "Pins", "Avg", "High game", "High series", "High 4-game block"].map((h) => <th key={h} className="px-2 py-1">{h}</th>)}</tr></thead>
+              <thead><tr className="text-left">{["Bowler", "Team", ...(league.uses_divisions ? ["Div"] : []), "Games", "Pins", "Avg", "High game", "High series", "High 4-game block"].map((h) => <th key={h} className="px-2 py-1">{h}</th>)}</tr></thead>
               <tbody>{stats.map((x) => (
                 <tr key={x.bowler_id} className="border-t border-border tabular-nums">
-                  <td className="px-2 py-1 font-semibold">{x.name}</td><td className="px-2 py-1">{x.team}</td><td className="px-2 py-1">{x.division}</td>
+                  <td className="px-2 py-1 font-semibold">{x.name}</td><td className="px-2 py-1">{x.team}</td>{league.uses_divisions && <td className="px-2 py-1">{x.division}</td>}
                   <td className="px-2 py-1">{x.games}</td><td className="px-2 py-1">{x.pins}</td><td className="px-2 py-1">{f0(x.average)}</td>
                   <td className="px-2 py-1">{f0(x.highGame)}</td><td className="px-2 py-1">{f0(x.highSeries)}</td><td className="px-2 py-1">{f0(x.highBlock)}</td>
                 </tr>
