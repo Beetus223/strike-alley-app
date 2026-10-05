@@ -84,44 +84,104 @@ export type MatchResult = {
   teamHdcpA: number; teamHdcpB: number;
   teamPts: [number, number];
   pointsA: number; pointsB: number;
+  /** "division" = Division A vs A etc.; "team" = no divisions assigned, team-vs-team per game. */
+  mode: "division" | "team";
+  /** Full points breakdown, always summing to pointsA/pointsB. */
+  breakdown: { games: [number, number][]; series: [number, number]; team: [number, number] };
+  /** Team-mode only: per-game team totals (with handicap when rules say so) and team handicap per game. */
+  teamGames: { a: number | null; b: number | null }[];
+  teamHc: HandicapCalc | null;
+  warnings: string[];
+  bowlersA: BowlerInMatch[]; bowlersB: BowlerInMatch[];
 };
 
 const share = (x: number, y: number, pts: number): [number, number] =>
   x > y ? [pts, 0] : x < y ? [0, pts] : [pts / 2, pts / 2];
 
-/** Division A bowls Division A, etc. Bowlers without a division are counted for team totals only. */
+/**
+ * Division A bowls Division A, etc. If NO bowler in the matchup has a division, the match is scored
+ * team-vs-team: each game compares team game totals, series compares team series totals, and team points
+ * are awarded separately. Every configured category (game, series, team) is always calculated.
+ */
 export function calcMatch(teamA: BowlerInMatch[], teamB: BowlerInMatch[], gpn: number, r: Rules | null): MatchResult {
+  const warnings: string[] = [];
+  if (!r) warnings.push("League Rules are not saved for this league — no points can be awarded.");
   const useH = !!r?.points_with_handicap;
   const gp = r?.game_points ?? 0, sp = r?.series_points ?? 0, tp = r?.team_points ?? 0;
+  if (r && r.game_points == null) warnings.push("Points per game is not set in League Rules.");
+  if (r && r.series_points == null) warnings.push("Series points are not set in League Rules.");
+  if (r && r.team_points == null) warnings.push("Team/match points are not set in League Rules.");
+  if (!teamA.length || !teamB.length) warnings.push("One side of this matchup has no bowlers.");
   const codes = [...new Set([...teamA, ...teamB].map((x) => x.division).filter((x): x is string => !!x))].sort();
   const g = (x: BowlerInMatch | null, i: number) => x?.games[i] ?? null;
+  const hcpOn = !!r && r.handicap_method !== "none" && r.handicap_method !== "not_configured";
+  const games: [number, number][] = Array.from({ length: gpn }, () => [0, 0]);
+  let series: [number, number] = [0, 0];
   let hA = 0, hB = 0;
-  const divisions: DivisionResult[] = codes.map((code) => {
-    const a = teamA.find((x) => x.division === code) ?? null;
-    const b = teamB.find((x) => x.division === code) ?? null;
-    const hc = handicapPair(a?.average ?? null, b?.average ?? null, r);
-    const gamePts: [number, number][] = [];
-    let sA = 0, sB = 0;
+  let divisions: DivisionResult[] = [];
+  let teamGames: { a: number | null; b: number | null }[] = [];
+  let teamHc: HandicapCalc | null = null;
+  const mode: "division" | "team" = codes.length ? "division" : "team";
+
+  if (mode === "division") {
+    const noDiv = [...teamA, ...teamB].filter((x) => !x.division);
+    if (noDiv.length) warnings.push(`${noDiv.map((x) => x.name).join(", ")} ha${noDiv.length > 1 ? "ve" : "s"} no division — counted in team totals only.`);
+    divisions = codes.map((code) => {
+      const a = teamA.find((x) => x.division === code) ?? null;
+      const b = teamB.find((x) => x.division === code) ?? null;
+      if (!a || !b) warnings.push(`Division ${code}: ${!a ? "first" : "second"} team has no bowler — no points for this division.`);
+      if (hcpOn && a && b && (a.average == null || b.average == null)) warnings.push(`Division ${code}: average not established — handicap is 0.`);
+      const hc = handicapPair(a?.average ?? null, b?.average ?? null, r);
+      const gamePts: [number, number][] = [];
+      let sA = 0, sB = 0;
+      for (let i = 0; i < gpn; i++) {
+        const ga = g(a, i), gb = g(b, i);
+        if (ga != null) hA += hc.a;
+        if (gb != null) hB += hc.b;
+        if (ga == null || gb == null) { gamePts.push([0, 0]); continue; }
+        const xa = ga + (useH ? hc.a : 0), xb = gb + (useH ? hc.b : 0);
+        sA += xa; sB += xb;
+        const p = share(xa, xb, gp);
+        gamePts.push(p);
+        games[i] = [games[i]![0] + p[0], games[i]![1] + p[1]];
+      }
+      const complete = a && b && a.games.slice(0, gpn).every((v) => v != null) && b.games.slice(0, gpn).every((v) => v != null);
+      const seriesPts: [number, number] = complete ? share(sA, sB, sp) : [0, 0];
+      series = [series[0] + seriesPts[0], series[1] + seriesPts[1]];
+      return { division: code, a, b, hc, gamePts, seriesPts, seriesA: sA, seriesB: sB };
+    });
+  } else {
+    // Team-vs-team: handicap = configured % of the difference between the teams' established averages.
+    const teamAvg = (t: BowlerInMatch[]) => (t.length && t.every((x) => x.average != null) ? sum(t.map((x) => Math.floor(x.average!))) : null);
+    const avgA = teamAvg(teamA), avgB = teamAvg(teamB);
+    if (hcpOn && (avgA == null || avgB == null)) warnings.push("Averages not established for every bowler — handicap is 0 (not established).");
+    teamHc = handicapPair(avgA, avgB, r);
+    let sA = 0, sB = 0, completeA = true, completeB = true;
     for (let i = 0; i < gpn; i++) {
-      const ga = g(a, i), gb = g(b, i);
-      if (ga != null) hA += hc.a;
-      if (gb != null) hB += hc.b;
-      if (ga == null || gb == null) { gamePts.push([0, 0]); continue; }
-      const xa = ga + (useH ? hc.a : 0), xb = gb + (useH ? hc.b : 0);
+      const ra = teamA.map((x) => g(x, i)).filter((v): v is number => v != null);
+      const rb = teamB.map((x) => g(x, i)).filter((v): v is number => v != null);
+      if (ra.length < teamA.length) completeA = false;
+      if (rb.length < teamB.length) completeB = false;
+      if (ra.length) hA += teamHc.a;
+      if (rb.length) hB += teamHc.b;
+      if (!ra.length || !rb.length) { teamGames.push({ a: ra.length ? sum(ra) : null, b: rb.length ? sum(rb) : null }); continue; }
+      const xa = sum(ra) + (useH ? teamHc.a : 0), xb = sum(rb) + (useH ? teamHc.b : 0);
+      teamGames.push({ a: xa, b: xb });
       sA += xa; sB += xb;
-      gamePts.push(share(xa, xb, gp));
+      games[i] = share(xa, xb, gp);
     }
-    const complete = a && b && a.games.slice(0, gpn).every((v) => v != null) && b.games.slice(0, gpn).every((v) => v != null);
-    return { division: code, a, b, hc, gamePts, seriesPts: complete ? share(sA, sB, sp) : [0, 0], seriesA: sA, seriesB: sB };
-  });
+    if (!completeA || !completeB) warnings.push("Some games are missing — incomplete games and the series are not scored.");
+    series = completeA && completeB && teamA.length && teamB.length ? share(sA, sB, sp) : [0, 0];
+  }
+
   const tot = (t: BowlerInMatch[]) => sum(t.flatMap((x) => x.games.filter((v): v is number => v != null)));
   const teamTotalA = tot(teamA), teamTotalB = tot(teamB);
   const teamHdcpA = teamTotalA + hA, teamHdcpB = teamTotalB + hB;
   const bowled = teamTotalA > 0 && teamTotalB > 0;
   const teamPts: [number, number] = bowled ? (useH ? share(teamHdcpA, teamHdcpB, tp) : share(teamTotalA, teamTotalB, tp)) : [0, 0];
-  const pointsA = sum(divisions.flatMap((d) => [...d.gamePts.map((p) => p[0]), d.seriesPts[0]])) + teamPts[0];
-  const pointsB = sum(divisions.flatMap((d) => [...d.gamePts.map((p) => p[1]), d.seriesPts[1]])) + teamPts[1];
-  return { divisions, teamTotalA, teamTotalB, teamHdcpA, teamHdcpB, teamPts, pointsA, pointsB };
+  const pointsA = sum(games.map((p) => p[0])) + series[0] + teamPts[0];
+  const pointsB = sum(games.map((p) => p[1])) + series[1] + teamPts[1];
+  return { divisions, teamTotalA, teamTotalB, teamHdcpA, teamHdcpB, teamPts, pointsA, pointsB, mode, breakdown: { games, series, team: teamPts }, teamGames, teamHc, warnings, bowlersA: teamA, bowlersB: teamB };
 }
 
 export type MemberRef = { team_id: string; bowler_id: string; division_code: string | null; entering_average: number | null; is_active: boolean };
