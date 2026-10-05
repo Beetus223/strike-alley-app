@@ -456,6 +456,7 @@ export type Database = {
         Row: {
           completed_at: string | null
           created_at: string
+          games_count: number | null
           id: string
           league_id: string
           night_date: string
@@ -467,6 +468,7 @@ export type Database = {
         Insert: {
           completed_at?: string | null
           created_at?: string
+          games_count?: number | null
           id?: string
           league_id: string
           night_date: string
@@ -478,6 +480,7 @@ export type Database = {
         Update: {
           completed_at?: string | null
           created_at?: string
+          games_count?: number | null
           id?: string
           league_id?: string
           night_date?: string

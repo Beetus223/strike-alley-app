@@ -1,0 +1,2 @@
+ALTER TABLE public.lm_league_nights ADD COLUMN IF NOT EXISTS games_count integer CHECK (games_count IS NULL OR games_count BETWEEN 1 AND 6);
+COMMENT ON COLUMN public.lm_league_nights.games_count IS 'Games bowled this night/event; NULL = league games_per_night.';

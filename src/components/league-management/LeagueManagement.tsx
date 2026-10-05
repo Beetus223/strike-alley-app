@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Field, PanelIntro, TextField } from "@/components/site/AdminField";
 import { EditBowlerDialog } from "./EditBowlerDialog";
+import { ScorecardSheet, type ScorecardSide } from "./ScorecardSheet";
 import {
-  bowlerStats, calcMatch, f0, fPts, lineups, standings,
+  bowlerStats, calcMatch, f0, fPts, handicapPair, lineups, standings,
   type MatchOutcome, type MemberRef, type RawScore, type Rules, type StandingRow,
 } from "@/lib/lm-engine";
 
@@ -30,6 +31,7 @@ const SECTIONS = [
   "Bowlers",
   "League Nights",
   "Score Entry",
+  "Lane Scorecards",
   "Standings",
   "League Reports",
   "History",
@@ -200,6 +202,8 @@ function LeagueSection({ section, league }: { section: SectionName; league: LmLe
       return <Nights league={league} {...d} />;
     case "Score Entry":
       return <ScoreEntry league={league} {...d} />;
+    case "Lane Scorecards":
+      return <LaneScorecards league={league} {...d} />;
     case "League Rules":
       return <Rules league={league} />;
     case "Standings":
@@ -639,7 +643,10 @@ function Nights({ league, nights, teams }: Bits & { league: LmLeague }) {
   const matchups = useMatchups(nights.map((x) => x.id));
   const addNight = useSave((f: FormData) => supabase.from("lm_league_nights").insert({
     league_id: league.id, night_date: s(f, "night_date") ?? "", week_number: n(f, "week_number"), notes: s(f, "notes"),
+    games_count: n(f, "games_count"),
   }), "League night added");
+  const setGames = useSave((v: { id: string; games_count: number | null }) => supabase.from("lm_league_nights").update({ games_count: v.games_count }).eq("id", v.id), "Games updated");
+  const setLane = useSave((v: { id: string; lanes: string | null }) => supabase.from("lm_matchups").update({ lanes: v.lanes }).eq("id", v.id), "Lane saved");
   const setStatus = useSave((v: { id: string; status: string }) => supabase.from("lm_league_nights").update({
     status: v.status, completed_at: v.status === "completed" ? new Date().toISOString() : null,
   }).eq("id", v.id), "Status updated");
@@ -657,6 +664,13 @@ function Nights({ league, nights, teams }: Bits & { league: LmLeague }) {
       <form className="flex flex-wrap items-end gap-3" onSubmit={(e) => { e.preventDefault(); addNight.mutate(new FormData(e.currentTarget)); e.currentTarget.reset(); }}>
         <div className="w-28"><Field label="Week #" name="week_number" type="number" defaultValue={nights.length + 1} /></div>
         <div className="w-48"><Field label="Date" name="night_date" type="date" required /></div>
+        <div className="w-40">
+          <Label htmlFor="ln-games">Games this night</Label>
+          <select id="ln-games" name="games_count" className={selectCls} defaultValue="">
+            <option value="">League default ({league.games_per_night})</option>
+            {[1, 2, 3, 4, 5, 6].map((g) => <option key={g} value={g}>{g} games</option>)}
+          </select>
+        </div>
         <div className="w-64"><Field label="Notes" name="notes" /></div>
         <Button type="submit" size="lg">Add league night</Button>
       </form>
@@ -669,16 +683,25 @@ function Nights({ league, nights, teams }: Bits & { league: LmLeague }) {
             <Card key={night.id}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-xl">Week {night.week_number ?? "—"} · {night.night_date}</h3>
+                <div className="flex flex-wrap gap-2">
+                <select aria-label="Games this night" disabled={locked} className="h-10 rounded-md border border-input bg-background px-3 text-sm" value={night.games_count ?? ""}
+                  onChange={(e) => setGames.mutate({ id: night.id, games_count: e.target.value ? Number(e.target.value) : null })}>
+                  <option value="">{league.games_per_night} games (league default)</option>
+                  {[1, 2, 3, 4, 5, 6].map((g) => <option key={g} value={g}>{g} games</option>)}
+                </select>
                 <select aria-label="Status" className="h-10 rounded-md border border-input bg-background px-3 text-sm" value={night.status}
                   onChange={(e) => setStatus.mutate({ id: night.id, status: e.target.value })}>
                   {Object.entries(STATUS_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                 </select>
+                </div>
               </div>
               {night.notes && <p className="text-sm text-muted-foreground">{night.notes}</p>}
               <ul className="mt-3 space-y-1 text-sm">
                 {ms.map((m) => (
                   <li key={m.id} className="flex items-center gap-2">
                     <span className="flex-1">{m.team_a_name} <span className="text-muted-foreground">vs</span> {m.team_b_name}</span>
+                    <Input aria-label="Lane" placeholder="Lane" defaultValue={m.lanes ?? ""} disabled={locked} className="h-9 w-24"
+                      onBlur={(e) => { const v = e.target.value.trim() || null; if (v !== (m.lanes ?? null)) setLane.mutate({ id: m.id, lanes: v }); }} />
                     {!locked && <Button size="sm" variant="ghost" onClick={() => delMatch.mutate(m.id)}>Remove</Button>}
                   </li>
                 ))}
@@ -1204,6 +1227,83 @@ function History({ league, ...bits }: Bits & { league: LmLeague }) {
           )}
         </Card>
       ))}
+    </div>
+  );
+}
+
+// ---------------- Lane Scorecards (printable view of existing league data)
+function LaneScorecards({ league, ...bits }: Bits & { league: LmLeague }) {
+  const eng = useLeagueEngine(league, bits);
+  const [nightId, setNightId] = useState("");
+  const [matchId, setMatchId] = useState("all");
+  if (!eng.ready) return <p className="text-muted-foreground">Loading…</p>;
+  const nights = bits.nights;
+  if (!nights.length) return <Empty>Add a league night with matchups in League Nights first.</Empty>;
+  const upcoming = nights.find((x) => x.status !== "completed");
+  const night = nights.find((x) => x.id === nightId) ?? upcoming ?? nights[nights.length - 1]!;
+  const gpn = night.games_count ?? league.games_per_night;
+  const rules = eng.rules;
+  const ms = eng.matchups
+    .filter((m) => m.night_id === night.id)
+    .sort((a, b) => (a.lanes ?? "").localeCompare(b.lanes ?? "", undefined, { numeric: true }));
+  const shown = matchId === "all" ? ms : ms.filter((m) => m.id === matchId);
+  const hcpOn = !!rules && rules.handicap_method !== "none" && rules.handicap_method !== "not_configured";
+  const handicapNote = !rules
+    ? "League rules are not saved — no handicap shown."
+    : !hcpOn
+      ? "No handicap for this league."
+      : rules.handicap_method === "percent_of_base"
+        ? `Handicap: ${rules.handicap_percent}% of (${rules.handicap_base} − average), per game.`
+        : `Handicap: ${rules.handicap_percent}% of the difference between opposing averages, per game, to the lower average.`;
+
+  const build = (m: LmMatchup): [ScorecardSide, ScorecardSide] => {
+    const nightScores = eng.scores.filter((x) => x.night_id === night.id);
+    const { a, b } = lineups(m, night, eng.memberRefs, nightScores, eng.scores, nights, eng.names, gpn);
+    const res = calcMatch(a, b, gpn, rules);
+    const side = (list: typeof a, isA: boolean, team: string): ScorecardSide => ({
+      team,
+      teamHandicap: res.mode === "team" && hcpOn && res.teamHc ? (isA ? res.teamHc.a : res.teamHc.b) : null,
+      rows: [...list]
+        .sort((x, y) => (x.division ?? "~").localeCompare(y.division ?? "~") || x.name.localeCompare(y.name))
+        .map((x) => {
+          const d = res.divisions.find((dv) => dv.division === x.division);
+          const own = d && (isA ? d.a?.bowler_id : d.b?.bowler_id) === x.bowler_id;
+          return { division: x.division, name: x.name, average: x.average, handicap: res.mode === "division" && hcpOn && d && own ? (isA ? d.hc.a : d.hc.b) : null };
+        }),
+    });
+    return [side(a, true, m.team_a_name ?? "Team A"), side(b, false, m.team_b_name ?? "Team B")];
+  };
+  void handicapPair;
+
+  return (
+    <div className="space-y-4">
+      <PanelIntro>Pick a week, then print one lane's scorecard or all of them. Averages, handicaps, divisions and game count come straight from Teams, Score Entry and League Rules — nothing to type.</PanelIntro>
+      <div className="rpt-noprint flex flex-wrap items-end gap-3">
+        <div className="w-72">
+          <Label htmlFor="sc-night">Week</Label>
+          <select id="sc-night" className={selectCls} value={night.id} onChange={(e) => { setNightId(e.target.value); setMatchId("all"); }}>
+            {[...nights].reverse().map((x) => <option key={x.id} value={x.id}>Week {x.week_number ?? "—"} · {x.night_date} · {STATUS_LABEL[x.status]}</option>)}
+          </select>
+        </div>
+        <div className="w-80">
+          <Label htmlFor="sc-match">Matchup / lane</Label>
+          <select id="sc-match" className={selectCls} value={matchId} onChange={(e) => setMatchId(e.target.value)}>
+            <option value="all">All matchups ({ms.length})</option>
+            {ms.map((m) => <option key={m.id} value={m.id}>{m.lanes ? `Lane ${m.lanes} · ` : ""}{m.team_a_name} vs {m.team_b_name}</option>)}
+          </select>
+        </div>
+        <Button size="lg" disabled={!shown.length} onClick={() => window.print()}>
+          {matchId === "all" ? "Print All Lane Scorecards" : "Print Scorecard"}
+        </Button>
+      </div>
+      <p className="rpt-noprint text-sm text-muted-foreground">{gpn} games this night · set games and lanes in League Nights.</p>
+      {!ms.length && <Empty>This week has no matchups yet. Add them in League Nights.</Empty>}
+      <div id="lane-scorecards" className="space-y-6">
+        {shown.map((m) => (
+          <ScorecardSheet key={m.id} leagueName={league.name} season={league.season} week={night.week_number}
+            date={night.night_date} lane={m.lanes} gpn={gpn} sides={build(m)} handicapNote={handicapNote} />
+        ))}
+      </div>
     </div>
   );
 }

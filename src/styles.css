@@ -226,7 +226,7 @@
 @media print {
   @page { size: letter; margin: 0.5in; }
   html, body { background: #fff !important; }
-  body *:not(:has(#league-report)):not(#league-report):not(#league-report *) { display: none !important; }
+  body:has(#league-report) *:not(:has(#league-report)):not(#league-report):not(#league-report *) { display: none !important; }
   body *:has(#league-report) { margin: 0 !important; padding: 0 !important; border: 0 !important; background: #fff !important; box-shadow: none !important; }
   #league-report {
     width: 100%;
@@ -239,4 +239,43 @@
   .rpt-table thead { display: table-header-group; }
   .rpt-table tr { break-inside: avoid; page-break-inside: avoid; }
   .league-report h3 { break-after: avoid; page-break-after: avoid; }
+}
+
+/* Lane scorecards (screen preview = paper look) */
+.lane-card { background: #fff; color: #000; border: 1px solid #ccc; border-radius: 0.5rem; padding: 0.4in; font-family: var(--font-body, inherit); }
+.lane-card * { color: #000; }
+.lc-head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 6px; }
+.lc-brand { font-size: 9pt; letter-spacing: 0.15em; text-transform: uppercase; }
+.lc-title { font-family: var(--font-display, inherit); font-size: 22pt; line-height: 1; }
+.lc-meta { font-size: 10pt; margin-top: 2px; }
+.lc-lane { border: 2px solid #000; min-width: 1in; text-align: center; padding: 2px 8px; }
+.lc-lane span { display: block; font-size: 8pt; text-transform: uppercase; letter-spacing: 0.1em; }
+.lc-lane strong { display: block; font-size: 22pt; line-height: 1.1; min-height: 28pt; }
+.lc-match { font-family: var(--font-display, inherit); font-size: 16pt; text-align: center; margin: 6px 0; }
+.lc-match span { font-size: 11pt; padding: 0 8px; }
+.lc-team { margin-top: 6px; }
+.lc-team h3 { font-family: var(--font-display, inherit); font-size: 13pt; margin-bottom: 2px; }
+.lc-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.lc-table th, .lc-table td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 10pt; }
+.lc-table th { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.05em; background: #eee; }
+.lc-table td { height: 0.36in; }
+.lc-div { width: 0.45in; font-weight: 700; }
+.lc-name { text-align: left !important; }
+.lc-num { width: 0.55in; }
+.lc-write { width: 0.95in; }
+.lc-pts { width: 0.55in; }
+.lc-total td { font-weight: 700; font-size: 9pt; background: #f6f6f6; }
+.lc-points { margin-top: 8px; display: grid; grid-template-columns: 4.5in 1fr; gap: 12px; align-items: end; }
+.lc-points .lc-table td { height: 0.3in; }
+.lc-note { font-size: 8pt; }
+
+@media print {
+  @page scorecard { size: letter landscape; margin: 0.3in; }
+  body:has(#lane-scorecards) *:not(:has(#lane-scorecards)):not(#lane-scorecards):not(#lane-scorecards *) { display: none !important; }
+  body *:has(#lane-scorecards) { margin: 0 !important; padding: 0 !important; border: 0 !important; background: #fff !important; box-shadow: none !important; max-width: none !important; }
+  #lane-scorecards { page: scorecard; }
+  #lane-scorecards > * + * { margin-top: 0 !important; }
+  .lane-card { border: 0; border-radius: 0; padding: 0; page-break-after: always; break-after: page; break-inside: avoid; }
+  .lane-card:last-child { page-break-after: auto; break-after: auto; }
+  .lc-table th { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
