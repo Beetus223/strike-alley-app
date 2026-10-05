@@ -417,6 +417,453 @@ export type Database = {
         }
         Relationships: []
       }
+      lm_divisions: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          league_id: string
+          name: string | null
+          sort_order: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          league_id: string
+          name?: string | null
+          sort_order?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          league_id?: string
+          name?: string | null
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lm_divisions_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "lm_leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lm_league_nights: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          league_id: string
+          night_date: string
+          notes: string | null
+          status: string
+          updated_at: string
+          week_number: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          league_id: string
+          night_date: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          week_number?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          league_id?: string
+          night_date?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          week_number?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lm_league_nights_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "lm_leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lm_league_rules: {
+        Row: {
+          confirmation_notes: string | null
+          created_at: string
+          custom_rules: string | null
+          game_points: number | null
+          handicap_base: number | null
+          handicap_method: string
+          handicap_percent: number | null
+          high_block_scratch: boolean
+          high_single_scratch: boolean
+          league_id: string
+          match_point_rule: string | null
+          needs_confirmation: boolean
+          points_with_handicap: boolean
+          series_points: number | null
+          team_points: number | null
+          updated_at: string
+        }
+        Insert: {
+          confirmation_notes?: string | null
+          created_at?: string
+          custom_rules?: string | null
+          game_points?: number | null
+          handicap_base?: number | null
+          handicap_method?: string
+          handicap_percent?: number | null
+          high_block_scratch?: boolean
+          high_single_scratch?: boolean
+          league_id: string
+          match_point_rule?: string | null
+          needs_confirmation?: boolean
+          points_with_handicap?: boolean
+          series_points?: number | null
+          team_points?: number | null
+          updated_at?: string
+        }
+        Update: {
+          confirmation_notes?: string | null
+          created_at?: string
+          custom_rules?: string | null
+          game_points?: number | null
+          handicap_base?: number | null
+          handicap_method?: string
+          handicap_percent?: number | null
+          high_block_scratch?: boolean
+          high_single_scratch?: boolean
+          league_id?: string
+          match_point_rule?: string | null
+          needs_confirmation?: boolean
+          points_with_handicap?: boolean
+          series_points?: number | null
+          team_points?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lm_league_rules_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: true
+            referencedRelation: "lm_leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lm_leagues: {
+        Row: {
+          bowlers_per_team: number | null
+          bowling_day: number | null
+          created_at: string
+          division_count: number
+          end_date: string | null
+          games_per_night: number
+          id: string
+          is_active: boolean
+          league_code: string
+          name: string
+          notes: string | null
+          public_league_id: string | null
+          season: string | null
+          start_date: string | null
+          start_time: string | null
+          team_count: number | null
+          updated_at: string
+        }
+        Insert: {
+          bowlers_per_team?: number | null
+          bowling_day?: number | null
+          created_at?: string
+          division_count?: number
+          end_date?: string | null
+          games_per_night?: number
+          id?: string
+          is_active?: boolean
+          league_code: string
+          name: string
+          notes?: string | null
+          public_league_id?: string | null
+          season?: string | null
+          start_date?: string | null
+          start_time?: string | null
+          team_count?: number | null
+          updated_at?: string
+        }
+        Update: {
+          bowlers_per_team?: number | null
+          bowling_day?: number | null
+          created_at?: string
+          division_count?: number
+          end_date?: string | null
+          games_per_night?: number
+          id?: string
+          is_active?: boolean
+          league_code?: string
+          name?: string
+          notes?: string | null
+          public_league_id?: string | null
+          season?: string | null
+          start_date?: string | null
+          start_time?: string | null
+          team_count?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lm_leagues_public_league_id_fkey"
+            columns: ["public_league_id"]
+            isOneToOne: false
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lm_matchups: {
+        Row: {
+          created_at: string
+          id: string
+          lanes: string | null
+          night_id: string
+          team_a_id: string | null
+          team_a_name: string | null
+          team_b_id: string | null
+          team_b_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lanes?: string | null
+          night_id: string
+          team_a_id?: string | null
+          team_a_name?: string | null
+          team_b_id?: string | null
+          team_b_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lanes?: string | null
+          night_id?: string
+          team_a_id?: string | null
+          team_a_name?: string | null
+          team_b_id?: string | null
+          team_b_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lm_matchups_night_id_fkey"
+            columns: ["night_id"]
+            isOneToOne: false
+            referencedRelation: "lm_league_nights"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lm_matchups_team_a_id_fkey"
+            columns: ["team_a_id"]
+            isOneToOne: false
+            referencedRelation: "lm_teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lm_matchups_team_b_id_fkey"
+            columns: ["team_b_id"]
+            isOneToOne: false
+            referencedRelation: "lm_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lm_night_scores: {
+        Row: {
+          average_at_time: number | null
+          bowler_id: string | null
+          bowler_name: string | null
+          created_at: string
+          division_code: string | null
+          game_number: number
+          handicap_at_time: number | null
+          id: string
+          matchup_id: string | null
+          night_id: string
+          score: number
+          team_id: string | null
+          team_name: string | null
+        }
+        Insert: {
+          average_at_time?: number | null
+          bowler_id?: string | null
+          bowler_name?: string | null
+          created_at?: string
+          division_code?: string | null
+          game_number: number
+          handicap_at_time?: number | null
+          id?: string
+          matchup_id?: string | null
+          night_id: string
+          score: number
+          team_id?: string | null
+          team_name?: string | null
+        }
+        Update: {
+          average_at_time?: number | null
+          bowler_id?: string | null
+          bowler_name?: string | null
+          created_at?: string
+          division_code?: string | null
+          game_number?: number
+          handicap_at_time?: number | null
+          id?: string
+          matchup_id?: string | null
+          night_id?: string
+          score?: number
+          team_id?: string | null
+          team_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lm_night_scores_bowler_id_fkey"
+            columns: ["bowler_id"]
+            isOneToOne: false
+            referencedRelation: "bowlers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lm_night_scores_matchup_id_fkey"
+            columns: ["matchup_id"]
+            isOneToOne: false
+            referencedRelation: "lm_matchups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lm_night_scores_night_id_fkey"
+            columns: ["night_id"]
+            isOneToOne: false
+            referencedRelation: "lm_league_nights"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lm_night_scores_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "lm_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lm_team_members: {
+        Row: {
+          bowler_id: string
+          created_at: string
+          division_id: string | null
+          id: string
+          is_active: boolean
+          is_substitute: boolean
+          team_id: string
+        }
+        Insert: {
+          bowler_id: string
+          created_at?: string
+          division_id?: string | null
+          id?: string
+          is_active?: boolean
+          is_substitute?: boolean
+          team_id: string
+        }
+        Update: {
+          bowler_id?: string
+          created_at?: string
+          division_id?: string | null
+          id?: string
+          is_active?: boolean
+          is_substitute?: boolean
+          team_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lm_team_members_bowler_id_fkey"
+            columns: ["bowler_id"]
+            isOneToOne: false
+            referencedRelation: "bowlers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lm_team_members_division_id_fkey"
+            columns: ["division_id"]
+            isOneToOne: false
+            referencedRelation: "lm_divisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lm_team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "lm_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lm_teams: {
+        Row: {
+          captain_bowler_id: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          league_id: string
+          name: string
+          notes: string | null
+          team_number: number | null
+          updated_at: string
+        }
+        Insert: {
+          captain_bowler_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          league_id: string
+          name: string
+          notes?: string | null
+          team_number?: number | null
+          updated_at?: string
+        }
+        Update: {
+          captain_bowler_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          league_id?: string
+          name?: string
+          notes?: string | null
+          team_number?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lm_teams_captain_bowler_id_fkey"
+            columns: ["captain_bowler_id"]
+            isOneToOne: false
+            referencedRelation: "bowlers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lm_teams_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "lm_leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       players: {
         Row: {
           average: number
