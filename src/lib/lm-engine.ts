@@ -143,7 +143,7 @@ export function calcMatch(teamA: BowlerInMatch[], teamB: BowlerInMatch[], gpn: n
         sA += xa; sB += xb;
         const p = share(xa, xb, gp);
         gamePts.push(p);
-        games[i][0] += p[0]; games[i][1] += p[1];
+        games[i] = [games[i]![0] + p[0], games[i]![1] + p[1]];
       }
       const complete = a && b && a.games.slice(0, gpn).every((v) => v != null) && b.games.slice(0, gpn).every((v) => v != null);
       const seriesPts: [number, number] = complete ? share(sA, sB, sp) : [0, 0];
