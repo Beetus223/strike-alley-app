@@ -48,7 +48,7 @@ function TeamPage(p: Props & { side: ScorecardSide }) {
   const rows = p.side.rows.length ? p.side.rows : Array.from({ length: 3 }, () => ({ division: null, name: "", average: null, handicap: null }));
   const lines = rows.length * p.gpn;
   // Fit everything on one landscape page: shrink rows when there are many bowlers/games.
-  const rowH = Math.max(0.3, Math.min(0.55, 5.6 / lines));
+  const rowH = Math.max(0.4, Math.min(0.72, 6.1 / lines));
   const style = { "--lc-row": `${rowH}in` } as CSSProperties;
   return (
     <article className="lane-card" style={style}>
@@ -57,14 +57,22 @@ function TeamPage(p: Props & { side: ScorecardSide }) {
         <p className="lc-teamhc">Team handicap: {p.side.teamHandicap} pins per game</p>
       )}
       <table className="lc-grid">
+        <colgroup>
+          <col className="lc-c-bowler" />
+          <col className="lc-c-gm" />
+          {FRAMES.map((f) => <col key={f} className={f === 10 ? "lc-c-f10" : "lc-c-f"} />)}
+          <col className="lc-c-tot" />
+          {p.showHandicap && <col className="lc-c-hc" />}
+          {p.showHandicap && <col className="lc-c-tot" />}
+        </colgroup>
         <thead>
           <tr>
             <th className="lc-bowler">Bowler</th>
             <th className="lc-gm">Game</th>
-            {FRAMES.map((f) => <th key={f}>{f}</th>)}
+            {FRAMES.map((f) => <th key={f} className={f === 10 ? "lc-f10" : undefined}>{f === 10 ? "10th" : f}</th>)}
             <th className="lc-tot">Total</th>
             {p.showHandicap && <th className="lc-tot">Hdcp</th>}
-            {p.showHandicap && <th className="lc-tot">Total + Hdcp</th>}
+            {p.showHandicap && <th className="lc-tot">Total +Hdcp</th>}
           </tr>
         </thead>
         {rows.map((r, ri) => (
@@ -83,7 +91,7 @@ function TeamPage(p: Props & { side: ScorecardSide }) {
                 )}
                 <td className="lc-gm">{g + 1}</td>
                 {FRAMES.map((f) => (
-                  <td key={f} className="lc-frame">
+                  <td key={f} className={f === 10 ? "lc-frame lc-f10" : "lc-frame"}>
                     <div className="lc-balls"><i /><i /><i /></div>
                     <div className="lc-run" />
                   </td>
@@ -97,7 +105,8 @@ function TeamPage(p: Props & { side: ScorecardSide }) {
         ))}
       </table>
       <p className="lc-key">
-        Each frame: write each ball in the small boxes (up to 3 balls) and the running score below.
+        Each frame: write each ball in the top boxes (up to 3 balls) and the running score in the large box below.
+        10th frame: a strike earns 2 bonus balls, a spare earns 1 — use all three 10th-frame boxes.
         Strike <b>X</b> · Spare <b>/</b> · Miss <b>–</b> · 15 pins per frame (2-3-5-3-2) · Perfect game 450.
       </p>
     </article>
