@@ -109,7 +109,7 @@ function SummaryPage(p: Props) {
   const teamRows = p.showHandicap ? ["Scratch total", "Handicap", "Total with handicap"] : ["Scratch total"];
   return (
     <article className="lane-card lc-summary">
-      <Header {...p} sub="Results &amp; points".replace("&amp;", "&")} />
+      <Header {...p} sub="Results & points" />
       <div className="lc-sumgrid">
         <table className="lc-sum">
           <thead>

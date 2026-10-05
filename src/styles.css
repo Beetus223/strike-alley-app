@@ -241,43 +241,55 @@
   .league-report h3 { break-after: avoid; page-break-after: avoid; }
 }
 
-/* Lane scorecards (screen preview = paper look) */
-.lane-card { background: #fff; color: #000; border: 1px solid #ccc; border-radius: 0.5rem; padding: 0.4in; font-family: var(--font-body, inherit); }
+/* Lane scorecards — physical 5-pin sheet (screen preview mimics paper) */
+.no-divisions .lm-div { display: none; }
+.lane-set { display: grid; gap: 1.5rem; }
+.lane-card { --lc-row: 0.5in; background: #fff; color: #000; border: 1px solid #bbb; border-radius: 0.5rem; padding: 0.35in; font-family: var(--font-body, inherit); overflow-x: auto; }
 .lane-card * { color: #000; }
-.lc-head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 6px; }
-.lc-brand { font-size: 9pt; letter-spacing: 0.15em; text-transform: uppercase; }
-.lc-title { font-family: var(--font-display, inherit); font-size: 22pt; line-height: 1; }
-.lc-meta { font-size: 10pt; margin-top: 2px; }
-.lc-lane { border: 2px solid #000; min-width: 1in; text-align: center; padding: 2px 8px; }
-.lc-lane span { display: block; font-size: 8pt; text-transform: uppercase; letter-spacing: 0.1em; }
-.lc-lane strong { display: block; font-size: 22pt; line-height: 1.1; min-height: 28pt; }
-.lc-match { font-family: var(--font-display, inherit); font-size: 16pt; text-align: center; margin: 6px 0; }
-.lc-match span { font-size: 11pt; padding: 0 8px; }
-.lc-team { margin-top: 6px; }
-.lc-team h3 { font-family: var(--font-display, inherit); font-size: 13pt; margin-bottom: 2px; }
-.lc-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-.lc-table th, .lc-table td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 10pt; }
-.lc-table th { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.05em; background: #eee; }
-.lc-table td { height: 0.36in; }
-.lc-div { width: 0.45in; font-weight: 700; }
-.lc-name { text-align: left !important; }
-.lc-num { width: 0.55in; }
-.lc-write { width: 0.95in; }
-.lc-pts { width: 0.55in; }
-.lc-total td { font-weight: 700; font-size: 9pt; background: #f6f6f6; }
-.lc-points { margin-top: 8px; display: grid; grid-template-columns: 4.5in 1fr; gap: 12px; align-items: end; }
-.lc-points .lc-table td { height: 0.3in; }
-.lc-note { font-size: 8pt; }
+.lc-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; border-bottom: 2.5px solid #000; padding-bottom: 6px; margin-bottom: 8px; }
+.lc-brand { font-size: 8.5pt; letter-spacing: 0.14em; text-transform: uppercase; }
+.lc-title { font-family: var(--font-display, inherit); font-size: 22pt; line-height: 1; margin-top: 2px; }
+.lc-meta { font-size: 10.5pt; margin-top: 2px; }
+.lc-match { font-family: var(--font-display, inherit); font-size: 15pt; margin-top: 3px; }
+.lc-match span { font-size: 10pt; padding: 0 6px; }
+.lc-match em { font-family: var(--font-body, inherit); font-style: normal; font-size: 9.5pt; margin-left: 12px; padding: 1px 8px; border: 1.5px solid #000; border-radius: 3px; vertical-align: middle; }
+.lc-lane { border: 2.5px solid #000; min-width: 1.1in; text-align: center; padding: 2px 10px; }
+.lc-lane span { display: block; font-size: 8pt; text-transform: uppercase; letter-spacing: 0.12em; }
+.lc-lane strong { display: block; font-size: 26pt; line-height: 1.1; min-height: 32pt; }
+.lc-teamhc { font-size: 10pt; font-weight: 700; margin-bottom: 4px; }
+.lc-grid { width: 100%; min-width: 9.5in; border-collapse: collapse; table-layout: fixed; }
+.lc-grid th { font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.05em; border: 1.5px solid #000; padding: 2px; background: #e9e9e9; }
+.lc-grid td { border: 1px solid #000; padding: 0; height: var(--lc-row); text-align: center; vertical-align: middle; }
+.lc-bowlerblock { border-top: 2.5px solid #000; }
+.lc-bowlerblock tr:first-child td { border-top: 2.5px solid #000; }
+.lc-grid th.lc-bowler, .lc-grid td.lc-bowler { width: 1.75in; text-align: left; padding: 3px 6px; vertical-align: top; border-right: 2px solid #000; }
+.lc-bowler strong { display: block; font-size: 11.5pt; line-height: 1.15; }
+.lc-facts { display: flex; flex-wrap: wrap; gap: 2px 10px; margin-top: 3px; font-size: 9pt; }
+.lc-facts b { font-size: 10.5pt; }
+.lc-gm { width: 0.42in; font-weight: 700; font-size: 10pt; }
+.lc-tot { width: 0.72in; border-left: 2px solid #000 !important; }
+.lc-hc { font-weight: 700; font-size: 11pt; }
+.lc-frame { position: relative; }
+.lc-balls { display: flex; justify-content: flex-end; height: 42%; }
+.lc-balls i { width: 33.333%; border-left: 1px solid #000; border-bottom: 1px solid #000; }
+.lc-run { height: 58%; }
+.lc-key { font-size: 8.5pt; margin-top: 6px; }
+.lc-sumgrid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 0.3in; align-items: start; margin-top: 6px; }
+.lc-sum { width: 100%; border-collapse: collapse; }
+.lc-sum th { font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.05em; border: 1.5px solid #000; padding: 3px; background: #e9e9e9; }
+.lc-sum td { border: 1px solid #000; height: 0.42in; min-width: 0.8in; text-align: center; }
+.lc-sum .lc-left { text-align: left; padding: 0 6px; font-size: 10pt; }
+.lc-teamrow td { font-weight: 700; font-size: 11pt; background: #f2f2f2; border-top: 2px solid #000; }
+.lc-sign { display: flex; justify-content: space-between; gap: 1rem; margin-top: 0.4in; font-size: 10pt; }
 
 @media print {
   @page scorecard { size: letter landscape; margin: 0.3in; }
   body:has(#lane-scorecards) *:not(:has(#lane-scorecards)):not(#lane-scorecards):not(#lane-scorecards *) { display: none !important; }
   body *:has(#lane-scorecards) { margin: 0 !important; padding: 0 !important; border: 0 !important; background: #fff !important; box-shadow: none !important; max-width: none !important; }
   #lane-scorecards { page: scorecard; }
-  #lane-scorecards > * + * { margin-top: 0 !important; }
-  .lane-card { border: 0; border-radius: 0; padding: 0; page-break-after: always; break-after: page; break-inside: avoid; }
-  .lane-card:last-child { page-break-after: auto; break-after: auto; }
-  .lc-table th { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  #lane-scorecards > *, .lane-set { display: block; margin: 0 !important; }
+  .lane-card { border: 0; border-radius: 0; padding: 0; overflow: visible; page-break-after: always; break-after: page; break-inside: avoid; }
+  #lane-scorecards > .lane-set:last-child .lane-card:last-child { page-break-after: auto; break-after: auto; }
+  .lc-grid { min-width: 0; }
+  .lc-grid th, .lc-sum th, .lc-teamrow td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
-
-.no-divisions .lm-div { display: none; }
