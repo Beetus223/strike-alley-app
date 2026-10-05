@@ -24,6 +24,7 @@ import { Route as PartiesRouteImport } from './routes/parties'
 import { Route as RentalsRouteImport } from './routes/rentals'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedLeagueManagementRouteImport } from './routes/_authenticated/league-management'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -99,6 +100,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedLeagueManagementRoute =
+  AuthenticatedLeagueManagementRouteImport.update({
+    id: '/league-management',
+    path: '/league-management',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/rentals': typeof RentalsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/league-management': typeof AuthenticatedLeagueManagementRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -131,6 +139,7 @@ export interface FileRoutesByTo {
   '/rentals': typeof RentalsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/league-management': typeof AuthenticatedLeagueManagementRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -149,6 +158,7 @@ export interface FileRoutesById {
   '/rentals': typeof RentalsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/league-management': typeof AuthenticatedLeagueManagementRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/admin'
     | '/dashboard'
+    | '/league-management'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/admin'
     | '/dashboard'
+    | '/league-management'
   id:
     | '__root__'
     | '/'
@@ -200,6 +212,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/_authenticated/league-management'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -325,17 +338,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/league-management': {
+      id: '/_authenticated/league-management'
+      path: '/league-management'
+      fullPath: '/league-management'
+      preLoaderRoute: typeof AuthenticatedLeagueManagementRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedLeagueManagementRoute: typeof AuthenticatedLeagueManagementRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedLeagueManagementRoute: AuthenticatedLeagueManagementRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { PageHeader, Section } from "@/components/site/PageHeader";
@@ -24,8 +24,6 @@ export const Route = createFileRoute("/_authenticated/league-management")({
 
 function Page() {
   const { isStaff, loading } = useAuth();
-  const [, force] = useState(0);
-  void force;
   if (loading) return <Section>Loading…</Section>;
   if (!isStaff) {
     return (
