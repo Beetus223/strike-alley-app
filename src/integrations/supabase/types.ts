@@ -583,6 +583,7 @@ export type Database = {
           start_time: string | null
           team_count: number | null
           updated_at: string
+          uses_divisions: boolean
         }
         Insert: {
           bowlers_per_team?: number | null
@@ -602,6 +603,7 @@ export type Database = {
           start_time?: string | null
           team_count?: number | null
           updated_at?: string
+          uses_divisions?: boolean
         }
         Update: {
           bowlers_per_team?: number | null
@@ -621,6 +623,7 @@ export type Database = {
           start_time?: string | null
           team_count?: number | null
           updated_at?: string
+          uses_divisions?: boolean
         }
         Relationships: [
           {
