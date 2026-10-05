@@ -81,7 +81,7 @@ function TeamPage(p: Props & { side: ScorecardSide }) {
   const rows = p.side.rows.length ? p.side.rows : Array.from({ length: 3 }, () => ({ division: null, name: "", average: null, handicap: null }));
   const lines = rows.length * p.gpn;
   // Fit everything on one landscape page: shrink rows when there are many bowlers/games.
-  const rowH = Math.max(0.4, Math.min(0.72, 6.1 / lines));
+  const rowH = Math.max(0.4, Math.min(0.72, 5.5 / lines));
   const style = { "--lc-row": `${rowH}in` } as CSSProperties;
   return (
     <article className="lane-card" style={style}>
