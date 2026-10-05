@@ -22,24 +22,57 @@ type Props = {
 
 const FRAMES = Array.from({ length: 10 }, (_, i) => i + 1);
 
+function Pin({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 52" className={className} aria-hidden="true">
+      <path d="M10 1c3 0 4.2 3 4.2 6.2 0 2.4-1.3 4-1.6 6 .2 2.6 4.4 6.6 5.6 13.2 1.3 7.5-1.4 15.8-4.4 23.6H6.2C3.2 42.2.5 33.9 1.8 26.4 3 19.8 7.2 15.8 7.4 13.2 7.1 11.2 5.8 9.6 5.8 7.2 5.8 4 7 1 10 1z" />
+      <rect x="6.6" y="12.2" width="6.8" height="1.6" className="lc-pin-stripe" />
+      <rect x="6.4" y="15" width="7.2" height="1.6" className="lc-pin-stripe" />
+    </svg>
+  );
+}
+
+/** 2-3-5-3-2 pin rack motif — the Canadian 5-pin order. */
+function PinRack() {
+  return (
+    <div className="lc-rack" aria-hidden="true">
+      {[2, 3, 5, 3, 2].map((v, i) => (
+        <span key={i} className={v === 5 ? "lc-rack-hp" : undefined}><Pin /><b>{v}</b></span>
+      ))}
+    </div>
+  );
+}
+
 function Header(p: Props & { sub: string }) {
   const dateLabel = new Date(`${p.date}T12:00:00`).toLocaleDateString("en-CA", {
     weekday: "long", month: "long", day: "numeric", year: "numeric",
   });
   return (
     <header className="lc-head">
-      <div>
-        <p className="lc-brand">Vegreville Bowling Lanes · 5-Pin League Scorecard</p>
+      <div className="lc-brandblock">
+        <Pin className="lc-brandpin" />
+        <div>
+          <p className="lc-brand">Vegreville<br />Bowling</p>
+          <p className="lc-since">Lanes • Since 1962</p>
+        </div>
+      </div>
+      <div className="lc-headmain">
+        <p className="lc-kicker"><span className="lc-badge">5-Pin</span> League Scorecard</p>
         <h2 className="lc-title">{p.leagueName}</h2>
         <p className="lc-meta">
-          {[p.season && `${p.season} Season`, `Week ${p.week ?? "—"}`, dateLabel].filter(Boolean).join("  ·  ")}
-        </p>
-        <p className="lc-match">
-          {p.sides[0].team} <span>vs</span> {p.sides[1].team}
-          <em>{p.sub}</em>
+          {p.season && <span>{p.season} Season</span>}
+          <span>Week {p.week ?? "—"}</span>
+          <span>{dateLabel}</span>
         </p>
       </div>
+      <PinRack />
       <div className="lc-lane"><span>Lane</span><strong>{p.lane || "\u00a0"}</strong></div>
+      <div className="lc-match">
+        <strong>{p.sides[0].team}</strong>
+        <span className="lc-vs">VS</span>
+        <strong>{p.sides[1].team}</strong>
+        <em>{p.sub}</em>
+      </div>
     </header>
   );
 }
@@ -48,7 +81,7 @@ function TeamPage(p: Props & { side: ScorecardSide }) {
   const rows = p.side.rows.length ? p.side.rows : Array.from({ length: 3 }, () => ({ division: null, name: "", average: null, handicap: null }));
   const lines = rows.length * p.gpn;
   // Fit everything on one landscape page: shrink rows when there are many bowlers/games.
-  const rowH = Math.max(0.4, Math.min(0.72, 6.1 / lines));
+  const rowH = Math.max(0.4, Math.min(0.72, 5.5 / lines));
   const style = { "--lc-row": `${rowH}in` } as CSSProperties;
   return (
     <article className="lane-card" style={style}>
