@@ -103,7 +103,7 @@ function useInvalidate() {
   const qc = useQueryClient();
   return () => void qc.invalidateQueries({ queryKey: ["lm"] });
 }
-function useSave<T>(fn: (v: T) => Promise<{ error: { message: string } | null }>, msg: string) {
+function useSave<T>(fn: (v: T) => PromiseLike<{ error: { message: string } | null }>, msg: string) {
   const inv = useInvalidate();
   return useMutation({
     mutationFn: async (v: T) => {
