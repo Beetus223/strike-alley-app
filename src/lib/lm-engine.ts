@@ -92,6 +92,7 @@ export type MatchResult = {
   teamGames: { a: number | null; b: number | null }[];
   teamHc: HandicapCalc | null;
   warnings: string[];
+  bowlersA: BowlerInMatch[]; bowlersB: BowlerInMatch[];
 };
 
 const share = (x: number, y: number, pts: number): [number, number] =>
@@ -180,7 +181,7 @@ export function calcMatch(teamA: BowlerInMatch[], teamB: BowlerInMatch[], gpn: n
   const teamPts: [number, number] = bowled ? (useH ? share(teamHdcpA, teamHdcpB, tp) : share(teamTotalA, teamTotalB, tp)) : [0, 0];
   const pointsA = sum(games.map((p) => p[0])) + series[0] + teamPts[0];
   const pointsB = sum(games.map((p) => p[1])) + series[1] + teamPts[1];
-  return { divisions, teamTotalA, teamTotalB, teamHdcpA, teamHdcpB, teamPts, pointsA, pointsB, mode, breakdown: { games, series, team: teamPts }, teamGames, teamHc, warnings };
+  return { divisions, teamTotalA, teamTotalB, teamHdcpA, teamHdcpB, teamPts, pointsA, pointsB, mode, breakdown: { games, series, team: teamPts }, teamGames, teamHc, warnings, bowlersA: teamA, bowlersB: teamB };
 }
 
 export type MemberRef = { team_id: string; bowler_id: string; division_code: string | null; entering_average: number | null; is_active: boolean };

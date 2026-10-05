@@ -825,6 +825,30 @@ function MatchResultView({ o, gpn, rules }: { o: MatchOutcome; gpn: number; rule
             <th className="px-1">Series</th><th className="px-1">Pts</th>
           </tr></thead>
           <tbody>
+            {r.mode === "team" && ([["a", r.bowlersA], ["b", r.bowlersB]] as const).flatMap(([k, list]) => [
+              ...list.map((bw, j) => {
+                const scratch = bw.games.filter((x): x is number => x != null).reduce((a, b) => a + b, 0);
+                return (
+                  <tr key={k + bw.bowler_id} className={`border-t border-border ${j === 0 ? "border-t-2" : ""}`}>
+                    <td className="pr-2">{bw.division ?? "—"}</td>
+                    <td className="pr-2 font-semibold">{bw.name}</td>
+                    <td className="pr-2 tabular-nums">{bw.average == null ? <span className="text-muted-foreground">not est.</span> : f0(bw.average)}</td>
+                    <td className="pr-2"></td>
+                    {Array.from({ length: gpn }, (_, i) => <td key={i} className="px-1 tabular-nums">{bw.games[i] ?? "—"}</td>)}
+                    <td className="px-1 tabular-nums">{scratch || "—"}</td><td></td>
+                  </tr>
+                );
+              }),
+              <tr key={k + "tot"} className="border-t border-border font-semibold">
+                <td></td>
+                <td className="pr-2">{k === "a" ? o.match.team_a_name : o.match.team_b_name} {useH ? "(with hdcp)" : "(scratch)"}</td>
+                <td></td>
+                <td className="pr-2 tabular-nums">{(k === "a" ? r.teamHc?.a : r.teamHc?.b) || ""}</td>
+                {r.teamGames.map((tg, i) => <td key={i} className="px-1 tabular-nums">{(k === "a" ? tg.a : tg.b) ?? "—"}</td>)}
+                <td className="px-1 tabular-nums">{k === "a" ? (useH ? r.teamHdcpA : r.teamTotalA) : (useH ? r.teamHdcpB : r.teamTotalB)}</td>
+                <td className="px-1 tabular-nums">{fPts(k === "a" ? r.pointsA : r.pointsB)}</td>
+              </tr>,
+            ])}
             {r.divisions.flatMap((d) => (["a", "b"] as const).map((k) => {
               const bw = d[k]; const hc = d.hc[k]; const idx = k === "a" ? 0 : 1;
               const pts = d.gamePts.reduce((s2, p) => s2 + p[idx], 0) + d.seriesPts[idx];
@@ -844,7 +868,22 @@ function MatchResultView({ o, gpn, rules }: { o: MatchOutcome; gpn: number; rule
           </tbody>
         </table>
       </div>
+      <div className="rounded-lg border border-border p-3">
+        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Points breakdown ({o.match.team_a_name} – {o.match.team_b_name})</p>
+        <table className="text-sm tabular-nums"><tbody>
+          {r.breakdown.games.map((p, i) => <tr key={i}><td className="pr-4">Game {i + 1}</td><td>{fPts(p[0])} – {fPts(p[1])}</td></tr>)}
+          <tr><td className="pr-4">Series</td><td>{fPts(r.breakdown.series[0])} – {fPts(r.breakdown.series[1])}</td></tr>
+          <tr><td className="pr-4">Team/Match</td><td>{fPts(r.breakdown.team[0])} – {fPts(r.breakdown.team[1])}</td></tr>
+          <tr className="border-t border-border font-semibold"><td className="pr-4">Total</td><td>{fPts(r.pointsA)} – {fPts(r.pointsB)}</td></tr>
+        </tbody></table>
+      </div>
+      {r.warnings.length > 0 && (
+        <ul className="rpt-noprint list-disc space-y-0.5 rounded-lg border border-primary/40 bg-primary/5 p-3 pl-6 text-xs">
+          {r.warnings.map((w) => <li key={w}>{w}</li>)}
+        </ul>
+      )}
       <ul className="text-xs text-muted-foreground">
+        {r.mode === "team" && r.teamHc && <li>Team-vs-team scoring (no divisions assigned). Handicap: {r.teamHc.explain}</li>}
         {r.divisions.map((d) => <li key={d.division}>Division {d.division}: {d.hc.explain}</li>)}
         <li>Team totals — scratch {r.teamTotalA} vs {r.teamTotalB}; with handicap {r.teamHdcpA} vs {r.teamHdcpB}. Team points {fPts(r.teamPts[0])} – {fPts(r.teamPts[1])} ({useH ? "with handicap" : "scratch"}).</li>
       </ul>
