@@ -14,7 +14,7 @@ describe("lane scorecard sheet planning", () => {
     ]);
   });
   it("covers every game exactly once for each bowler", () => {
-    for (const [b, g] of [[4, 3], [5, 3], [6, 4], [8, 4], [20, 3]]) {
+    for (const [b, g] of [[4, 3], [5, 3], [6, 4], [8, 4], [20, 3]] as [number, number][]) {
       const plan = planTeamSheets(b, g);
       for (let bi = 0; bi < b; bi++) {
         const seen = plan.filter((s) => bi >= s.bowlers[0] && bi < s.bowlers[1]).flatMap((s) => s.games).sort();

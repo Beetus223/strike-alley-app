@@ -46,7 +46,7 @@ export function PrintPreview({
         box.appendChild(c);
         const h = c.scrollHeight;
         if (h <= ch + 1) { out.push({ node: c, offset: 0, height: h }); continue; }
-        console.warn("Scorecard sheet taller than one page", card.dataset.sheet, h, ch);
+        console.warn("Scorecard sheet taller than one page", card.dataset["sheet"], h, ch);
         // Too tall for one sheet: break between bowlers (same as print), repeating the column headings.
         const top = c.getBoundingClientRect().top;
         const cuts = Array.from(c.querySelectorAll<HTMLElement>(".lc-bowlerblock, .lc-grid thead, .lc-key, .lc-sign, table"))
