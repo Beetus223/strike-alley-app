@@ -336,8 +336,6 @@ function Dashboard() {
           </div>
         )}
       </Section>
-
-      </Section>
       )}
 
       {sessions.size > 0 && (
