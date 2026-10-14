@@ -12,4 +12,5 @@
 - Internal league management lives in `lm_*` tables (separate from public `leagues` listing); completed `lm_league_nights` are locked by trigger and scores store name snapshots so history never rewrites.
 - Internal league results (handicap, points, standings, averages, highs) are computed by `src/lib/lm-engine.ts` from raw `lm_night_scores` + `lm_league_rules`; the Staff Dashboard no longer hosts score/report/bowler tools — League Management is the only home.
 - Completed league nights use the `average_at_time`/`handicap_at_time` snapshots saved on `lm_night_scores` (team mode stores the team's per-game handicap on each bowler row); corrections on reopened nights carry the original snapshot forward; only the explicit, confirmed "Recalculate saved averages & handicaps" option in Score Entry replaces them.
+- Bowlers read their own League Management results only through the self-scoped `my_lm_scores`/`my_lm_memberships` database functions (completed nights only); never grant bowlers direct reads on `lm_*` tables.
 - Scoring rules are covered by `src/lib/lm-engine.test.ts` (vitest, `bun run test`); update it when engine math changes.
