@@ -240,7 +240,8 @@
   .rpt-table tr { break-inside: avoid; page-break-inside: avoid; }
   .league-report h3 { break-after: avoid; page-break-after: avoid; }
   #league-report h4, #league-report .rpt-keepnext { break-after: avoid; page-break-after: avoid; }
-  #league-report .rpt-keep, #league-report .rpt-match > .overflow-x-auto { break-inside: avoid; page-break-inside: avoid; }
+  #league-report .rpt-keep, #league-report .rpt-match, #league-report .rpt-match > .overflow-x-auto { break-inside: avoid; page-break-inside: avoid; }
+  #league-report .rpt-match { display: block; }
   #league-report .overflow-x-auto { overflow: visible !important; }
 }
 
