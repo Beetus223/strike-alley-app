@@ -1004,14 +1004,10 @@ function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
       if (!match || !night || !preview) return;
       const { rows, clears } = buildRows();
       // snapshot the average and handicap used tonight so history never changes
-      const info = new Map<string, { avg: number | null; hc: number }>();
-      for (const d of preview.result.divisions) {
-        if (d.a) info.set(d.a.bowler_id, { avg: d.a.average, hc: d.hc.a });
-        if (d.b) info.set(d.b.bowler_id, { avg: d.b.average, hc: d.hc.b });
-      }
+      const info = snapshotsFor(preview.result);
       const full = rows.map((r) => {
         const i = info.get(r.bowler_id!);
-        return { ...r, average_at_time: i?.avg == null ? null : Math.floor(i.avg), handicap_at_time: i?.hc ?? 0 };
+        return { ...r, average_at_time: i?.avg ?? null, handicap_at_time: i?.hc ?? 0 };
       });
       if (full.length) {
         const { error } = await supabase.from("lm_night_scores").upsert(full, { onConflict: "night_id,bowler_id,game_number" });
