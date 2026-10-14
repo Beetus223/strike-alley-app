@@ -92,7 +92,7 @@ describe("correcting a reopened night", () => {
       { team_id: "TB", bowler_id: "b1", division_code: divs ? "A" : null, entering_average: 200, is_active: true },
     ];
     const rows = saved.map((r) => {
-      const base = { ...r, average_at_time: undefined, handicap_at_time: undefined, score: r.bowler_id === "a1" && r.game_number === 1 ? 175 : r.score };
+      const base = { ...r, average_at_time: null, handicap_at_time: null, score: r.bowler_id === "a1" && r.game_number === 1 ? 175 : r.score };
       const snap = recalculate ? null : existingSnapshot(saved, "n1", r.bowler_id!);
       return { ...base, ...(snap ?? {}) };
     });
