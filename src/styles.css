@@ -332,7 +332,9 @@
   body *:has(#lane-scorecards) { margin: 0 !important; padding: 0 !important; border: 0 !important; background: #fff !important; box-shadow: none !important; max-width: none !important; }
   #lane-scorecards { page: scorecard; }
   #lane-scorecards > *, .lane-set { display: block; margin: 0 !important; }
-  .lane-card { border: 0; border-radius: 0; padding: 8px 0 0; overflow: visible; page-break-after: always; break-after: page; break-inside: avoid; }
+  .lane-card { border: 0; border-radius: 0; padding: 8px 0 0; overflow: visible; page-break-after: always; break-after: page; }
+  .lc-bowlerblock, .lc-head, .lc-key { break-inside: avoid; page-break-inside: avoid; }
+  .lc-grid thead { display: table-header-group; }
   #lane-scorecards > .lane-set:last-child .lane-card:last-child { page-break-after: auto; break-after: auto; }
   .lc-grid { min-width: 0; }
 }

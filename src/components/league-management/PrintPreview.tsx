@@ -13,7 +13,7 @@ const PAPER = {
   landscape: { w: 11 * DPI, h: 8.5 * DPI, m: 0.3 * DPI },
 };
 
-type Page = { node: HTMLElement; offset: number; height: number; overflow: boolean };
+type Page = { node: HTMLElement; offset: number; height: number; overflow?: boolean; head?: HTMLElement | null };
 
 export function PrintPreview({
   open, onClose, targetId, orientation, mode, title,
@@ -45,7 +45,26 @@ export function PrintPreview({
         const c = strip(card.cloneNode(true) as HTMLElement);
         box.appendChild(c);
         const h = c.scrollHeight;
-        out.push({ node: c, offset: 0, height: Math.min(h, ch), overflow: h > ch + 1 });
+        if (h <= ch + 1) { out.push({ node: c, offset: 0, height: h }); continue; }
+        // Too tall for one sheet: break between bowlers (same as print), repeating the column headings.
+        const top = c.getBoundingClientRect().top;
+        const cuts = Array.from(c.querySelectorAll<HTMLElement>(".lc-bowlerblock, .lc-grid thead, .lc-key, .lc-sign, table"))
+          .map((el) => el.getBoundingClientRect().bottom - top).sort((a, b) => a - b);
+        const table = c.querySelector("table.lc-grid");
+        let head: HTMLElement | null = null;
+        if (table) {
+          const t = table.cloneNode(false) as HTMLElement;
+          for (const part of Array.from(table.children)) if (part.tagName === "COLGROUP" || part.tagName === "THEAD") t.appendChild(part.cloneNode(true));
+          head = t;
+        }
+        let start = 0, first = true;
+        while (start < h - 1) {
+          const room = ch - (first || !head ? 0 : 60);
+          let end = h <= start + room ? h : cuts.filter((y) => y > start + 40 && y <= start + room).pop() ?? start + room;
+          if (end <= start) end = start + room;
+          out.push({ node: c, offset: start, height: end - start, head: first ? null : head });
+          start = end; first = false;
+        }
       }
     } else {
       const c = strip(src.cloneNode(true) as HTMLElement);
@@ -60,7 +79,7 @@ export function PrintPreview({
         const limit = start + ch;
         let end = total <= limit ? total : cuts.filter((y) => y > start + 40 && y <= limit).pop() ?? limit;
         if (end <= start) end = limit;
-        out.push({ node: c, offset: start, height: end - start, overflow: false });
+        out.push({ node: c, offset: start, height: end - start });
         start = end;
       }
     }
@@ -86,7 +105,6 @@ export function PrintPreview({
 
   if (!open) return null;
   const step = (d: number) => { setFit(null); setZoom((z) => Math.max(0.25, Math.min(2, +(z + d).toFixed(2)))); };
-  const overflowCount = pages.filter((p) => p.overflow).length;
 
   return createPortal(
     <div className="pp-overlay fixed inset-0 z-[100] flex flex-col bg-background/95" role="dialog" aria-modal="true" aria-label={`Print preview: ${title}`}>
@@ -100,14 +118,12 @@ export function PrintPreview({
         <Button size="sm" onClick={() => window.print()}>Print</Button>
         <Button variant="outline" size="sm" onClick={onClose}>Close preview</Button>
       </div>
-      {overflowCount > 0 && (
-        <p className="bg-primary/10 px-4 py-2 text-sm text-primary">{overflowCount} sheet{overflowCount > 1 ? "s are" : " is"} taller than one page and will continue onto an extra sheet when printed.</p>
-      )}
       <div ref={viewRef} className="pp-desk flex-1 overflow-auto p-6">
         <div className="mx-auto flex flex-col items-center gap-6" style={{ width: paper.w * zoom }}>
           {pages.map((p, i) => (
             <div key={i} style={{ width: paper.w * zoom, height: paper.h * zoom }}>
               <div className="pp-paper relative" style={{ width: paper.w, height: paper.h, padding: paper.m, transform: `scale(${zoom})`, transformOrigin: "top left" }}>
+                {p.head && <div className="pp-scope pp-head" style={{ width: cw }}><HeadClone node={p.head} /></div>}
                 <div className="overflow-hidden" style={{ width: cw, height: p.height }}>
                   <Clone node={p.node} offset={p.offset} />
                 </div>
@@ -123,6 +139,12 @@ export function PrintPreview({
     </div>,
     document.body,
   );
+}
+
+function HeadClone({ node }: { node: HTMLElement }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => { const el = ref.current; if (el) { el.innerHTML = ""; el.appendChild(node.cloneNode(true)); } }, [node]);
+  return <div ref={ref} className="lane-card" style={{ padding: 0 }} />;
 }
 
 function Clone({ node, offset }: { node: HTMLElement; offset: number }) {
