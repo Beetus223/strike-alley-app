@@ -78,7 +78,7 @@ export function PrintPreview({
       // Keep-together zones (same intent as the print CSS break-inside/break-after rules):
       // points boxes, results tables, and a heading with the start of what follows it.
       const zones: [number, number][] = [];
-      for (const el of Array.from(c.querySelectorAll<HTMLElement>(".rpt-keep, .rpt-match > .overflow-x-auto"))) {
+      for (const el of Array.from(c.querySelectorAll<HTMLElement>(".rpt-keep, .rpt-match, .rpt-match > .overflow-x-auto"))) {
         const r = el.getBoundingClientRect(); zones.push([r.top - top, r.bottom - top]);
       }
       for (const el of Array.from(c.querySelectorAll<HTMLElement>("h4, .rpt-keepnext"))) {
