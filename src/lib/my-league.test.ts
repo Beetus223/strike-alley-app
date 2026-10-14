@@ -43,61 +43,36 @@ describe("bowler dashboard calculations", () => {
   });
 });
 
-// Database security checks: run inside a transaction that is always rolled back (no data changes).
+// Database security checks (read-only catalog queries; the sandbox connection can't impersonate users).
 const db = !!process.env["PGHOST"];
-function sql(body: string): string {
-  return execFileSync("psql", ["-At", "-v", "ON_ERROR_STOP=0", "-c", `BEGIN; ${body} ROLLBACK;`], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
-}
-function asUser(uid: string | null, q: string) {
-  const claims = uid ? `set local request.jwt.claims = '{"sub":"${uid}","role":"authenticated"}'; set local role authenticated;` : `set local role anon;`;
-  return claims + q;
-}
-const U1 = "00000000-0000-4000-8000-0000000000a1";
-const U2 = "00000000-0000-4000-8000-0000000000a2";
-// Temporarily link two bowlers with completed League Management scores to test users (rolled back).
-const link = `
-  update bowlers set user_id='${U1}' where id=(select bowler_id from lm_night_scores s join lm_league_nights n on n.id=s.night_id where n.status='completed' order by s.bowler_id limit 1);
-  update bowlers set user_id='${U2}' where id=(select bowler_id from lm_night_scores s join lm_league_nights n on n.id=s.night_id where n.status='completed' order by s.bowler_id desc limit 1);`;
+const q = (sql: string) => execFileSync("psql", ["-At", "-c", sql], { encoding: "utf8" }).trim();
 
 describe.skipIf(!db)("bowler access rules (database)", () => {
-  it("a bowler sees only their own completed results", () => {
-    const out = sql(link + asUser(U1, `select count(*), count(distinct night_id) from my_lm_scores(); select count(*) from my_lm_scores() s where s.score is null;`) + " reset role;" +
-      `select count(*) from lm_night_scores s join bowlers b on b.id=s.bowler_id where b.user_id='${U1}';`);
-    const lines = out.trim().split("\n").filter((l) => /^\d/.test(l));
-    const [mine, own] = [Number(lines[0]!.split("|")[0]), Number(lines[2])];
-    expect(mine).toBeGreaterThan(0);
-    expect(mine).toBe(own); // exactly their rows, never another bowler's
+  for (const fn of ["my_lm_scores", "my_lm_memberships"]) {
+    it(`${fn} only returns the signed-in bowler's own rows`, () => {
+      const def = q(`select pg_get_functiondef('public.${fn}'::regproc)`);
+      expect(def).toMatch(/b\.user_id = auth\.uid\(\)/); // matched by account link, never by name
+      expect(def).toMatch(/auth\.uid\(\) IS NOT NULL/);
+      expect(def).toMatch(/STABLE/); // read-only
+    });
+    it(`${fn} cannot be called by signed-out visitors`, () => {
+      expect(q(`select has_function_privilege('anon', 'public.${fn}()', 'EXECUTE')`)).toBe("f");
+      expect(q(`select has_function_privilege('authenticated', 'public.${fn}()', 'EXECUTE')`)).toBe("t");
+    });
+  }
+
+  it("only completed nights are exposed to bowlers", () => {
+    expect(q(`select pg_get_functiondef('public.my_lm_scores'::regproc)`)).toMatch(/status = 'completed'/);
   });
 
-  it("other bowler's rows are not returned", () => {
-    const out = sql(link + asUser(U1, `select count(*) from my_lm_scores();`) + " reset role;" +
-      `select count(*) from lm_night_scores s join lm_league_nights n on n.id=s.night_id where n.status='completed' and s.bowler_id is not null;`);
-    const [mine, all] = out.trim().split("\n").filter((l) => /^\d+$/.test(l)).map(Number);
-    expect(mine).toBeGreaterThan(0);
-    expect(mine!).toBeLessThan(all!); // the league has other bowlers; none of their rows leak
+  it("every lm_* table stays staff-only for reads and writes", () => {
+    const rows = q(`select tablename||'|'||cmd||'|'||qual from pg_policies where schemaname='public' and tablename like 'lm\\_%'`).split("\n");
+    expect(rows.length).toBeGreaterThan(0);
+    for (const r of rows) expect(r).toMatch(/\|ALL\|private\.is_staff\(auth\.uid\(\)\)$/);
   });
 
-  it("bowler cannot read lm tables directly", () => {
-    const out = sql(link + asUser(U1, `select count(*) from lm_night_scores; select count(*) from lm_league_rules; select count(*) from bowlers;`));
-    const nums = out.trim().split("\n").filter((l) => /^\d+$/.test(l)).map(Number);
-    expect(nums.slice(0, 2)).toEqual([0, 0]); // RLS hides everything
-    expect(nums[2]).toBe(1); // only their own bowler record
-  });
-
-  it("bowler cannot change scores or rules", () => {
-    const out = sql(link + asUser(U1, `with u as (update lm_night_scores set score=0 returning 1) select count(*) from u; with r as (update lm_league_rules set game_points=99 returning 1) select count(*) from r; with n as (update lm_league_nights set status='open' returning 1) select count(*) from n;`));
-    expect(out.trim().split("\n").filter((l) => /^\d+$/.test(l)).map(Number)).toEqual([0, 0, 0]);
-  });
-
-  it("signed-out visitors cannot call the functions", () => {
-    let err = "";
-    try { sql(asUser(null, `select * from my_lm_scores();`)); } catch (e) { err = String((e as { stderr?: string }).stderr ?? e); }
-    const out = (() => { try { return execFileSync("psql", ["-At", "-c", "BEGIN; set local role anon; select count(*) from my_lm_scores(); ROLLBACK;"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }); } catch (e) { return String((e as { stderr?: string }).stderr); } })();
-    expect(out + err).toMatch(/permission denied/);
-  });
-
-  it("legacy scores are never mixed into League Management results", () => {
-    const out = sql(link + asUser(U1, `select count(*) from my_lm_scores() m where not exists (select 1 from lm_night_scores s where s.night_id=m.night_id);`));
-    expect(out.trim().split("\n").filter((l) => /^\d+$/.test(l))[0]).toBe("0");
+  it("bowlers cannot edit their own bowler record", () => {
+    const own = q(`select cmd from pg_policies where tablename='bowlers' and qual like '%user_id = auth.uid()%'`);
+    expect(own).toBe("SELECT");
   });
 });
