@@ -239,6 +239,9 @@
   .rpt-table thead { display: table-header-group; }
   .rpt-table tr { break-inside: avoid; page-break-inside: avoid; }
   .league-report h3 { break-after: avoid; page-break-after: avoid; }
+  #league-report h4, #league-report .rpt-keepnext { break-after: avoid; page-break-after: avoid; }
+  #league-report .rpt-keep, #league-report .rpt-match > .overflow-x-auto { break-inside: avoid; page-break-inside: avoid; }
+  #league-report .overflow-x-auto { overflow: visible !important; }
 }
 
 /* Lane scorecards — branded retro 5-pin sheet (screen preview mimics paper).
@@ -295,11 +298,11 @@
 .lc-grid td { border-left: 1px solid #8a8f9c; border-top: 1px solid #8a8f9c; padding: 0; height: var(--lc-row); text-align: center; vertical-align: middle; }
 .lc-bowlerblock:nth-of-type(even) td.lc-bowler, .lc-bowlerblock:nth-of-type(even) td.lc-gm { background: var(--lc-tint); }
 .lc-bowlerblock tr:first-child td { border-top: 2.5px solid var(--lc-ink); }
-.lc-grid td.lc-bowler { text-align: left; padding: 4px 6px 4px 9px; vertical-align: top; border-left: 0; border-right: 2px solid var(--lc-ink); overflow: hidden; position: relative; }
+.lc-grid td.lc-bowler { text-align: left; padding: 3px 5px 3px 9px; vertical-align: top; border-left: 0; border-right: 2px solid var(--lc-ink); overflow: hidden; position: relative; }
 .lc-grid td.lc-bowler::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--lc-red); }
 .lc-bowler strong { display: block; font-family: var(--font-display, inherit); font-weight: 800; font-size: 11pt; line-height: 1.1; text-transform: uppercase; }
-.lc-facts { display: flex; flex-direction: column; gap: 1px; margin-top: 4px; font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.08em; }
-.lc-facts span { display: flex; justify-content: space-between; border-bottom: 1px dotted #9a9a9a; }
+.lc-facts { display: flex; flex-wrap: wrap; gap: 1px 8px; margin-top: 2px; font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.08em; }
+.lc-facts span { display: inline-flex; gap: 3px; align-items: baseline; }
 .lc-facts b { font-size: 10pt; letter-spacing: 0; }
 .lc-grid td.lc-gm { font-family: var(--font-display, inherit); font-weight: 900; font-size: 13pt; color: var(--lc-red) !important; border-left: 0; position: relative; }
 .lc-grid td.lc-gm::after { content: "GAME"; position: absolute; top: 2px; left: 0; right: 0; font-size: 5.5pt; letter-spacing: 0.12em; color: var(--lc-ink); font-weight: 700; }
@@ -307,11 +310,11 @@
 .lc-hc { font-weight: 700; font-size: 11pt; }
 .lc-grid td.lc-frame { border-left: 2px solid var(--lc-ink); }
 .lc-grid td.lc-f10 { border-left: 3px solid var(--lc-red) !important; background: color-mix(in oklab, var(--lc-red) 5%, #fff); }
-.lc-balls { display: flex; height: 44%; justify-content: flex-end; }
+.lc-balls { display: flex; height: calc(var(--lc-row) * 0.44); justify-content: flex-end; }
 .lc-balls i { flex: 0 0 31%; border-left: 1px solid #8a8f9c; border-bottom: 1px solid #8a8f9c; background: #fff; }
 .lc-f10 .lc-balls i { flex: 1; }
 .lc-f10 .lc-balls i:first-child { border-left: 0; }
-.lc-run { height: 56%; background: var(--lc-tint); }
+.lc-run { height: calc(var(--lc-row) * 0.56 - 1px); background: var(--lc-tint); }
 .lc-f10 .lc-run { background: transparent; border-top: 1px dashed var(--lc-red); }
 .lc-key { font-size: 8pt; margin-top: 6px; padding-left: 8px; border-left: 3px solid var(--lc-gold); }
 .lc-key b { color: var(--lc-red) !important; }
@@ -332,7 +335,7 @@
   body *:has(#lane-scorecards) { margin: 0 !important; padding: 0 !important; border: 0 !important; background: #fff !important; box-shadow: none !important; max-width: none !important; }
   #lane-scorecards { page: scorecard; }
   #lane-scorecards > *, .lane-set { display: block; margin: 0 !important; }
-  .lane-card { border: 0; border-radius: 0; padding: 8px 0 0; overflow: visible; page-break-after: always; break-after: page; }
+  .lane-card { border: 0; border-radius: 0; padding: 8px 0 0; overflow: visible; page-break-after: always; break-after: page; break-inside: avoid; page-break-inside: avoid; }
   .lc-bowlerblock, .lc-head, .lc-key { break-inside: avoid; page-break-inside: avoid; }
   .lc-grid thead { display: table-header-group; }
   #lane-scorecards > .lane-set:last-child .lane-card:last-child { page-break-after: auto; break-after: auto; }

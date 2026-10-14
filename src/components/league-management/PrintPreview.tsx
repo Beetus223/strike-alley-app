@@ -46,6 +46,7 @@ export function PrintPreview({
         box.appendChild(c);
         const h = c.scrollHeight;
         if (h <= ch + 1) { out.push({ node: c, offset: 0, height: h }); continue; }
+        console.warn("Scorecard sheet taller than one page", card.dataset["sheet"], h, ch);
         // Too tall for one sheet: break between bowlers (same as print), repeating the column headings.
         const top = c.getBoundingClientRect().top;
         const cuts = Array.from(c.querySelectorAll<HTMLElement>(".lc-bowlerblock, .lc-grid thead, .lc-key, .lc-sign, table"))
@@ -74,10 +75,25 @@ export function PrintPreview({
       // Candidate break points: bottoms of rows, headings and blocks — never inside a table row.
       const cuts = Array.from(c.querySelectorAll<HTMLElement>("tr, h3, h4, p, li, header, table, section, article > div, ul"))
         .map((el) => el.getBoundingClientRect().bottom - top).filter((y) => y > 0).sort((a, b) => a - b);
+      // Keep-together zones (same intent as the print CSS break-inside/break-after rules):
+      // points boxes, results tables, and a heading with the start of what follows it.
+      const zones: [number, number][] = [];
+      for (const el of Array.from(c.querySelectorAll<HTMLElement>(".rpt-keep, .rpt-match > .overflow-x-auto"))) {
+        const r = el.getBoundingClientRect(); zones.push([r.top - top, r.bottom - top]);
+      }
+      for (const el of Array.from(c.querySelectorAll<HTMLElement>("h4, .rpt-keepnext"))) {
+        const nx = (el.classList.contains("rpt-keepnext") ? el : el.parentElement?.classList.contains("rpt-keepnext") ? el.parentElement : el)?.nextElementSibling as HTMLElement | null;
+        const r = el.getBoundingClientRect();
+        const nb = nx ? Math.min(nx.getBoundingClientRect().bottom, nx.getBoundingClientRect().top + 80) : r.bottom;
+        zones.push([r.top - top, nb - top]);
+      }
+      const ok = (y: number) => !zones.some(([a, b]) => b - a <= ch && y > a + 1 && y < b - 1);
+      const tops = zones.map(([a]) => a);
       let start = 0;
       while (start < total - 1) {
         const limit = start + ch;
-        let end = total <= limit ? total : cuts.filter((y) => y > start + 40 && y <= limit).pop() ?? limit;
+        const cand = [...cuts, ...tops].filter((y) => y > start + 40 && y <= limit && ok(y)).sort((a, b) => a - b);
+        let end = total <= limit ? total : cand.pop() ?? cuts.filter((y) => y > start + 40 && y <= limit).pop() ?? limit;
         if (end <= start) end = limit;
         out.push({ node: c, offset: start, height: end - start });
         start = end;

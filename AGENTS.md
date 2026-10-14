@@ -15,3 +15,4 @@
 - Bowlers read their own League Management results only through the self-scoped `my_lm_scores`/`my_lm_memberships` database functions (completed nights only); never grant bowlers direct reads on `lm_*` tables.
 - Scoring rules are covered by `src/lib/lm-engine.test.ts` (vitest, `bun run test`); update it when engine math changes.
 - Print previews (`src/components/league-management/PrintPreview.tsx`) clone the real printable element by id and paginate it on Letter paper; never build a separate preview layout — keep `.pp-scope` CSS in sync with the `@media print` rules.
+- Lane scorecards print one whole sheet per page: `planTeamSheets` in `ScorecardSheet.tsx` groups games (then bowlers) onto extra sheets instead of shrinking boxes below the minimum row height or letting a sheet break across pages; covered by `scorecard-plan.test.ts`.
