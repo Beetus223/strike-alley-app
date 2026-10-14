@@ -211,6 +211,8 @@ export function lineups(
   nights: NightRef[],
   names: Map<string, string>,
   gpn: number,
+  /** true = ignore saved snapshots and recalculate from current averages (explicit staff action only). */
+  recalculate = false,
 ) {
   const side = (teamId: string | null): BowlerInMatch[] => {
     if (!teamId) return [];
@@ -219,7 +221,8 @@ export function lineups(
     return [...ids].map((bid) => {
       const m = members.find((x) => x.bowler_id === bid && x.team_id === teamId);
       const mine = scores.filter((s) => s.bowler_id === bid && s.night_id === night.id);
-      const snap = night.status === "completed" ? mine.find((s) => s.average_at_time != null) : undefined;
+      // Saved snapshots are kept by default (completed AND reopened nights); only an explicit recalculation ignores them.
+      const snap = recalculate ? undefined : mine.find((s) => s.average_at_time != null);
       const live = averageBefore(bid, night.night_date, allScores, nights, m?.entering_average ?? null);
       return {
         bowler_id: bid,
