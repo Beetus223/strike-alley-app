@@ -1262,6 +1262,36 @@ export type Database = {
     }
     Functions: {
       generate_bowler_id: { Args: never; Returns: string }
+      my_lm_memberships: {
+        Args: never
+        Returns: {
+          entering_average: number
+          games_per_night: number
+          handicap_base: number
+          handicap_method: string
+          handicap_percent: number
+          is_active: boolean
+          league_id: string
+          league_name: string
+          season: string
+          team_name: string
+        }[]
+      }
+      my_lm_scores: {
+        Args: never
+        Returns: {
+          average_at_time: number
+          game_number: number
+          handicap_at_time: number
+          league_id: string
+          league_name: string
+          night_date: string
+          night_id: string
+          score: number
+          team_name: string
+          week_number: number
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "staff" | "player"
