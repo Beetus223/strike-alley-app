@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calcMatch, lineups, snapshotsFor, type MemberRef, type NightRef, type RawScore, type Rules, type BowlerInMatch } from "./lm-engine";
+import { calcMatch, existingSnapshot, lineups, snapshotsFor, type MemberRef, type NightRef, type RawScore, type Rules, type BowlerInMatch } from "./lm-engine";
 
 // Isolated in-memory data only — never touches the database.
 const rules: Rules = { handicap_method: "difference_between_bowlers", handicap_percent: 80, handicap_base: null, points_with_handicap: true, game_points: 2, series_points: 2, team_points: 2 };
@@ -79,5 +79,38 @@ describe("existing scoring math unchanged", () => {
   it("percent-of-base handicap floors", () => {
     const r = calcMatch([p([100], 151)], [p([100], 199)], 1, { ...rules, handicap_method: "percent_of_base", handicap_base: 250 });
     expect([r.teamHc!.a, r.teamHc!.b]).toEqual([79, 40]);
+  });
+});
+
+describe("correcting a reopened night", () => {
+  // Simulates Score Entry on a reopened night: a game is corrected, average later edited 150 -> 190.
+  function correct(divs: boolean, recalculate: boolean) {
+    const saved = save(divs);
+    const reopened: NightRef = { id: "n1", night_date: "2026-10-01", status: "scheduled", week_number: 1 };
+    const members: MemberRef[] = [
+      { team_id: "TA", bowler_id: "a1", division_code: divs ? "A" : null, entering_average: 190, is_active: true },
+      { team_id: "TB", bowler_id: "b1", division_code: divs ? "A" : null, entering_average: 200, is_active: true },
+    ];
+    const rows = saved.map((r) => {
+      const base = { ...r, average_at_time: null, handicap_at_time: null, score: r.bowler_id === "a1" && r.game_number === 1 ? 175 : r.score };
+      const snap = recalculate ? null : existingSnapshot(saved, "n1", r.bowler_id!);
+      return { ...base, ...(snap ?? {}) };
+    });
+    const { a, b } = lineups(match, reopened, members, rows, rows, [reopened], names, 2, recalculate);
+    const result = calcMatch(a, b, 2, rules);
+    return { result, snap: snapshotsFor(result) };
+  }
+  for (const divs of [true, false]) {
+    it(`keeps original snapshots by default (${divs ? "divisions" : "team"})`, () => {
+      const { result, snap } = correct(divs, false);
+      expect(snap.get("a1")).toEqual({ avg: 150, hc: 40 });
+      expect(result.breakdown.games[0]).toEqual([2, 0]); // corrected 175+40=215 beats 200
+    });
+    it(`explicit recalculation uses current averages (${divs ? "divisions" : "team"})`, () => {
+      expect(correct(divs, true).snap.get("a1")).toEqual({ avg: 190, hc: 8 });
+    });
+  }
+  it("existingSnapshot returns null when none was saved (no invented values)", () => {
+    expect(existingSnapshot(setup(false, 150, "scheduled").scores, "n1", "a1")).toBeNull();
   });
 });
