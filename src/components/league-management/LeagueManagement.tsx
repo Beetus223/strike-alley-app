@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Field, PanelIntro, TextField } from "@/components/site/AdminField";
 import { EditBowlerDialog } from "./EditBowlerDialog";
 import { ScorecardSheet, type ScorecardSide } from "./ScorecardSheet";
+import { PrintPreview } from "./PrintPreview";
 import {
   bowlerStats, calcMatch, f0, fPts, handicapPair, lineups, standings,
   type MatchOutcome, type MemberRef, type RawScore, type Rules, type StandingRow,
@@ -1167,6 +1168,7 @@ function Standings({ league, ...bits }: Bits & { league: LmLeague }) {
 function Reports({ league, ...bits }: Bits & { league: LmLeague }) {
   const eng = useLeagueEngine(league, bits);
   const [nightId, setNightId] = useState("");
+  const [preview, setPreview] = useState(false);
   if (!eng.ready) return <p className="text-muted-foreground">Loading…</p>;
   const done = eng.completed;
   const night = done.find((x) => x.id === nightId) ?? done[done.length - 1];
@@ -1186,8 +1188,11 @@ function Reports({ league, ...bits }: Bits & { league: LmLeague }) {
             {[...done].reverse().map((x) => <option key={x.id} value={x.id}>Week {x.week_number ?? "—"} · {x.night_date}</option>)}
           </select>
         </div>
+        <Button size="lg" variant="outline" onClick={() => setPreview(true)}>Preview League Report</Button>
         <Button size="lg" onClick={() => window.print()}>Print League Report</Button>
       </div>
+      <PrintPreview open={preview} onClose={() => setPreview(false)} targetId="league-report" orientation="portrait" mode="flow"
+        title={`${league.name} · Week ${night.week_number ?? "—"} report`} />
       <article id="league-report" className="space-y-6 rounded-xl border border-border bg-surface p-5">
         <header>
           <h3 className="text-3xl">{league.name}</h3>
@@ -1253,6 +1258,7 @@ function LaneScorecards({ league, ...bits }: Bits & { league: LmLeague }) {
   const eng = useLeagueEngine(league, bits);
   const [nightId, setNightId] = useState("");
   const [matchId, setMatchId] = useState("all");
+  const [preview, setPreview] = useState(false);
   if (!eng.ready) return <p className="text-muted-foreground">Loading…</p>;
   const nights = bits.nights;
   if (!nights.length) return <Empty>Add a league night with matchups in League Nights first.</Empty>;
@@ -1309,10 +1315,15 @@ function LaneScorecards({ league, ...bits }: Bits & { league: LmLeague }) {
             {ms.map((m) => <option key={m.id} value={m.id}>{m.lanes ? `Lane ${m.lanes} · ` : ""}{m.team_a_name} vs {m.team_b_name}</option>)}
           </select>
         </div>
+        <Button size="lg" variant="outline" disabled={!shown.length} onClick={() => setPreview(true)}>
+          {matchId === "all" ? "Preview All Scorecards" : "Preview Scorecard"}
+        </Button>
         <Button size="lg" disabled={!shown.length} onClick={() => window.print()}>
-          {matchId === "all" ? "Print All Lane Scorecards" : "Print Scorecard"}
+          {matchId === "all" ? "Print All Scorecards" : "Print Scorecard"}
         </Button>
       </div>
+      <PrintPreview open={preview} onClose={() => setPreview(false)} targetId="lane-scorecards" orientation="landscape" mode="cards"
+        title={`${league.name} · Week ${night.week_number ?? "—"} · ${matchId === "all" ? "All scorecards" : "Scorecard"}`} />
       <p className="rpt-noprint text-sm text-muted-foreground">{gpn} games this night · set games and lanes in League Nights.</p>
       {!ms.length && <Empty>This week has no matchups yet. Add them in League Nights.</Empty>}
       <div id="lane-scorecards" className="space-y-6">
