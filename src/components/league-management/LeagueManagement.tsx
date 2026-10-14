@@ -1168,6 +1168,7 @@ function Standings({ league, ...bits }: Bits & { league: LmLeague }) {
 function Reports({ league, ...bits }: Bits & { league: LmLeague }) {
   const eng = useLeagueEngine(league, bits);
   const [nightId, setNightId] = useState("");
+  const [preview, setPreview] = useState(false);
   if (!eng.ready) return <p className="text-muted-foreground">Loading…</p>;
   const done = eng.completed;
   const night = done.find((x) => x.id === nightId) ?? done[done.length - 1];
@@ -1187,8 +1188,11 @@ function Reports({ league, ...bits }: Bits & { league: LmLeague }) {
             {[...done].reverse().map((x) => <option key={x.id} value={x.id}>Week {x.week_number ?? "—"} · {x.night_date}</option>)}
           </select>
         </div>
+        <Button size="lg" variant="outline" onClick={() => setPreview(true)}>Preview League Report</Button>
         <Button size="lg" onClick={() => window.print()}>Print League Report</Button>
       </div>
+      <PrintPreview open={preview} onClose={() => setPreview(false)} targetId="league-report" orientation="portrait" mode="flow"
+        title={`${league.name} · Week ${night.week_number ?? "—"} report`} />
       <article id="league-report" className="space-y-6 rounded-xl border border-border bg-surface p-5">
         <header>
           <h3 className="text-3xl">{league.name}</h3>

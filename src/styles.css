@@ -348,4 +348,4 @@
 :is(.pp-scope, .pp-measure) > article:not(.lane-card) * { color: #000 !important; background: transparent !important; border-color: #999 !important; }
 :is(.pp-scope, .pp-measure) .rpt-table { font-size: 9pt; }
 :is(.pp-scope, .pp-measure) .rpt-noprint { display: none !important; }
-@media print { .pp-overlay { display: none !important; } }
+@media print { .pp-overlay { display: none !important; } .rpt-noprint { display: none !important; } }
