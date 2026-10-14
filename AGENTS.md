@@ -11,3 +11,5 @@
 - League statistics are computed client-side in `src/lib/league-stats.ts` from raw `scores` + `league_settings` + `team_matchups`; never store derived stats — individual games are the single source of truth.
 - Internal league management lives in `lm_*` tables (separate from public `leagues` listing); completed `lm_league_nights` are locked by trigger and scores store name snapshots so history never rewrites.
 - Internal league results (handicap, points, standings, averages, highs) are computed by `src/lib/lm-engine.ts` from raw `lm_night_scores` + `lm_league_rules`; the Staff Dashboard no longer hosts score/report/bowler tools — League Management is the only home.
+- Completed league nights use the `average_at_time`/`handicap_at_time` snapshots saved on `lm_night_scores` (team mode stores the team's per-game handicap on each bowler row); live recalculation is only for open nights, so edits never rewrite history.
+- Scoring rules are covered by `src/lib/lm-engine.test.ts` (vitest, `bun run test`); update it when engine math changes.
