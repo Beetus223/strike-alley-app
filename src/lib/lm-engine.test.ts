@@ -48,7 +48,7 @@ describe("snapshots", () => {
       const r = setup(divs, 190, "completed", saved).result; // average edited 150 -> 190
       const hc = divs ? r.divisions[0]!.hc : r.teamHc!;
       expect(hc.a).toBe(40);
-      expect(r.pointsA).toBe(5); // 190 vs 200 per game with 40 hc → A wins games (4) ; series tie? see below
+      expect([r.pointsA, r.pointsB]).toEqual([0, 8]); // 150+40=190 < 200 every game
     });
 
     it(`future night uses updated entering average (${divs ? "divisions" : "team"})`, () => {
@@ -78,6 +78,6 @@ describe("existing scoring math unchanged", () => {
   });
   it("percent-of-base handicap floors", () => {
     const r = calcMatch([p([100], 151)], [p([100], 199)], 1, { ...rules, handicap_method: "percent_of_base", handicap_base: 250 });
-    expect(r.teamHc).toBeTruthy();
+    expect([r.teamHc!.a, r.teamHc!.b]).toEqual([79, 40]);
   });
 });
