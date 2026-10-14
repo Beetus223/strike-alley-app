@@ -934,7 +934,7 @@ function MatchResultView({ o, gpn, rules }: { o: MatchOutcome; gpn: number; rule
           {r.warnings.map((w) => <li key={w}>{w}</li>)}
         </ul>
       )}
-      <ul className="text-xs text-muted-foreground">
+      <ul className="rpt-keep text-xs text-muted-foreground">
         {r.mode === "team" && r.teamHc && <li>Team-vs-team scoring (no divisions assigned). Handicap: {r.teamHc.explain}</li>}
         {r.divisions.map((d) => <li key={d.division}>Division {d.division}: {d.hc.explain}</li>)}
         <li>Team totals — scratch {r.teamTotalA} vs {r.teamTotalB}; with handicap {r.teamHdcpA} vs {r.teamHdcpB}. Team points {fPts(r.teamPts[0])} – {fPts(r.teamPts[1])} ({useH ? "with handicap" : "scratch"}).</li>
