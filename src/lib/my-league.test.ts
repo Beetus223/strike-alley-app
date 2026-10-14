@@ -70,13 +70,11 @@ describe.skipIf(!db)("bowler access rules (database)", () => {
   });
 
   it("other bowler's rows are not returned", () => {
-    const out = sql(link + asUser(U1, `select count(*) from my_lm_scores() s where s.team_name is not null and exists (select 1) ;`) + " reset role;" +
-      `select count(*) from lm_night_scores s join bowlers b on b.id=s.bowler_id where b.user_id='${U2}';`);
-    expect(out).toMatch(/\d/);
-    const out2 = sql(link + asUser(U2, `select count(*) from my_lm_scores();`));
-    const out1 = sql(link + asUser(U1, `select count(*) from my_lm_scores();`));
-    expect(out1).not.toBe("");
-    expect(out2).not.toBe("");
+    const out = sql(link + asUser(U1, `select count(*) from my_lm_scores();`) + " reset role;" +
+      `select count(*) from lm_night_scores s join lm_league_nights n on n.id=s.night_id where n.status='completed' and s.bowler_id is not null;`);
+    const [mine, all] = out.trim().split("\n").filter((l) => /^\d+$/.test(l)).map(Number);
+    expect(mine).toBeGreaterThan(0);
+    expect(mine!).toBeLessThan(all!); // the league has other bowlers; none of their rows leak
   });
 
   it("bowler cannot read lm tables directly", () => {
