@@ -336,3 +336,16 @@
   #lane-scorecards > .lane-set:last-child .lane-card:last-child { page-break-after: auto; break-after: auto; }
   .lc-grid { min-width: 0; }
 }
+
+/* Print preview — on-screen paper that mirrors the @media print rules above.
+   Fixed paper palette on purpose: preview must look like the printed page, not the site theme. */
+.pp-desk { background: #6b7280; }
+.pp-paper { background: #fff; color: #000; box-shadow: 0 6px 24px rgb(0 0 0 / 0.35); }
+.pp-pageno { font-size: 8pt; color: #555; }
+:is(.pp-scope, .pp-measure) .lane-card { border: 0; border-radius: 0; padding: 8px 0 0; overflow: visible; }
+:is(.pp-scope, .pp-measure) .lc-grid { min-width: 0; }
+:is(.pp-scope, .pp-measure) > article:not(.lane-card) { border: 0 !important; border-radius: 0; padding: 0 !important; background: #fff !important; box-shadow: none !important; }
+:is(.pp-scope, .pp-measure) > article:not(.lane-card) * { color: #000 !important; background: transparent !important; border-color: #999 !important; }
+:is(.pp-scope, .pp-measure) .rpt-table { font-size: 9pt; }
+:is(.pp-scope, .pp-measure) .rpt-noprint { display: none !important; }
+@media print { .pp-overlay { display: none !important; } }
