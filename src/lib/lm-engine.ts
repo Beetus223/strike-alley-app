@@ -252,6 +252,12 @@ export function snapshotsFor(result: MatchResult): Map<string, { avg: number | n
   return out;
 }
 
+/** The snapshot already saved for this bowler on this night (null if none) — carried onto corrected rows. */
+export function existingSnapshot(scores: RawScore[], nightId: string, bowlerId: string) {
+  const r = scores.find((x) => x.night_id === nightId && x.bowler_id === bowlerId && x.average_at_time != null);
+  return r ? { average_at_time: Number(r.average_at_time), handicap_at_time: r.handicap_at_time ?? 0 } : null;
+}
+
 export type BowlerStats = {
   bowler_id: string; name: string; team: string | null; division: string | null;
   games: number; pins: number; average: number | null; highGame: number | null; highSeries: number | null; highBlock: number | null;

@@ -12,7 +12,7 @@ import { ScorecardSheet, type ScorecardSide } from "./ScorecardSheet";
 import {
   bowlerStats, calcMatch, f0, fPts, handicapPair, lineups, standings,
   type MatchOutcome, type MemberRef, type RawScore, type Rules, type StandingRow,
-  snapshotsFor,
+  snapshotsFor, existingSnapshot,
 } from "@/lib/lm-engine";
 
 type LmLeague = Tables<"lm_leagues">;
@@ -764,10 +764,10 @@ function useLeagueEngine(league: LmLeague, bits: Bits) {
     division_code: bits.divisions.find((d) => d.id === m.division_id)?.code ?? null,
   }));
   const gpn = league.games_per_night;
-  const outcome = (night: LmNight, match: LmMatchup, nightScores?: RawScore[]): MatchOutcome => {
+  const outcome = (night: LmNight, match: LmMatchup, nightScores?: RawScore[], recalculate = false): MatchOutcome => {
     const all = extra.data?.scores ?? [];
     const scores = nightScores ?? all.filter((x) => x.night_id === night.id);
-    const { a, b } = lineups(match, night, memberRefs, scores, all, bits.nights, names, gpn);
+    const { a, b } = lineups(match, night, memberRefs, scores, all, bits.nights, names, gpn, recalculate);
     return { night, match, result: calcMatch(a, b, gpn, extra.data?.rules ?? null) };
   };
   const completed = bits.nights.filter((x) => x.status === "completed");
@@ -950,6 +950,7 @@ function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
   const [matchId, setMatchId] = useState<string>("");
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [review, setReview] = useState(false);
+  const [recalc, setRecalc] = useState(false);
   const night = nights.find((x) => x.id === nightId);
   const nightMatches = eng.matchups.filter((m) => m.night_id === nightId);
   const match = nightMatches.find((m) => m.id === matchId);
@@ -973,6 +974,8 @@ function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
       if (!team) continue;
       for (const m of roster(team.id)) {
         const name = eng.names.get(m.bowler_id) ?? null;
+        // Keep the original saved average/handicap when correcting scores, unless staff chose to recalculate.
+        const snap = recalc ? null : existingSnapshot(eng.scores, night.id, m.bowler_id);
         for (let g = 1; g <= gpn; g++) {
           const raw = val(m.bowler_id, g).trim();
           if (raw === "") { clears.push({ bowler_id: m.bowler_id, game_number: g }); continue; }
@@ -982,7 +985,7 @@ function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
             night_id: night.id, matchup_id: match.id, team_id: team.id, bowler_id: m.bowler_id,
             team_name: team.name, bowler_name: name,
             division_code: divisions.find((d) => d.id === m.division_id)?.code ?? null,
-            game_number: g, score,
+            game_number: g, score, ...(snap ?? {}),
           });
         }
       }
@@ -996,7 +999,7 @@ function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
     try {
       const { rows } = buildRows();
       const others = eng.scores.filter((x) => x.night_id === night.id && x.matchup_id !== match.id);
-      preview = eng.outcome(night, match, [...others, ...(rows as RawScore[])]);
+      preview = eng.outcome(night, match, [...others, ...(rows as RawScore[])], recalc);
     } catch (e) { previewError = (e as Error).message; }
   }
 
@@ -1023,7 +1026,7 @@ function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
         if (error) throw new Error(error.message);
       }
     },
-    onSuccess: (_d, complete) => { toast.success(complete ? "Saved and night marked completed" : "Scores saved"); setDraft({}); setReview(false); inv(); },
+    onSuccess: (_d, complete) => { toast.success(complete ? "Saved and night marked completed" : "Scores saved"); setDraft({}); setReview(false); setRecalc(false); inv(); },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -1033,14 +1036,14 @@ function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
       <div className="grid max-w-2xl gap-4 sm:grid-cols-2">
         <div>
           <Label htmlFor="se-night">Week / date</Label>
-          <select id="se-night" className={selectCls} value={nightId} onChange={(e) => { setNightId(e.target.value); setMatchId(""); setDraft({}); setReview(false); }}>
+          <select id="se-night" className={selectCls} value={nightId} onChange={(e) => { setNightId(e.target.value); setMatchId(""); setDraft({}); setReview(false); setRecalc(false); }}>
             <option value="">Choose…</option>
             {[...nights].reverse().map((x) => <option key={x.id} value={x.id}>Week {x.week_number ?? "—"} · {x.night_date} ({STATUS_LABEL[x.status]})</option>)}
           </select>
         </div>
         <div>
           <Label htmlFor="se-match">Matchup</Label>
-          <select id="se-match" className={selectCls} value={matchId} onChange={(e) => { setMatchId(e.target.value); setDraft({}); setReview(false); }} disabled={!nightId}>
+          <select id="se-match" className={selectCls} value={matchId} onChange={(e) => { setMatchId(e.target.value); setDraft({}); setReview(false); setRecalc(false); }} disabled={!nightId}>
             <option value="">Choose…</option>
             {nightMatches.map((m) => <option key={m.id} value={m.id}>{m.team_a_name} vs {m.team_b_name}</option>)}
           </select>
@@ -1094,6 +1097,15 @@ function ScoreEntry({ league, ...bits }: Bits & { league: LmLeague }) {
           </div>
           <div className="flex flex-wrap gap-3">
             <Button size="lg" variant="outline" onClick={() => setReview(true)} disabled={!eng.ready}>Calculate</Button>
+            {eng.scores.some((x) => x.night_id === night?.id && x.matchup_id === match?.id && x.average_at_time != null) && !locked && (
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={recalc} onChange={(e) => {
+                  if (e.target.checked && !window.confirm("Recalculate this night's saved averages and handicaps from today's averages? Historical handicaps, points and standings for this night may change.")) return;
+                  setRecalc(e.target.checked); setReview(false);
+                }} />
+                Recalculate saved averages &amp; handicaps (normally keep the originals)
+              </label>
+            )}
           </div>
           {previewError && <p className="font-semibold text-destructive">{previewError}</p>}
           {preview && (
