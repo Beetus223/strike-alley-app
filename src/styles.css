@@ -351,3 +351,4 @@
 :is(.pp-scope, .pp-measure) .rpt-table { font-size: 9pt; }
 :is(.pp-scope, .pp-measure) .rpt-noprint { display: none !important; }
 @media print { .pp-overlay { display: none !important; } .rpt-noprint { display: none !important; } }
+.pp-head .lane-card::before { display: none; } .pp-head .lane-card { background: transparent; border: 0; }
