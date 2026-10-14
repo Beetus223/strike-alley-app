@@ -23,6 +23,9 @@ export type RawScore = {
   division_code: string | null;
   game_number: number;
   score: number;
+  /** Snapshot saved when the night was scored. Used for completed nights so history never changes. */
+  average_at_time?: number | null;
+  handicap_at_time?: number | null;
 };
 
 export type NightRef = { id: string; night_date: string; status: string; week_number: number | null };
@@ -66,7 +69,16 @@ export function handicapPair(avgA: number | null, avgB: number | null, r: Rules 
   };
 }
 
-export type BowlerInMatch = { bowler_id: string; name: string; division: string | null; average: number | null; games: (number | null)[] };
+export type BowlerInMatch = {
+  bowler_id: string; name: string; division: string | null; average: number | null; games: (number | null)[];
+  /** Saved per-game handicap from a completed night (team mode: the team's per-game handicap). */
+  savedHc?: number | null;
+  /** True when this completed night has no saved snapshot for this bowler and live values were used. */
+  missingSnapshot?: boolean;
+};
+
+const savedPair = (a: BowlerInMatch | null | undefined, b: BowlerInMatch | null | undefined): HandicapCalc | null =>
+  a?.savedHc != null && b?.savedHc != null ? { a: a.savedHc, b: b.savedHc, explain: `Saved handicap from this completed night: ${a.savedHc} / ${b.savedHc}` } : null;
 
 export type DivisionResult = {
   division: string;
@@ -131,7 +143,7 @@ export function calcMatch(teamA: BowlerInMatch[], teamB: BowlerInMatch[], gpn: n
       const b = teamB.find((x) => x.division === code) ?? null;
       if (!a || !b) warnings.push(`Division ${code}: ${!a ? "first" : "second"} team has no bowler — no points for this division.`);
       if (hcpOn && a && b && (a.average == null || b.average == null)) warnings.push(`Division ${code}: average not established — handicap is 0.`);
-      const hc = handicapPair(a?.average ?? null, b?.average ?? null, r);
+      const hc = savedPair(a, b) ?? handicapPair(a?.average ?? null, b?.average ?? null, r);
       const gamePts: [number, number][] = [];
       let sA = 0, sB = 0;
       for (let i = 0; i < gpn; i++) {
@@ -155,7 +167,8 @@ export function calcMatch(teamA: BowlerInMatch[], teamB: BowlerInMatch[], gpn: n
     const teamAvg = (t: BowlerInMatch[]) => (t.length && t.every((x) => x.average != null) ? sum(t.map((x) => Math.floor(x.average!))) : null);
     const avgA = teamAvg(teamA), avgB = teamAvg(teamB);
     if (hcpOn && (avgA == null || avgB == null)) warnings.push("Averages not established for every bowler — handicap is 0 (not established).");
-    teamHc = handicapPair(avgA, avgB, r);
+    const sa = teamA.find((x) => x.savedHc != null), sb = teamB.find((x) => x.savedHc != null);
+    teamHc = savedPair(sa, sb) ?? handicapPair(avgA, avgB, r);
     let sA = 0, sB = 0, completeA = true, completeB = true;
     for (let i = 0; i < gpn; i++) {
       const ra = teamA.map((x) => g(x, i)).filter((v): v is number => v != null);
@@ -174,6 +187,8 @@ export function calcMatch(teamA: BowlerInMatch[], teamB: BowlerInMatch[], gpn: n
     series = completeA && completeB && teamA.length && teamB.length ? share(sA, sB, sp) : [0, 0];
   }
 
+  const missing = [...teamA, ...teamB].filter((x) => x.missingSnapshot && x.games.some((v) => v != null));
+  if (missing.length) warnings.push(`No saved average snapshot for ${missing.map((x) => x.name).join(", ")} on this completed night — current values shown.`);
   const tot = (t: BowlerInMatch[]) => sum(t.flatMap((x) => x.games.filter((v): v is number => v != null)));
   const teamTotalA = tot(teamA), teamTotalB = tot(teamB);
   const teamHdcpA = teamTotalA + hA, teamHdcpB = teamTotalB + hB;
@@ -204,16 +219,34 @@ export function lineups(
     return [...ids].map((bid) => {
       const m = members.find((x) => x.bowler_id === bid && x.team_id === teamId);
       const mine = scores.filter((s) => s.bowler_id === bid && s.night_id === night.id);
+      const snap = night.status === "completed" ? mine.find((s) => s.average_at_time != null) : undefined;
+      const live = averageBefore(bid, night.night_date, allScores, nights, m?.entering_average ?? null);
       return {
         bowler_id: bid,
         name: names.get(bid) ?? mine[0]?.bowler_name ?? "—",
         division: mine[0]?.division_code ?? m?.division_code ?? null,
-        average: averageBefore(bid, night.night_date, allScores, nights, m?.entering_average ?? null),
+        average: snap ? Number(snap.average_at_time) : live,
+        savedHc: snap ? (snap.handicap_at_time ?? 0) : null,
+        missingSnapshot: night.status === "completed" && mine.length > 0 && !snap,
         games: Array.from({ length: gpn }, (_, i) => mine.find((s) => s.game_number === i + 1)?.score ?? null),
       };
     });
   };
   return { a: side(match.team_a_id), b: side(match.team_b_id) };
+}
+
+/** Average + per-game handicap to save on each bowler's score rows, for BOTH division and team mode. */
+export function snapshotsFor(result: MatchResult): Map<string, { avg: number | null; hc: number }> {
+  const out = new Map<string, { avg: number | null; hc: number }>();
+  const put = (x: BowlerInMatch, hc: number) => out.set(x.bowler_id, { avg: x.average == null ? null : Math.floor(x.average), hc });
+  if (result.mode === "team") {
+    for (const x of result.bowlersA) put(x, result.teamHc?.a ?? 0);
+    for (const x of result.bowlersB) put(x, result.teamHc?.b ?? 0);
+  } else {
+    for (const x of [...result.bowlersA, ...result.bowlersB]) put(x, 0); // no-division bowlers: average only
+    for (const d of result.divisions) { if (d.a) put(d.a, d.hc.a); if (d.b) put(d.b, d.hc.b); }
+  }
+  return out;
 }
 
 export type BowlerStats = {
