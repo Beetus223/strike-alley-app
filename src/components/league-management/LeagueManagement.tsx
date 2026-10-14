@@ -864,8 +864,8 @@ function MatchResultView({ o, gpn, rules }: { o: MatchOutcome; gpn: number; rule
   const r = o.result;
   const useH = !!rules?.points_with_handicap;
   return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
+    <div className="rpt-match space-y-3">
+      <div className="rpt-keepnext flex flex-wrap items-baseline justify-between gap-2">
         <h4 className="text-xl">{o.match.team_a_name} <span className="text-muted-foreground">vs</span> {o.match.team_b_name}</h4>
         <p className="font-display text-2xl">{fPts(r.pointsA)} – {fPts(r.pointsB)} <span className="text-sm text-muted-foreground">points</span></p>
       </div>
@@ -920,7 +920,7 @@ function MatchResultView({ o, gpn, rules }: { o: MatchOutcome; gpn: number; rule
           </tbody>
         </table>
       </div>
-      <div className="rounded-lg border border-border p-3">
+      <div className="rpt-keep rounded-lg border border-border p-3">
         <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Points breakdown ({o.match.team_a_name} – {o.match.team_b_name})</p>
         <table className="text-sm tabular-nums"><tbody>
           {r.breakdown.games.map((p, i) => <tr key={i}><td className="pr-4">Game {i + 1}</td><td>{fPts(p[0])} – {fPts(p[1])}</td></tr>)}
@@ -1202,14 +1202,14 @@ function Reports({ league, ...bits }: Bits & { league: LmLeague }) {
         <section className="space-y-5"><h4 className="text-xl">Results this week</h4>
           {tonight.length === 0 ? <p className="text-sm">No matchups recorded.</p> : tonight.map((o) => <MatchResultView key={o.match.id} o={o} gpn={eng.gpn} rules={eng.rules} />)}
         </section>
-        <section><h4 className="text-xl">Season highs (scratch)</h4>
+        <section className="rpt-keep rpt-newsec"><h4 className="text-xl">Season highs (scratch)</h4>
           <ul className="text-sm">
             {top("highGame") && <li>High game: {top("highGame")!.name} — {top("highGame")!.highGame}</li>}
             {top("highSeries") && <li>High series: {top("highSeries")!.name} — {top("highSeries")!.highSeries}</li>}
             {top("highBlock") && <li>High 4-game block: {top("highBlock")!.name} — {top("highBlock")!.highBlock}</li>}
           </ul>
         </section>
-        <section><h4 className="text-xl">Bowler statistics</h4>
+        <section className="rpt-newsec"><h4 className="text-xl">Bowler statistics</h4>
           <div className="overflow-x-auto">
             <table className="rpt-table w-full text-sm">
               <thead><tr className="text-left">{["Bowler", "Team", ...(league.uses_divisions ? ["Div"] : []), "Games", "Pins", "Avg", "High game", "High series", "High 4-game block"].map((h) => <th key={h} className="px-2 py-1">{h}</th>)}</tr></thead>

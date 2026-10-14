@@ -77,15 +77,45 @@ function Header(p: Props & { sub: string }) {
   );
 }
 
-function TeamPage(p: Props & { side: ScorecardSide }) {
-  const rows = p.side.rows.length ? p.side.rows : Array.from({ length: 3 }, () => ({ division: null, name: "", average: null, handicap: null }));
-  const lines = rows.length * p.gpn;
-  // Fit everything on one landscape page: shrink rows when there are many bowlers/games.
-  const rowH = Math.max(0.4, Math.min(0.72, 5.5 / lines));
+/** Writing rows that fit one landscape Letter sheet at a usable handwriting size. */
+export const GRID_BUDGET_IN = 5.2;
+export const MIN_ROW_IN = 0.42;
+export const MAX_LINES = Math.floor(GRID_BUDGET_IN / MIN_ROW_IN);
+
+export type SheetPlan = { bowlers: [number, number]; games: number[] };
+
+/**
+ * Split one team's score sheet into whole sheets that each fit a page. Never splits a bowler's
+ * game row or a frame; when everything won't fit, games are grouped onto separate sheets
+ * (e.g. Games 1–2 / Games 3–4), and only with very large rosters are bowlers split too.
+ */
+export function planTeamSheets(bowlers: number, gpn: number, maxLines = MAX_LINES): SheetPlan[] {
+  const n = Math.max(1, bowlers), g = Math.max(1, gpn);
+  const all = Array.from({ length: g }, (_, i) => i + 1);
+  if (n * g <= maxLines) return [{ bowlers: [0, n], games: all }];
+  const groupsOf = (size: number) => {
+    const count = Math.ceil(g / size), per = Math.ceil(g / count);
+    return Array.from({ length: count }, (_, i) => all.slice(i * per, (i + 1) * per)).filter((x) => x.length);
+  };
+  if (n <= maxLines) return groupsOf(Math.max(1, Math.floor(maxLines / n))).map((games) => ({ bowlers: [0, n], games }));
+  const out: SheetPlan[] = [];
+  const chunks = Math.ceil(n / maxLines), per = Math.ceil(n / chunks);
+  for (const game of all) for (let c = 0; c < chunks; c++) out.push({ bowlers: [c * per, Math.min(n, (c + 1) * per)], games: [game] });
+  return out;
+}
+
+function TeamPage(p: Props & { side: ScorecardSide; plan: SheetPlan; sheetNo: number; sheetCount: number }) {
+  const all = p.side.rows.length ? p.side.rows : Array.from({ length: 3 }, () => ({ division: null, name: "", average: null, handicap: null }));
+  const rows = all.slice(p.plan.bowlers[0], p.plan.bowlers[1]);
+  const games = p.plan.games;
+  const lines = rows.length * games.length;
+  const rowH = Math.max(MIN_ROW_IN, Math.min(0.72, GRID_BUDGET_IN / lines));
   const style = { "--lc-row": `${rowH}in` } as CSSProperties;
+  const gLabel = games.length === p.gpn ? "" : games.length === 1 ? ` · Game ${games[0]}` : ` · Games ${games[0]}–${games[games.length - 1]}`;
+  const bLabel = rows.length === all.length ? "" : ` · Bowlers ${p.plan.bowlers[0] + 1}–${p.plan.bowlers[1]}`;
   return (
-    <article className="lane-card" style={style}>
-      <Header {...p} sub={`Score sheet: ${p.side.team}`} />
+    <article className="lane-card" style={style} data-sheet={`${p.sheetNo}/${p.sheetCount}`}>
+      <Header {...p} sub={`${p.side.team}${gLabel}${bLabel} · Sheet ${p.sheetNo} of ${p.sheetCount}`} />
       {p.side.teamHandicap != null && (
         <p className="lc-teamhc">Team handicap: {p.side.teamHandicap} pins per game</p>
       )}
@@ -110,10 +140,10 @@ function TeamPage(p: Props & { side: ScorecardSide }) {
         </thead>
         {rows.map((r, ri) => (
           <tbody key={ri} className="lc-bowlerblock">
-            {Array.from({ length: p.gpn }, (_, g) => (
-              <tr key={g}>
+            {games.map((gameNo, g) => (
+              <tr key={gameNo}>
                 {g === 0 && (
-                  <td rowSpan={p.gpn} className="lc-bowler">
+                  <td rowSpan={games.length} className="lc-bowler">
                     <strong>{r.name || "\u00a0"}</strong>
                     <span className="lc-facts">
                       {p.showDivision && <span>Div <b>{r.division ?? "—"}</b></span>}
@@ -122,7 +152,7 @@ function TeamPage(p: Props & { side: ScorecardSide }) {
                     </span>
                   </td>
                 )}
-                <td className="lc-gm">{g + 1}</td>
+                <td className="lc-gm">{gameNo}</td>
                 {FRAMES.map((f) => (
                   <td key={f} className={f === 10 ? "lc-frame lc-f10" : "lc-frame"}>
                     <div className="lc-balls"><i /><i /><i /></div>
@@ -146,12 +176,12 @@ function TeamPage(p: Props & { side: ScorecardSide }) {
   );
 }
 
-function SummaryPage(p: Props) {
+function SummaryPage(p: Props & { sheetNo: number; sheetCount: number }) {
   const games = Array.from({ length: p.gpn }, (_, i) => i + 1);
   const teamRows = p.showHandicap ? ["Scratch total", "Handicap", "Total with handicap"] : ["Scratch total"];
   return (
     <article className="lane-card lc-summary">
-      <Header {...p} sub="Results & points" />
+      <Header {...p} sub={`Results & points · Sheet ${p.sheetNo} of ${p.sheetCount}`} />
       <div className="lc-sumgrid">
         <table className="lc-sum">
           <thead>
@@ -196,11 +226,15 @@ function SummaryPage(p: Props) {
 }
 
 export function ScorecardSheet(p: Props) {
+  const plans = p.sides.map((s) => planTeamSheets(s.rows.length || 3, p.gpn));
+  const count = plans[0]!.length + plans[1]!.length + 1;
+  let n = 0;
   return (
     <div className="lane-set">
-      <TeamPage {...p} side={p.sides[0]} />
-      <TeamPage {...p} side={p.sides[1]} />
-      <SummaryPage {...p} />
+      {p.sides.map((side, si) => plans[si]!.map((plan, pi) => (
+        <TeamPage key={`${si}-${pi}`} {...p} side={side} plan={plan} sheetNo={++n} sheetCount={count} />
+      )))}
+      <SummaryPage {...p} sheetNo={count} sheetCount={count} />
     </div>
   );
 }
