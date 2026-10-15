@@ -50,6 +50,13 @@
       "when": 1792089551768,
       "tag": "0006_place_food_order_no_trigger_toggle",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792089811420,
+      "tag": "0007_menu_items_public_policy_fix",
+      "breakpoints": true
     }
   ]
 }
