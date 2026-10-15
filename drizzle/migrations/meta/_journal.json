@@ -43,6 +43,13 @@
       "when": 1792089516294,
       "tag": "0005_online_food_ordering",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792089551768,
+      "tag": "0006_place_food_order_no_trigger_toggle",
+      "breakpoints": true
     }
   ]
 }
