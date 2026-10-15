@@ -36,6 +36,27 @@
       "when": 1791943744866,
       "tag": "0004_bowler_own_league_results",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792089516294,
+      "tag": "0005_online_food_ordering",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792089551768,
+      "tag": "0006_place_food_order_no_trigger_toggle",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792089811420,
+      "tag": "0007_menu_items_public_policy_fix",
+      "breakpoints": true
     }
   ]
 }

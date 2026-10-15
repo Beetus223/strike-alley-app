@@ -104,6 +104,17 @@ function AdminPage() {
             <Link to="/league-management">Open League Management</Link>
           </Button>
         </div>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/40 bg-surface p-4">
+          <div>
+            <p className="font-display text-2xl">Kitchen &amp; Snack Bar Orders</p>
+            <p className="text-sm text-muted-foreground">
+              Incoming online food orders, snack bar menu and ordering settings.
+            </p>
+          </div>
+          <Button asChild size="lg">
+            <Link to="/kitchen">Open Kitchen Orders</Link>
+          </Button>
+        </div>
         <Tabs defaultValue="events">
           <TabsList className="flex h-auto flex-wrap justify-start gap-1">
             <TabsTrigger value="events">Events</TabsTrigger>

@@ -24,7 +24,9 @@ import { Route as PartiesRouteImport } from './routes/parties'
 import { Route as RentalsRouteImport } from './routes/rentals'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedKitchenRouteImport } from './routes/_authenticated/kitchen'
 import { Route as AuthenticatedLeagueManagementRouteImport } from './routes/_authenticated/league-management'
+import { Route as OrderTokenRouteImport } from './routes/order.$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -100,12 +102,22 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedKitchenRoute = AuthenticatedKitchenRouteImport.update({
+  id: '/kitchen',
+  path: '/kitchen',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedLeagueManagementRoute =
   AuthenticatedLeagueManagementRouteImport.update({
     id: '/league-management',
     path: '/league-management',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const OrderTokenRoute = OrderTokenRouteImport.update({
+  id: '/order/$token',
+  path: '/order/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -122,7 +134,9 @@ export interface FileRoutesByFullPath {
   '/rentals': typeof RentalsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/kitchen': typeof AuthenticatedKitchenRoute
   '/league-management': typeof AuthenticatedLeagueManagementRoute
+  '/order/$token': typeof OrderTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -139,7 +153,9 @@ export interface FileRoutesByTo {
   '/rentals': typeof RentalsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/kitchen': typeof AuthenticatedKitchenRoute
   '/league-management': typeof AuthenticatedLeagueManagementRoute
+  '/order/$token': typeof OrderTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -158,7 +174,9 @@ export interface FileRoutesById {
   '/rentals': typeof RentalsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/kitchen': typeof AuthenticatedKitchenRoute
   '/_authenticated/league-management': typeof AuthenticatedLeagueManagementRoute
+  '/order/$token': typeof OrderTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -177,7 +195,9 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/admin'
     | '/dashboard'
+    | '/kitchen'
     | '/league-management'
+    | '/order/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -194,7 +214,9 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/admin'
     | '/dashboard'
+    | '/kitchen'
     | '/league-management'
+    | '/order/$token'
   id:
     | '__root__'
     | '/'
@@ -212,7 +234,9 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/_authenticated/kitchen'
     | '/_authenticated/league-management'
+    | '/order/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -229,6 +253,7 @@ export interface RootRouteChildren {
   MenuRoute: typeof MenuRoute
   PartiesRoute: typeof PartiesRoute
   RentalsRoute: typeof RentalsRoute
+  OrderTokenRoute: typeof OrderTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -338,6 +363,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/kitchen': {
+      id: '/_authenticated/kitchen'
+      path: '/kitchen'
+      fullPath: '/kitchen'
+      preLoaderRoute: typeof AuthenticatedKitchenRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/league-management': {
       id: '/_authenticated/league-management'
       path: '/league-management'
@@ -345,18 +377,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLeagueManagementRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/order/$token': {
+      id: '/order/$token'
+      path: '/order/$token'
+      fullPath: '/order/$token'
+      preLoaderRoute: typeof OrderTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedKitchenRoute: typeof AuthenticatedKitchenRoute
   AuthenticatedLeagueManagementRoute: typeof AuthenticatedLeagueManagementRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedKitchenRoute: AuthenticatedKitchenRoute,
   AuthenticatedLeagueManagementRoute: AuthenticatedLeagueManagementRoute,
 }
 
@@ -377,6 +418,7 @@ const rootRouteChildren: RootRouteChildren = {
   MenuRoute: MenuRoute,
   PartiesRoute: PartiesRoute,
   RentalsRoute: RentalsRoute,
+  OrderTokenRoute: OrderTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

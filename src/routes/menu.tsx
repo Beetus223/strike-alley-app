@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Phone } from "lucide-react";
 import snackbar from "@/assets/loaded-gyro-poutine-fries.png.asset.json";
 import { PageHeader, Section } from "@/components/site/PageHeader";
-import { MENU, SNACK_BAR_PHONE } from "@/lib/site-data";
+import { SNACK_BAR_PHONE } from "@/lib/site-data";
+import { SnackBarMenu } from "@/components/food/SnackBarOrdering";
 
 export const Route = createFileRoute("/menu")({
   head: () => ({
@@ -47,30 +48,8 @@ function MenuPage() {
 
       <Section title="Delicious Food for You!" description="Brisket coming in September!">
         <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
-          <div className="grid gap-10 sm:grid-cols-2">
-            {MENU.map((group) => (
-              <div key={group.section}>
-                <h2 className="text-2xl font-semibold text-primary sm:text-3xl">{group.section}</h2>
-                {group.note ? (
-                  <p className="mt-2 max-w-md text-sm italic leading-relaxed text-muted-foreground">
-                    {group.note}
-                  </p>
-                ) : null}
-                <ul className="mt-5 divide-y divide-border rounded-2xl border border-border bg-background/50">
-                  {group.items.map((item) => (
-                    <li key={item.name} className="flex items-start justify-between gap-4 p-4">
-                      <div className="min-w-0 flex-1">
-                        <p className="font-medium leading-snug">{item.name}</p>
-                        {item.desc ? (
-                          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
-                        ) : null}
-                      </div>
-                      <p className="shrink-0 font-display text-xl">{item.price}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          <div>
+            <SnackBarMenu />
           </div>
 
           <div>
