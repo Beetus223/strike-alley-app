@@ -192,7 +192,7 @@ function CartSheet({
     deliveryNotes: "",
     notes: "",
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Partial<Record<"name" | "phone" | "fulfillment" | "street" | "city" | "postal", string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const keyRef = useRef<string | null>(null);
@@ -211,7 +211,7 @@ function CartSheet({
   };
 
   function validate() {
-    const e: Record<string, string> = {};
+    const e: typeof errors = {};
     if (f.name.trim().length < 2) e.name = "Please enter your full name.";
     if (!validatePhone(f.phone)) e.phone = "Please enter a 10-digit phone number.";
     if (f.fulfillment === "delivery") {
@@ -257,7 +257,7 @@ function CartSheet({
     void navigate({ to: "/order/$token", params: { token: res.token } });
   }
 
-  const err = (k: string) =>
+  const err = (k: keyof typeof errors) =>
     errors[k] ? (
       <p id={`${k}-err`} className="mt-1 text-sm text-destructive">
         {errors[k]}

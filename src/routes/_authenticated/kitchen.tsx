@@ -136,7 +136,7 @@ function OrdersPanel() {
       const fresh = orders.filter((o) => !seen.current!.has(o.id) && o.status === "pending");
       if (fresh.length) {
         setNewAlert((n) => n + fresh.length);
-        toast(`New order #${fresh[fresh.length - 1].order_number}`);
+        toast(`New order #${fresh[fresh.length - 1]!.order_number}`);
       }
       fresh.forEach((o) => seen.current!.add(o.id));
     } else seen.current = ids;
@@ -333,7 +333,10 @@ function MenuPanel() {
       editing === "new"
         ? await supabase.from("menu_items").insert({ ...row, sort_order: (items?.length ?? 0) + 1 })
         : await supabase.from("menu_items").update(row).eq("id", editing!);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Menu saved");
     setEditing(null);
     refresh();
@@ -500,7 +503,10 @@ function SettingsPanel() {
         <Button
           onClick={() => {
             const fee = f.fee.trim() === "" ? null : parseDollarsToCents(f.fee);
-            if (f.fee.trim() !== "" && fee === null) return toast.error("Enter a valid delivery fee.");
+            if (f.fee.trim() !== "" && fee === null) {
+              toast.error("Enter a valid delivery fee.");
+              return;
+            }
             void update({ delivery_area: f.area.trim() || null, delivery_fee_cents: fee, customer_message: f.message.trim() || null });
           }}
         >
