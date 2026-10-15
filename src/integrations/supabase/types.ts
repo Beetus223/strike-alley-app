@@ -194,6 +194,138 @@ export type Database = {
         }
         Relationships: []
       }
+      food_order_items: {
+        Row: {
+          created_at: string
+          id: string
+          line_total_cents: number
+          menu_item_id: string | null
+          name: string
+          order_id: string
+          quantity: number
+          unit_price_cents: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          line_total_cents: number
+          menu_item_id?: string | null
+          name: string
+          order_id: string
+          quantity: number
+          unit_price_cents: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          line_total_cents?: number
+          menu_item_id?: string | null
+          name?: string
+          order_id?: string
+          quantity?: number
+          unit_price_cents?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "food_order_items_menu_item_id_fkey"
+            columns: ["menu_item_id"]
+            isOneToOne: false
+            referencedRelation: "menu_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "food_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "food_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      food_orders: {
+        Row: {
+          city: string | null
+          completed_at: string | null
+          confirmed_at: string | null
+          created_at: string
+          customer_name: string
+          declined_at: string | null
+          delivery_fee_cents: number
+          delivery_instructions: string | null
+          fulfillment: string
+          id: string
+          idempotency_key: string
+          is_test: boolean
+          order_number: number
+          out_for_delivery_at: string | null
+          phone: string
+          postal_code: string | null
+          preparing_at: string | null
+          public_token: string
+          ready_at: string | null
+          special_instructions: string | null
+          status: string
+          street_address: string | null
+          subtotal_cents: number
+          total_cents: number
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          completed_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          customer_name: string
+          declined_at?: string | null
+          delivery_fee_cents?: number
+          delivery_instructions?: string | null
+          fulfillment: string
+          id?: string
+          idempotency_key: string
+          is_test?: boolean
+          order_number?: number
+          out_for_delivery_at?: string | null
+          phone: string
+          postal_code?: string | null
+          preparing_at?: string | null
+          public_token?: string
+          ready_at?: string | null
+          special_instructions?: string | null
+          status?: string
+          street_address?: string | null
+          subtotal_cents: number
+          total_cents: number
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          completed_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          customer_name?: string
+          declined_at?: string | null
+          delivery_fee_cents?: number
+          delivery_instructions?: string | null
+          fulfillment?: string
+          id?: string
+          idempotency_key?: string
+          is_test?: boolean
+          order_number?: number
+          out_for_delivery_at?: string | null
+          phone?: string
+          postal_code?: string | null
+          preparing_at?: string | null
+          public_token?: string
+          ready_at?: string | null
+          special_instructions?: string | null
+          status?: string
+          street_address?: string | null
+          subtotal_cents?: number
+          total_cents?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       hours_of_operation: {
         Row: {
           created_at: string
@@ -873,6 +1005,84 @@ export type Database = {
           },
         ]
       }
+      menu_items: {
+        Row: {
+          category: string
+          category_sort: number
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_archived: boolean
+          is_available: boolean
+          name: string
+          price_cents: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          category_sort?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_archived?: boolean
+          is_available?: boolean
+          name: string
+          price_cents: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          category_sort?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_archived?: boolean
+          is_available?: boolean
+          name?: string
+          price_cents?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ordering_settings: {
+        Row: {
+          customer_message: string | null
+          delivery_area: string | null
+          delivery_enabled: boolean
+          delivery_fee_cents: number | null
+          id: number
+          ordering_paused: boolean
+          pickup_enabled: boolean
+          updated_at: string
+        }
+        Insert: {
+          customer_message?: string | null
+          delivery_area?: string | null
+          delivery_enabled?: boolean
+          delivery_fee_cents?: number | null
+          id?: number
+          ordering_paused?: boolean
+          pickup_enabled?: boolean
+          updated_at?: string
+        }
+        Update: {
+          customer_message?: string | null
+          delivery_area?: string | null
+          delivery_enabled?: boolean
+          delivery_fee_cents?: number | null
+          id?: number
+          ordering_paused?: boolean
+          pickup_enabled?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       players: {
         Row: {
           average: number
@@ -1262,6 +1472,7 @@ export type Database = {
     }
     Functions: {
       generate_bowler_id: { Args: never; Returns: string }
+      get_food_order_status: { Args: { p_token: string }; Returns: Json }
       my_lm_memberships: {
         Args: never
         Returns: {
@@ -1292,6 +1503,7 @@ export type Database = {
           week_number: number
         }[]
       }
+      place_food_order: { Args: { payload: Json }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "staff" | "player"
