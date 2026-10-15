@@ -24,6 +24,7 @@ import { Route as PartiesRouteImport } from './routes/parties'
 import { Route as RentalsRouteImport } from './routes/rentals'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedKitchenRouteImport } from './routes/_authenticated/kitchen'
 import { Route as AuthenticatedLeagueManagementRouteImport } from './routes/_authenticated/league-management'
 import { Route as OrderTokenRouteImport } from './routes/order.$token'
 
@@ -101,6 +102,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedKitchenRoute = AuthenticatedKitchenRouteImport.update({
+  id: '/kitchen',
+  path: '/kitchen',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedLeagueManagementRoute =
   AuthenticatedLeagueManagementRouteImport.update({
     id: '/league-management',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/rentals': typeof RentalsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/kitchen': typeof AuthenticatedKitchenRoute
   '/league-management': typeof AuthenticatedLeagueManagementRoute
   '/order/$token': typeof OrderTokenRoute
 }
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/rentals': typeof RentalsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/kitchen': typeof AuthenticatedKitchenRoute
   '/league-management': typeof AuthenticatedLeagueManagementRoute
   '/order/$token': typeof OrderTokenRoute
 }
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/rentals': typeof RentalsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/kitchen': typeof AuthenticatedKitchenRoute
   '/_authenticated/league-management': typeof AuthenticatedLeagueManagementRoute
   '/order/$token': typeof OrderTokenRoute
 }
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/admin'
     | '/dashboard'
+    | '/kitchen'
     | '/league-management'
     | '/order/$token'
   fileRoutesByTo: FileRoutesByTo
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/admin'
     | '/dashboard'
+    | '/kitchen'
     | '/league-management'
     | '/order/$token'
   id:
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/_authenticated/kitchen'
     | '/_authenticated/league-management'
     | '/order/$token'
   fileRoutesById: FileRoutesById
@@ -351,6 +363,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/kitchen': {
+      id: '/_authenticated/kitchen'
+      path: '/kitchen'
+      fullPath: '/kitchen'
+      preLoaderRoute: typeof AuthenticatedKitchenRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/league-management': {
       id: '/_authenticated/league-management'
       path: '/league-management'
@@ -371,12 +390,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedKitchenRoute: typeof AuthenticatedKitchenRoute
   AuthenticatedLeagueManagementRoute: typeof AuthenticatedLeagueManagementRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedKitchenRoute: AuthenticatedKitchenRoute,
   AuthenticatedLeagueManagementRoute: AuthenticatedLeagueManagementRoute,
 }
 

@@ -68,10 +68,7 @@ interface OrderRow {
 }
 
 function KitchenPage() {
-  const { isStaff, loading, roles } = useAuth();
-  if (loading || (roles.length === 0 && !isStaff)) {
-    // roles load just after session; brief wait
-  }
+  const { isStaff } = useAuth();
   if (!isStaff) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center text-muted-foreground">
