@@ -12,12 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as BowlingRouteImport } from './routes/bowling'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as GlowRouteImport } from './routes/glow'
+import { Route as HoursRouteImport } from './routes/hours'
 import { Route as LeaguesRouteImport } from './routes/leagues'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as PartiesRouteImport } from './routes/parties'
@@ -36,6 +38,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnouncementsRoute = AnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -68,6 +75,11 @@ const GlowRoute = GlowRouteImport.update({
   path: '/glow',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HoursRoute = HoursRouteImport.update({
+  id: '/hours',
+  path: '/hours',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LeaguesRoute = LeaguesRouteImport.update({
   id: '/leagues',
   path: '/leagues',
@@ -97,12 +109,14 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/announcements': typeof AnnouncementsRoute
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/bowling': typeof BowlingRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/glow': typeof GlowRoute
+  '/hours': typeof HoursRoute
   '/leagues': typeof LeaguesRoute
   '/menu': typeof MenuRoute
   '/parties': typeof PartiesRoute
@@ -112,12 +126,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/announcements': typeof AnnouncementsRoute
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/bowling': typeof BowlingRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/glow': typeof GlowRoute
+  '/hours': typeof HoursRoute
   '/leagues': typeof LeaguesRoute
   '/menu': typeof MenuRoute
   '/parties': typeof PartiesRoute
@@ -129,12 +145,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/announcements': typeof AnnouncementsRoute
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/bowling': typeof BowlingRoute
   '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/glow': typeof GlowRoute
+  '/hours': typeof HoursRoute
   '/leagues': typeof LeaguesRoute
   '/menu': typeof MenuRoute
   '/parties': typeof PartiesRoute
@@ -146,12 +164,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/announcements'
     | '/auth'
     | '/book'
     | '/bowling'
     | '/contact'
     | '/events'
     | '/glow'
+    | '/hours'
     | '/leagues'
     | '/menu'
     | '/parties'
@@ -161,12 +181,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/announcements'
     | '/auth'
     | '/book'
     | '/bowling'
     | '/contact'
     | '/events'
     | '/glow'
+    | '/hours'
     | '/leagues'
     | '/menu'
     | '/parties'
@@ -177,12 +199,14 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/about'
+    | '/announcements'
     | '/auth'
     | '/book'
     | '/bowling'
     | '/contact'
     | '/events'
     | '/glow'
+    | '/hours'
     | '/leagues'
     | '/menu'
     | '/parties'
@@ -194,12 +218,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  AnnouncementsRoute: typeof AnnouncementsRoute
   AuthRoute: typeof AuthRoute
   BookRoute: typeof BookRoute
   BowlingRoute: typeof BowlingRoute
   ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
   GlowRoute: typeof GlowRoute
+  HoursRoute: typeof HoursRoute
   LeaguesRoute: typeof LeaguesRoute
   MenuRoute: typeof MenuRoute
   PartiesRoute: typeof PartiesRoute
@@ -227,6 +253,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/announcements': {
+      id: '/announcements'
+      path: '/announcements'
+      fullPath: '/announcements'
+      preLoaderRoute: typeof AnnouncementsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -269,6 +302,13 @@ declare module '@tanstack/react-router' {
       path: '/glow'
       fullPath: '/glow'
       preLoaderRoute: typeof GlowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hours': {
+      id: '/hours'
+      path: '/hours'
+      fullPath: '/hours'
+      preLoaderRoute: typeof HoursRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/leagues': {
@@ -324,12 +364,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  AnnouncementsRoute: AnnouncementsRoute,
   AuthRoute: AuthRoute,
   BookRoute: BookRoute,
   BowlingRoute: BowlingRoute,
   ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
   GlowRoute: GlowRoute,
+  HoursRoute: HoursRoute,
   LeaguesRoute: LeaguesRoute,
   MenuRoute: MenuRoute,
   PartiesRoute: PartiesRoute,

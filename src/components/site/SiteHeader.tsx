@@ -1,19 +1,27 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X, Phone } from "lucide-react";
-import { NAV, CENTRE } from "@/lib/site-data";
+import { ChevronDown, Menu, X, Phone } from "lucide-react";
+import { NAV, CENTRE, type NavItem } from "@/lib/site-data";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuth";
+
+const linkBase =
+  "rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.97]";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
+  const items = NAV as readonly NavItem[];
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6">
-        <Link to="/" className="flex shrink-0 items-center gap-3" onClick={() => setOpen(false)}>
+        <Link to="/" className="flex shrink-0 items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={() => setOpen(false)}>
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-display text-lg font-bold text-primary-foreground">
             5
           </span>
@@ -28,17 +36,35 @@ export function SiteHeader() {
         </Link>
 
         <nav aria-label="Main" className="ml-auto hidden items-center gap-0.5 xl:flex">
-          {NAV.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              activeProps={{ className: "bg-secondary text-foreground" }}
-              activeOptions={{ exact: item.to === "/" }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {items.map((item) =>
+            item.children ? (
+              <DropdownMenu key={item.label}>
+                <DropdownMenuTrigger className={cn(linkBase, "inline-flex items-center gap-1 data-[state=open]:bg-secondary data-[state=open]:text-foreground")}>
+                  {item.label}
+                  <ChevronDown className="h-3.5 w-3.5" aria-hidden />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-56">
+                  {item.children.map((c) => (
+                    <DropdownMenuItem key={c.to + c.label} asChild>
+                      <Link to={c.to} className="cursor-pointer">
+                        {c.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={linkBase}
+                activeProps={{ className: "bg-secondary text-foreground" }}
+                activeOptions={{ exact: item.to === "/" }}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <div className="ml-auto flex items-center gap-2 xl:ml-3">
@@ -49,20 +75,15 @@ export function SiteHeader() {
             <Phone className="h-4 w-4" aria-hidden />
             {CENTRE.phone}
           </a>
-          <Link
-            to={user ? "/dashboard" : "/auth"}
-            className="hidden rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
-          >
-            {user ? "My bowling" : "Sign in"}
-          </Link>
           <Button asChild size="sm" className="h-10 px-4">
             <Link to="/book">Book a lane</Link>
           </Button>
           <button
             type="button"
-            className="-mr-1 rounded-md p-2.5 text-foreground transition-colors hover:bg-secondary xl:hidden"
+            className="-mr-1 rounded-md p-2.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring xl:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
+            aria-controls="mobile-nav"
             onClick={() => setOpen((v) => !v)}
           >
             {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -70,27 +91,22 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <div className={cn("border-t border-border xl:hidden", open ? "block" : "hidden")}>
-        <nav aria-label="Mobile" className="mx-auto grid max-w-7xl gap-1 px-4 py-3 sm:px-6">
-          {NAV.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              onClick={() => setOpen(false)}
-              className="rounded-md px-3 py-3 text-base font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-              activeProps={{ className: "bg-secondary text-foreground" }}
-              activeOptions={{ exact: item.to === "/" }}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <Link
-            to={user ? "/dashboard" : "/auth"}
-            onClick={() => setOpen(false)}
-            className="rounded-md px-3 py-3 text-base font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-          >
-            {user ? "My bowling" : "Sign in"}
-          </Link>
+      <div id="mobile-nav" className={cn("border-t border-border xl:hidden", open ? "block" : "hidden")}>
+        <nav aria-label="Mobile" className="mx-auto grid max-w-7xl gap-1 px-4 py-3 sm:grid-cols-2 sm:px-6">
+          {items.flatMap((item) =>
+            (item.children ?? [item]).map((c) => (
+              <Link
+                key={c.to + c.label}
+                to={c.to}
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                activeProps={{ className: "bg-secondary text-foreground" }}
+                activeOptions={{ exact: c.to === "/" }}
+              >
+                {c.label}
+              </Link>
+            )),
+          )}
           <a
             href={`tel:${CENTRE.phone.replace(/[^0-9]/g, "")}`}
             className="rounded-md px-3 py-3 text-base font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
