@@ -11,4 +11,5 @@
 
 - Public site is informational: League Management, online food ordering, Kitchen queue and bowler score dashboards were removed from the UI; their `lm_*`/`food_orders` tables and functions are intentionally left in the database (not dropped) until confirmed unneeded.
 - Staff edit all public content (events, leagues, hours, pricing, announcements, snack bar `menu_items`, booking requests) in tabs on `/admin`; public pages read the same tables via `src/lib/content.ts` / `SnackBarMenu`, so there is one content system.
-- `/auth` is staff-only email/password (plus optional Google via the Lovable sign-in broker); Bowler ID sign-in and bowler-account server functions were removed, but `bowlers` rows and auth users are kept.
+- `/auth` uses existing Cloud email/password authentication; `/reset-password` is public but requires a provider recovery/invitation session validated by `getUser()` before password updates. Shared auth state owns recovery detection and cache teardown so normal sign-in cannot enter password setup.
+- Bowler-account server functions and UI are retired; retained content uses existing tables and roles, with no account creation or role mutation endpoints in the application.

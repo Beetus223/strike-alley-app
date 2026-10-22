@@ -43,13 +43,16 @@ export const Route = createFileRoute("/_authenticated/admin")({
       {
         name: "description",
         content:
-          "Manage events, hours, pricing, leagues, bowler scores and booking requests for Vegreville Bowling Lanes.",
+          "Manage events, hours, pricing, leagues, menu and booking requests for Vegreville Bowling Lanes.",
       },
       { property: "og:title", content: "Staff Dashboard | Vegreville Bowling Lanes" },
       {
         property: "og:description",
         content: "Everything centre staff need to keep the website up to date.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: AdminPage,

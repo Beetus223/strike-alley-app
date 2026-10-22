@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
+import { staffSignInError } from "@/lib/staff-auth";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,21 +26,24 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const [busy, setBusy] = useState(false);
-  const { user, loading } = useAuth();
+  const [reset, setReset] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const { user, loading, passwordSetup, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user) void navigate({ to: "/admin" });
-  }, [loading, user, navigate]);
+    if (!loading && user) void navigate({ to: passwordSetup ? "/reset-password" : "/admin" });
+  }, [loading, user, passwordSetup, navigate]);
 
   async function signIn(email: string, password: string) {
     setBusy(true);
+    setFeedback("");
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      void navigate({ to: "/admin" });
+      if (error) { setFeedback(staffSignInError(error.code)); return; }
+      // Session and authorization are refreshed by the shared auth provider.
     } catch {
-      toast.error("Wrong email or password.");
+      setFeedback("Unable to connect. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -49,26 +52,33 @@ function AuthPage() {
   function handleStaff(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    void signIn(String(form.get("email")), String(form.get("password")));
+    const email = String(form.get("email")).trim();
+    if (reset) void requestReset(email);
+    else void signIn(email, String(form.get("password")));
   }
 
-  async function handleGoogle() {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (result.error) {
-      toast.error("Google sign-in failed");
-      return;
+  async function requestReset(email: string) {
+    setBusy(true);
+    setFeedback("");
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      setFeedback(error
+        ? "Unable to send a reset link right now. Please try again later."
+        : "If an account exists for this email, you’ll receive a password-reset link. Check your inbox and spam folder.");
+    } catch {
+      setFeedback("Unable to connect. Please try again.");
+    } finally {
+      setBusy(false);
     }
-    if (result.redirected) return;
-    void navigate({ to: "/admin" });
   }
 
   return (
     <>
       <PageHeader
         eyebrow="Centre staff"
-        title="Sign in"
+        title={reset ? "Reset password" : "Sign in"}
         intro="This sign-in is for Vegreville Bowling Lanes staff to update the website."
       />
       <Section>
@@ -85,7 +95,7 @@ function AuthPage() {
                   className="mt-2"
                 />
               </div>
-              <div>
+              {!reset && <div>
                 <Label htmlFor="staff_password">Password</Label>
                 <Input
                   id="staff_password"
@@ -95,13 +105,15 @@ function AuthPage() {
                   autoComplete="current-password"
                   className="mt-2"
                 />
-              </div>
+              </div>}
+              {feedback && <p role="status" className="text-sm text-muted-foreground">{feedback}</p>}
               <Button type="submit" className="w-full" disabled={busy}>
-                {busy ? "Please wait…" : "Staff sign in"}
+                {busy ? "Please wait…" : reset ? "Send reset link" : "Staff sign in"}
               </Button>
-              <Button type="button" variant="outline" className="w-full" onClick={handleGoogle}>
-                Continue with Google
+              <Button type="button" variant="ghost" className="w-full" disabled={busy} onClick={() => { setReset(!reset); setFeedback(""); }}>
+                {reset ? "Back to staff sign in" : "Forgot password?"}
               </Button>
+              {user && <Button type="button" variant="outline" className="w-full" onClick={() => void signOut().catch(() => toast.error("Sign-out failed. Please try again."))}>Sign out</Button>}
             </form>
         </div>
       </Section>
