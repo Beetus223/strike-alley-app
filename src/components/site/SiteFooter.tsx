@@ -52,7 +52,7 @@ export function SiteFooter() {
             {[...NAV, ...FOOTER_LINKS].map((item) => (
               <li key={item.label}>
                 <Link to={item.to} className="rounded-sm text-ink-muted transition-colors hover:text-ink-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  {item.to === "/auth" && user ? "Staff account" : item.label}
+                  {item.to === "/admin" && user ? "Staff account" : item.label}
                 </Link>
               </li>
             ))}
