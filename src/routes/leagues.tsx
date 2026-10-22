@@ -6,13 +6,13 @@ import { useLeagues } from "@/lib/content";
 export const Route = createFileRoute("/leagues")({
   head: () => ({
     meta: [
-      { title: "Leagues & Standings | Vegreville Bowling Lanes" },
+      { title: "Bowling Leagues | Vegreville Bowling Lanes" },
       {
         name: "description",
         content:
           "Mixed, men's, senior and YBC youth 5-pin leagues in Vegreville. Formats, fees, nights and open team spots.",
       },
-      { property: "og:title", content: "Leagues & Standings | Vegreville Bowling Lanes" },
+      { property: "og:title", content: "Bowling Leagues | Vegreville Bowling Lanes" },
       {
         property: "og:description",
         content:
@@ -79,8 +79,7 @@ function LeaguesPage() {
             locked in as established for tournament entry.
           </p>
           <p className="mt-4 max-w-3xl text-muted-foreground">
-            Weekly scores are posted at the counter and, once the player portal is live, in your own
-            account with a game-by-game history.
+            Weekly scores and standings are posted at the counter on league nights.
           </p>
         </div>
       </section>

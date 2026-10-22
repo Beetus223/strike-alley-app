@@ -3,7 +3,7 @@ import { Phone } from "lucide-react";
 import snackbar from "@/assets/loaded-gyro-poutine-fries.png.asset.json";
 import { PageHeader, Section } from "@/components/site/PageHeader";
 import { SNACK_BAR_PHONE } from "@/lib/site-data";
-import { SnackBarMenu } from "@/components/food/SnackBarOrdering";
+import { SnackBarMenu } from "@/components/food/SnackBarMenu";
 
 export const Route = createFileRoute("/menu")({
   head: () => ({

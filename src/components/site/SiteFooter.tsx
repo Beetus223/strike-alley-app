@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin, Phone, Mail } from "lucide-react";
 import { HoursCompact } from "@/components/site/HoursTable";
-import { CENTRE, HOURS_NOTE, NAV } from "@/lib/site-data";
+import { CENTRE, FOOTER_LINKS, HOURS_NOTE, NAV } from "@/lib/site-data";
 
 export function SiteFooter() {
   return (
@@ -45,18 +45,13 @@ export function SiteFooter() {
         <div>
           <h3 className="font-display text-lg text-ink-foreground">Explore</h3>
           <ul className="mt-4 grid grid-cols-2 gap-2 text-sm">
-            {NAV.map((item) => (
-              <li key={item.to}>
-                <Link to={item.to} className="text-ink-muted hover:text-ink-foreground">
+            {[...NAV, ...FOOTER_LINKS].map((item) => (
+              <li key={item.label}>
+                <Link to={item.to} className="rounded-sm text-ink-muted transition-colors hover:text-ink-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   {item.label}
                 </Link>
               </li>
             ))}
-            <li>
-              <Link to="/book" className="text-ink-muted hover:text-ink-foreground">
-                Book a lane
-              </Link>
-            </li>
           </ul>
         </div>
       </div>

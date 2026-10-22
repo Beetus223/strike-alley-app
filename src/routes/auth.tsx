@@ -33,7 +33,7 @@ function AuthPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user) void navigate({ to: "/dashboard" });
+    if (!loading && user) void navigate({ to: "/admin" });
   }, [loading, user, navigate]);
 
   async function signIn(email: string, password: string) {
@@ -41,7 +41,7 @@ function AuthPage() {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      void navigate({ to: "/dashboard" });
+      void navigate({ to: "/admin" });
     } catch {
       toast.error(
         mode === "bowler"
@@ -75,7 +75,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    void navigate({ to: "/dashboard" });
+    void navigate({ to: "/admin" });
   }
 
   return (
