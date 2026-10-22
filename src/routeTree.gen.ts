@@ -24,6 +24,7 @@ import { Route as LeaguesRouteImport } from './routes/leagues'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as PartiesRouteImport } from './routes/parties'
 import { Route as RentalsRouteImport } from './routes/rentals'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const IndexRoute = IndexRouteImport.update({
@@ -100,6 +101,11 @@ const RentalsRoute = RentalsRouteImport.update({
   path: '/rentals',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/menu': typeof MenuRoute
   '/parties': typeof PartiesRoute
   '/rentals': typeof RentalsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
 }
 export interface FileRoutesByTo {
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/menu': typeof MenuRoute
   '/parties': typeof PartiesRoute
   '/rentals': typeof RentalsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
 }
 export interface FileRoutesById {
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/menu': typeof MenuRoute
   '/parties': typeof PartiesRoute
   '/rentals': typeof RentalsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
 }
 export interface FileRouteTypes {
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/menu'
     | '/parties'
     | '/rentals'
+    | '/reset-password'
     | '/admin'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/menu'
     | '/parties'
     | '/rentals'
+    | '/reset-password'
     | '/admin'
   id:
     | '__root__'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/menu'
     | '/parties'
     | '/rentals'
+    | '/reset-password'
     | '/_authenticated/admin'
   fileRoutesById: FileRoutesById
 }
@@ -230,6 +242,7 @@ export interface RootRouteChildren {
   MenuRoute: typeof MenuRoute
   PartiesRoute: typeof PartiesRoute
   RentalsRoute: typeof RentalsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -339,6 +352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RentalsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -376,6 +396,7 @@ const rootRouteChildren: RootRouteChildren = {
   MenuRoute: MenuRoute,
   PartiesRoute: PartiesRoute,
   RentalsRoute: RentalsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

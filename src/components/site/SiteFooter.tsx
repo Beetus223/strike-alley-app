@@ -2,8 +2,12 @@ import { Link } from "@tanstack/react-router";
 import { MapPin, Phone, Mail } from "lucide-react";
 import { HoursCompact } from "@/components/site/HoursTable";
 import { CENTRE, FOOTER_LINKS, HOURS_NOTE, NAV } from "@/lib/site-data";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export function SiteFooter() {
+  const { user, signOut } = useAuth();
   return (
     <footer className="ink-section border-t border-border">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
@@ -48,11 +52,12 @@ export function SiteFooter() {
             {[...NAV, ...FOOTER_LINKS].map((item) => (
               <li key={item.label}>
                 <Link to={item.to} className="rounded-sm text-ink-muted transition-colors hover:text-ink-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  {item.label}
+                  {item.to === "/auth" && user ? "Staff account" : item.label}
                 </Link>
               </li>
             ))}
           </ul>
+          {user && <Button variant="ghost" size="sm" className="mt-3 text-ink-foreground" onClick={() => void signOut().catch(() => toast.error("Sign-out failed. Please try again."))}>Sign out</Button>}
         </div>
       </div>
       <div className="border-t border-white/10 px-4 py-5 text-center text-xs text-ink-muted sm:px-6">
