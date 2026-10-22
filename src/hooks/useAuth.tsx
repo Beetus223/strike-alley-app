@@ -38,10 +38,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    const initialPasswordSetup = passwordSetupFlow(window.location.hash);
+    let initialPasswordSetup = passwordSetupFlow(window.location.hash);
     const { data: sub } = supabase.auth.onAuthStateChange((event, next) => {
       setSession(next);
       if (event === "PASSWORD_RECOVERY" || (next && initialPasswordSetup)) setPasswordSetup(true);
+      if (next || event === "SIGNED_OUT") initialPasswordSetup = false;
       if (event === "SIGNED_OUT") {
         setPasswordSetup(false);
         setRoleState(null);
