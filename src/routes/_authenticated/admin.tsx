@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PageHeader, Section } from "@/components/site/PageHeader";
+import { MenuEditor } from "@/components/food/MenuEditor";
 import { Field, PanelIntro, TextField } from "@/components/site/AdminField";
 
 import {
@@ -90,31 +91,9 @@ function AdminPage() {
       <PageHeader
         eyebrow="Centre staff"
         title="Dashboard"
-        intro="Everything on the website — events, hours, prices, leagues and scores — is edited here. Changes show up on the public pages right away."
+        intro="Everything on the website — events, hours, prices, announcements, leagues and the snack bar menu — is edited here. Changes show up on the public pages right away."
       />
       <Section>
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/40 bg-surface p-4">
-          <div>
-            <p className="font-display text-2xl">League Management</p>
-            <p className="text-sm text-muted-foreground">
-              Internal league secretary tools: setup, teams, league nights, score entry and history.
-            </p>
-          </div>
-          <Button asChild size="lg">
-            <Link to="/league-management">Open League Management</Link>
-          </Button>
-        </div>
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/40 bg-surface p-4">
-          <div>
-            <p className="font-display text-2xl">Kitchen &amp; Snack Bar Orders</p>
-            <p className="text-sm text-muted-foreground">
-              Incoming online food orders, snack bar menu and ordering settings.
-            </p>
-          </div>
-          <Button asChild size="lg">
-            <Link to="/kitchen">Open Kitchen Orders</Link>
-          </Button>
-        </div>
         <Tabs defaultValue="events">
           <TabsList className="flex h-auto flex-wrap justify-start gap-1">
             <TabsTrigger value="events">Events</TabsTrigger>
@@ -122,6 +101,7 @@ function AdminPage() {
             <TabsTrigger value="hours">Hours</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="announcements">Announcements</TabsTrigger>
+            <TabsTrigger value="menu">Snack Bar Menu</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
           </TabsList>
           <TabsContent value="events" className="mt-6">
@@ -138,6 +118,9 @@ function AdminPage() {
           </TabsContent>
           <TabsContent value="announcements" className="mt-6">
             <AnnouncementsPanel />
+          </TabsContent>
+          <TabsContent value="menu" className="mt-6">
+            <MenuEditor />
           </TabsContent>
           <TabsContent value="bookings" className="mt-6">
             <BookingsPanel />
