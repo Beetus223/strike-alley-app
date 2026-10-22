@@ -79,8 +79,7 @@ function LeaguesPage() {
             locked in as established for tournament entry.
           </p>
           <p className="mt-4 max-w-3xl text-muted-foreground">
-            Weekly scores are posted at the counter and, once the player portal is live, in your own
-            account with a game-by-game history.
+            Weekly scores and standings are posted at the counter on league nights.
           </p>
         </div>
       </section>

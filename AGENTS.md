@@ -8,12 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
-- League statistics are computed client-side in `src/lib/league-stats.ts` from raw `scores` + `league_settings` + `team_matchups`; never store derived stats — individual games are the single source of truth.
-- Internal league management lives in `lm_*` tables (separate from public `leagues` listing); completed `lm_league_nights` are locked by trigger and scores store name snapshots so history never rewrites.
-- Internal league results (handicap, points, standings, averages, highs) are computed by `src/lib/lm-engine.ts` from raw `lm_night_scores` + `lm_league_rules`; the Staff Dashboard no longer hosts score/report/bowler tools — League Management is the only home.
-- Completed league nights use the `average_at_time`/`handicap_at_time` snapshots saved on `lm_night_scores` (team mode stores the team's per-game handicap on each bowler row); corrections on reopened nights carry the original snapshot forward; only the explicit, confirmed "Recalculate saved averages & handicaps" option in Score Entry replaces them.
-- Bowlers read their own League Management results only through the self-scoped `my_lm_scores`/`my_lm_memberships` database functions (completed nights only); never grant bowlers direct reads on `lm_*` tables.
-- Scoring rules are covered by `src/lib/lm-engine.test.ts` (vitest, `bun run test`); update it when engine math changes.
-- Print previews (`src/components/league-management/PrintPreview.tsx`) clone the real printable element by id and paginate it on Letter paper; never build a separate preview layout — keep `.pp-scope` CSS in sync with the `@media print` rules.
-- Lane scorecards print one whole sheet per page: `planTeamSheets` in `ScorecardSheet.tsx` groups games (then bowlers) onto extra sheets instead of shrinking boxes below the minimum row height or letting a sheet break across pages; covered by `scorecard-plan.test.ts`.
-- Online snack bar orders are created only through the `place_food_order` SECURITY DEFINER function, which reprices from `menu_items` and ignores client totals; customers read status only via `get_food_order_status(public_token)`; `food_orders` is staff-only and status transitions are enforced by a DB trigger mirrored in `src/lib/food-order.ts` (tests in `food-order.test.ts`).
+
+- Public site is informational: League Management, online food ordering, Kitchen queue and bowler score dashboards were removed from the UI; their `lm_*`/`food_orders` tables and functions are intentionally left in the database (not dropped) until confirmed unneeded.
+- Staff edit all public content (events, leagues, hours, pricing, announcements, snack bar `menu_items`, booking requests) in tabs on `/admin`; public pages read the same tables via `src/lib/content.ts` / `SnackBarMenu`, so there is one content system.

@@ -112,7 +112,7 @@ function Home() {
               variant="outline"
               className="border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white"
             >
-              <Link to="/contact">View hours</Link>
+              <Link to="/hours">View hours</Link>
             </Button>
             <Button
               asChild
@@ -120,7 +120,7 @@ function Home() {
               variant="ghost"
               className="text-white hover:bg-white/10 hover:text-white sm:w-auto"
             >
-              <Link to="/bowling">Explore activities</Link>
+              <Link to="/bowling">See prices</Link>
             </Button>
           </div>
 
@@ -287,7 +287,7 @@ function Home() {
               ))}
             </ul>
             <Button asChild className="mt-7">
-              <Link to="/leagues">League details & standings</Link>
+              <Link to="/leagues">Explore our leagues</Link>
             </Button>
           </div>
           <img
