@@ -6,13 +6,13 @@ import { useLeagues } from "@/lib/content";
 export const Route = createFileRoute("/leagues")({
   head: () => ({
     meta: [
-      { title: "Leagues & Standings | Vegreville Bowling Lanes" },
+      { title: "Bowling Leagues | Vegreville Bowling Lanes" },
       {
         name: "description",
         content:
           "Mixed, men's, senior and YBC youth 5-pin leagues in Vegreville. Formats, fees, nights and open team spots.",
       },
-      { property: "og:title", content: "Leagues & Standings | Vegreville Bowling Lanes" },
+      { property: "og:title", content: "Bowling Leagues | Vegreville Bowling Lanes" },
       {
         property: "og:description",
         content:

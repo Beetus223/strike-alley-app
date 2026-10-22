@@ -89,7 +89,7 @@ export function MenuEditor() {
         <label className="flex items-center gap-2 text-sm">
           <Switch checked={showArchived} onCheckedChange={setShowArchived} /> Show archived
         </label>
-        <p className="text-sm text-muted-foreground">Prices are tax-included. Price changes only affect new orders.</p>
+        <p className="text-sm text-muted-foreground">Prices are tax-included. Changes appear on the public Snack Bar page right away.</p>
       </div>
       {editing && (
         <div className="grid gap-3 rounded-2xl border border-border p-4 sm:grid-cols-2">
