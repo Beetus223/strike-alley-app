@@ -11,7 +11,6 @@ import { formatCents, parseDollarsToCents } from "@/lib/food-order";
 import type { MenuItemRow } from "@/components/food/SnackBarMenu";
 
 /** Staff editor for the public, view-only Snack Bar menu (menu_items). */
-}
 
 const emptyItem = { category: "", name: "", description: "", price: "", image_url: "" };
 
