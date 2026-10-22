@@ -492,15 +492,33 @@ export const LANE_BOOKING = {
   note: "See additional options available to add to your party package.",
 };
 
+export type NavItem = { to: string; label: string; children?: readonly { to: string; label: string }[] };
+
+/** Main navigation. Secondary pages live under "Bookings" and in the footer. */
 export const NAV = [
   { to: "/", label: "Home" },
-  { to: "/bowling", label: "Bowling & Prices" },
   { to: "/leagues", label: "Leagues" },
   { to: "/events", label: "Events" },
+  { to: "/hours", label: "Hours" },
+  { to: "/bowling", label: "Pricing" },
+  { to: "/announcements", label: "Announcements" },
+  { to: "/menu", label: "Snack Bar" },
+  {
+    to: "/book",
+    label: "Bookings",
+    children: [
+      { to: "/book", label: "Book a lane" },
+      { to: "/parties", label: "Birthday parties & groups" },
+      { to: "/rentals", label: "Facility rentals" },
+    ],
+  },
+] as const;
+
+export const FOOTER_LINKS = [
   { to: "/glow", label: "Glow Bowling" },
   { to: "/parties", label: "Parties" },
-  { to: "/menu", label: "Snack Bar" },
   { to: "/rentals", label: "Rentals" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
+  { to: "/admin", label: "Staff sign in" },
 ] as const;
