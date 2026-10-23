@@ -16,3 +16,10 @@ describe('Staff website content rules',()=>{
  it('requires whole cents',()=>expect(()=>offeringSchema.parse({...offering,price_cents:123.45})).toThrow());
  it('protects six-lane facts from content edits',()=>expect(()=>validateField('home.039','8 lanes')).toThrow());
 });
+
+import { validateField as vf } from './website-validation';
+describe('newsletter signup link', () => {
+  it('accepts an empty link (signup hidden)', () => expect(vf('contact.newsletter_url', '')).toBe(''));
+  it('accepts a secure link', () => expect(vf('contact.newsletter_url', 'https://example.com/signup')).toBe('https://example.com/signup'));
+  it('rejects an insecure link', () => expect(() => vf('contact.newsletter_url', 'http://example.com')).toThrow());
+});
