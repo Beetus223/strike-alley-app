@@ -15,10 +15,10 @@ CREATE FUNCTION private.is_staff(id uuid) RETURNS boolean LANGUAGE sql STABLE AS
 CREATE TYPE booking_status AS ENUM ('new','confirmed','declined','completed');
 CREATE TABLE hours_of_operation(id uuid); INSERT INTO hours_of_operation VALUES(gen_random_uuid());
 CREATE TABLE seasonal_hour_schedules(id uuid,date_label text);
-CREATE TABLE booking_requests(id uuid DEFAULT gen_random_uuid() PRIMARY KEY,booking_type text,contact_name text,email text,phone text,requested_date date,requested_time time,party_size integer,lanes integer,notes text,status booking_status,created_by uuid);
+CREATE TABLE booking_requests(id uuid DEFAULT gen_random_uuid() PRIMARY KEY,booking_type text,contact_name text,email text,phone text,requested_date date,requested_time time,party_size integer,lanes integer,notes text,status booking_status,created_by uuid,updated_at timestamptz default now());
 GRANT USAGE ON SCHEMA auth,private,public TO anon,authenticated;
 SQL
-for migration in drizzle/migrations/0008_*.sql drizzle/migrations/0009_*.sql drizzle/migrations/0010_*.sql; do
+for migration in drizzle/migrations/0008_*.sql drizzle/migrations/0009_*.sql drizzle/migrations/0010_*.sql drizzle/migrations/0011_*.sql drizzle/migrations/0012_*.sql; do
   psql -h "$TEMP_DIR" -p "$PORT" -d postgres -v ON_ERROR_STOP=1 -f "$migration"
 done
 RESERVATION_TEST_DB_URL="postgres://$(id -un)@localhost:$PORT/postgres" bunx vitest run src/lib/reservations.db.test.ts src/lib/reservations.test.ts
