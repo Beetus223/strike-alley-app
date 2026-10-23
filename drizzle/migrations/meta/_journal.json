@@ -85,6 +85,13 @@
       "when": 1792780440587,
       "tag": "0011_telephone_staff_reservations",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792780482581,
+      "tag": "0012_staff_event_bookings",
+      "breakpoints": true
     }
   ]
 }
