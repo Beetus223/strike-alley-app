@@ -290,8 +290,8 @@
   {
     "key": "home.037",
     "page": "home",
-    "label": "Contact & directions",
-    "value": "Contact & directions",
+    "label": "Get directions",
+    "value": "Get directions",
     "kind": "text",
     "protected": false
   },
