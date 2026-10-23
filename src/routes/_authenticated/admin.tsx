@@ -59,7 +59,6 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-const STATUSES = ["new", "confirmed", "declined", "completed"] as const;
 
 /** Anything saved here should refresh the public pages too. */
 function useContentInvalidate() {
@@ -952,91 +951,3 @@ function AnnouncementFields({ item }: { item?: AnnouncementItem }) {
   );
 }
 
-/* ------------------------------------------------------- scores & averages */
-
-/* ---------------------------------------------------------------- bookings */
-
-function BookingsPanel() {
-  const qc = useQueryClient();
-  const bookings = useQuery({
-    queryKey: ["bookings"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("booking_requests")
-        .select("*")
-        .order("requested_date", { ascending: true });
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const update = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase
-        .from("booking_requests")
-        .update({ status: status as (typeof STATUSES)[number] })
-        .eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success("Booking updated");
-      void qc.invalidateQueries({ queryKey: ["bookings"] });
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
-
-  if (bookings.isLoading) return <p className="text-muted-foreground">Loading…</p>;
-  if ((bookings.data ?? []).length === 0)
-    return <p className="text-muted-foreground">No booking requests yet.</p>;
-
-  return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      {(bookings.data ?? []).map((b) => (
-        <article key={b.id} className="card-soft rounded-2xl p-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h3 className="text-2xl">{b.contact_name}</h3>
-            <span className="rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-primary">
-              {b.status}
-            </span>
-          </div>
-          <p className="mt-1 text-sm text-primary">{b.booking_type}</p>
-          <dl className="mt-3 grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-            <div>
-              <dt className="text-xs uppercase tracking-widest">When</dt>
-              <dd>
-                {b.requested_date} at {b.requested_time}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-widest">Group</dt>
-              <dd>
-                {b.party_size} bowlers · {b.lanes} lane(s)
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-widest">Phone</dt>
-              <dd>{b.phone}</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-widest">Email</dt>
-              <dd className="break-all">{b.email}</dd>
-            </div>
-          </dl>
-          {b.notes ? <p className="mt-3 text-sm">{b.notes}</p> : null}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {STATUSES.map((s) => (
-              <Button
-                key={s}
-                size="sm"
-                variant={b.status === s ? "default" : "outline"}
-                onClick={() => update.mutate({ id: b.id, status: s })}
-              >
-                {s}
-              </Button>
-            ))}
-          </div>
-        </article>
-      ))}
-    </div>
-  );
-}

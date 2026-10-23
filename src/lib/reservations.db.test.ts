@@ -270,17 +270,17 @@ suite("six-lane reservation database rules", () => {
   it("staff can save without email and adjust duration", async () => {
     const r=await save({...contact,email:"",request_key:key(),day:DAY,time:"12:00",allocations:[2],games:1,duration_minutes:95,status:"confirmed"});
     expect(r.duration).toBe(95); expect(r.lanes).toEqual([1]);
-    expect((await sql`select upper(occupied)-lower(occupied) as duration from lane_occupancy where reservation_id=${r.id}`)[0]?.duration).toBe("01:35:00");
+    expect((await sql`select upper(occupied)-lower(occupied) as duration from lane_occupancy where reservation_id=${r.id}`)[0]?.["duration"]).toBe("01:35:00");
   });
   it("staff inquiry stays separate; confirmation reserves lanes and cancellation releases them", async () => {
     const p={...contact,email:"",booking_type:"Birthday Party",requested_date:DAY,requested_time:"12:00",party_size:20,lanes:2,duration_minutes:90,follow_up_status:"inquiry"};
     const result=await as("staff",t=>t`select reservation_inquiry_save(${t.json(p)}) r`) as {r:{id:string}}[];
     const id=result[0]?.r.id; if(!id)throw new Error("Missing inquiry");
-    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.count)).toBe(0);
+    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.["count"])).toBe(0);
     await as("staff",t=>t`select reservation_inquiry_save(${t.json({...p,follow_up_status:"confirmed"})},${id}::uuid)`);
-    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.count)).toBe(2);
+    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.["count"])).toBe(2);
     await as("staff",t=>t`select reservation_inquiry_save(${t.json({...p,follow_up_status:"cancelled"})},${id}::uuid)`);
-    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.count)).toBe(0);
+    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.["count"])).toBe(0);
   });
   it("public cannot manage special events",async()=>{
     await expect(as("anon",t=>t`select reservation_inquiry_save('{}'::jsonb)`)).rejects.toThrow(/permission denied/);
