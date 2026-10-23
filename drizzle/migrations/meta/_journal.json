@@ -120,6 +120,13 @@
       "when": 1792783406238,
       "tag": "0016_staff_website_photo_uploads",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792783479983,
+      "tag": "0017_published_event_photo_access",
+      "breakpoints": true
     }
   ]
 }
