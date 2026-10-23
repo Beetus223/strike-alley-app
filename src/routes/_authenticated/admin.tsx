@@ -226,6 +226,9 @@ function EventsPanel() {
         ...(form.get("is_active") === "on" && (form.has("featured")) ? {is_archived:false} : {}),
         ...(form.has("featured") ? {featured:form.get("featured")==="on"} : {}),
         ...(form.has("image_url") ? {image_url:str(form,"image_url")} : {}),
+        ...(item?.email_status === "marked_sent"
+          ? {}
+          : { email_status: form.get("email_requested") === "on" ? "ready" : "not_selected" }),
       },
     });
     
@@ -999,6 +1002,10 @@ function AnnouncementsPanel() {
           className="card-soft space-y-4 rounded-2xl p-5"
         >
           <AnnouncementFields item={a} />
+          <NewsletterActions item={a} onMarkSent={() => {
+            if (confirm("Only mark this as sent after GoDaddy shows the campaign was sent. Continue?"))
+              save.mutate({ id: a.id, values: { email_status: "marked_sent", email_marked_sent_at: new Date().toISOString() } });
+          }} />
           <div className="flex flex-wrap gap-3">
             <Button type="submit">Save</Button>
             <Button
@@ -1029,10 +1036,59 @@ function AnnouncementFields({ item }: { item?: AnnouncementItem }) {
         <Field label="Show until" name="ends_on" type="date" defaultValue={item?.ends_on} />
         <label className="flex items-center gap-3 pb-2 text-sm">
           <Switch name="is_active" defaultChecked={item?.is_active ?? true} />
-          Active
+          Show on website
         </label>
       </div>
+      <fieldset className="rounded-xl border border-border p-4">
+        <legend className="px-1 text-sm font-semibold">Newsletter email</legend>
+        {item?.email_status === "marked_sent" ? (
+          <p className="text-sm text-muted-foreground">Already emailed — marked as sent in GoDaddy by staff.</p>
+        ) : (
+          <label className="flex items-center gap-3 text-sm">
+            <Switch name="email_requested" defaultChecked={item?.email_status === "ready"} />
+            Email this announcement to newsletter subscribers
+          </label>
+        )}
+        <p className="mt-2 text-xs text-muted-foreground">
+          Showing it on the website never sends an email. Emails are sent from your GoDaddy Email Marketing account.
+        </p>
+      </fieldset>
     </>
+  );
+}
+
+const EMAIL_STATUS_LABEL = {
+  not_selected: "Not selected for email",
+  ready: "Ready to send in GoDaddy",
+  marked_sent: "Marked as sent by staff",
+} as const;
+
+function NewsletterActions({ item, onMarkSent }: { item: AnnouncementItem; onMarkSent: () => void }) {
+  const status = item.email_status ?? "not_selected";
+  const emailText = `${item.title}\n\n${item.message}`;
+  return (
+    <div className="flex flex-wrap items-center gap-3 rounded-xl bg-muted/40 p-3 text-sm">
+      <span className="rounded-full border border-border px-3 py-1 font-semibold">
+        Email: {EMAIL_STATUS_LABEL[status]}
+        {status === "marked_sent" && item.email_marked_sent_at
+          ? ` (${new Date(item.email_marked_sent_at).toLocaleDateString()})`
+          : ""}
+      </span>
+      {status === "ready" && (
+        <>
+          <Button type="button" size="sm" variant="outline" onClick={() => {
+            void navigator.clipboard.writeText(emailText).then(
+              () => toast.success("Email text copied — paste it into a new GoDaddy campaign."),
+              () => toast.error("Couldn't copy. Select the title and message and copy them manually."),
+            );
+          }}>Copy email text</Button>
+          <Button type="button" size="sm" variant="outline" asChild>
+            <a href="https://www.godaddy.com/help/create-a-marketing-email-24503" target="_blank" rel="noopener noreferrer">How to send in GoDaddy</a>
+          </Button>
+          <Button type="button" size="sm" onClick={onMarkSent}>I sent it in GoDaddy</Button>
+        </>
+      )}
+    </div>
   );
 }
 
