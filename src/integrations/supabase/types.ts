@@ -1883,6 +1883,7 @@ export type Database = {
       reservation_windows: { Args: { p_day: string }; Returns: Json }
       submit_event_inquiry: { Args: { p: Json }; Returns: Json }
       website_publish: { Args: { p_keys: string[] }; Returns: undefined }
+      website_special_schedule: { Args: { p: Json }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "staff" | "player"
