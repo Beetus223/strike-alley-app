@@ -27,7 +27,7 @@ export const Route = createFileRoute("/events")({
 });
 
 function EventsPage() {
-  const { text } = useWebsiteContent();
+  const { text, visible } = useWebsiteContent();
   const CENTRE = useBusiness();
 
 
@@ -59,8 +59,8 @@ function EventsPage() {
           <h2 className="text-3xl">{text("events.004", "Running your own event?")}</h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">
             {text("events.005", "Fundraisers, staff nights, school groups and church groups all bowl here. Tell us your date and headcount and we'll build a quote.")}</p>
-          <Button asChild className="mt-5">
-            <Link to="/inquiries">{text("events.006", "Send a booking request")}</Link>
+          <Button hidden={!visible("events.actions_visible")} asChild className="mt-5">
+            <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("events.006", "Send a booking request")}</a>
           </Button>
         </div>
       </Section>

@@ -1,4 +1,4 @@
-import { useWebsiteContent, useBusiness } from "@/lib/website-content";
+import { useOfferings, packageDisplay, useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import partyImg from "@/assets/party-details.png.asset.json";
@@ -34,8 +34,12 @@ export const Route = createFileRoute("/parties")({
 });
 
 function PartiesPage() {
-  const { text } = useWebsiteContent();
+  const { text, visible } = useWebsiteContent();
   const CENTRE = useBusiness();
+  const { data: packages } = useOfferings("birthday");
+  const { data: laneOptions } = useOfferings("party-lanes");
+  const PARTY_PACKAGES = (packages ?? []).map(packageDisplay);
+  const LANE_BOOKING = {title:text("parties.lanes_title"),intro:text("parties.lanes_intro"),note:text("parties.lanes_note"),includes:text("parties.lanes_features").split("\n").filter(Boolean),options:(laneOptions??[]).map(p=>({label:p.name,price:packageDisplay(p).price,detail:p.features.join(" ")}))};
 
 
   return (
@@ -71,8 +75,8 @@ function PartiesPage() {
           <p className="mt-4 leading-relaxed text-muted-foreground">
             {text("parties.006", "We welcome birthday parties, family gatherings, sports teams, company events, team building, Christmas parties and celebrations of all kinds.")}</p>
           <div className="mt-8 flex justify-center">
-            <Button asChild size="lg">
-              <Link to="/inquiries">{text("parties.007", "Request a party date")}</Link>
+            <Button hidden={!visible("parties.actions_visible")} asChild size="lg">
+              <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("parties.007", "Request a party date")}</a>
             </Button>
           </div>
         </div>
@@ -132,8 +136,8 @@ function PartiesPage() {
                 </p>
               ) : null}
 
-              <Button asChild className="mt-6 w-full">
-                <Link to="/inquiries">{text("parties.010", "Book")}{p.name}</Link>
+              <Button hidden={!visible("parties.actions_visible")} asChild className="mt-6 w-full">
+                <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("parties.010", "Book")}{p.name}</a>
               </Button>
             </article>
           ))}
@@ -193,8 +197,8 @@ function PartiesPage() {
           <p className="mt-4 leading-relaxed text-muted-foreground">
             {text("parties.016", "Other events can be custom-made to best fit your group and party needs. We can also cater your event in-house with a custom menu to fit your preferences.")}</p>
           <div className="mt-8 flex justify-center">
-            <Button asChild size="lg">
-              <Link to="/inquiries">{text("parties.017", "Request a party date")}</Link>
+            <Button hidden={!visible("parties.actions_visible")} asChild size="lg">
+              <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("parties.017", "Request a party date")}</a>
             </Button>
           </div>
         </div>
@@ -209,8 +213,8 @@ function PartiesPage() {
           <p className="mt-6 text-base text-ink-muted">
             {text("parties.020", "Use the \"Request a party date\" button to get started.")}</p>
           <div className="mt-8 flex justify-center">
-            <Button asChild size="lg" variant="secondary">
-              <Link to="/inquiries">{text("parties.021", "Request a party date")}</Link>
+            <Button hidden={!visible("parties.actions_visible")} asChild size="lg" variant="secondary">
+              <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("parties.021", "Request a party date")}</a>
             </Button>
           </div>
         </div>

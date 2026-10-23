@@ -32,6 +32,7 @@ export const Route = createFileRoute("/menu")({
 function MenuPage() {
   const { text } = useWebsiteContent();
   const CENTRE = useBusiness();
+  const SNACK_BAR_PHONE = CENTRE.snackPhone;
 
 
   return (

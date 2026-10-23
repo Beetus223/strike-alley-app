@@ -1960,5 +1960,12 @@
     "label": "Custom Burgers note",
     "value": "Tell us what you like and we'll build it your way! Available toppings include cheese, bacon, lettuce, tomato, onion, pickles, mustard, ketchup, relish, pineapple, olives, and banana peppers.",
     "kind": "text"
+  },
+  {
+    "key": "rentals.terms_verified",
+    "page": "rentals",
+    "label": "I have verified these rental terms — show them publicly",
+    "value": "false",
+    "kind": "boolean"
   }
 ]

@@ -27,7 +27,7 @@ export const Route = createFileRoute("/leagues")({
 });
 
 function LeaguesPage() {
-  const { text } = useWebsiteContent();
+  const { text, visible } = useWebsiteContent();
   const CENTRE = useBusiness();
 
 
@@ -40,7 +40,7 @@ function LeaguesPage() {
         title={text("leagues.002", "Leagues")}
         intro={text("leagues.003", "Four leagues, every skill level, handicap scoring so a first-year bowler can beat a 220 average. Spares are always welcome — put your name on the spare list and we'll call you.")}
       >
-        <Button asChild size="lg">
+        <Button hidden={!visible("leagues.actions_visible")} asChild size="lg">
           <Link to="/contact">{text("leagues.004", "Ask about a spot")}</Link>
         </Button>
       </PageHeader>

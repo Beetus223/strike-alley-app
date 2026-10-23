@@ -36,7 +36,7 @@ const SCORING = [
 ];
 
 function BowlingPage() {
-  const { text } = useWebsiteContent();
+  const { text, visible } = useWebsiteContent();
   const CENTRE = useBusiness();
 
 
@@ -47,10 +47,10 @@ function BowlingPage() {
       <PageHeader
         eyebrow={text("bowling.001", "Six lanes · Synthetic approach")}
         title={text("bowling.002", "Bowling & Prices")}
-        intro={`Every lane at ${CENTRE.name} is set up for Canadian 5-pin, with automatic scoring, bumper rails on request and ramps for bowlers who need them.`}
+        intro={text("bowling.intro")}
       >
-        <Button asChild size="lg">
-          <Link to="/book">{text("bowling.003", "Request a lane")}</Link>
+        <Button hidden={!visible("bowling.actions_visible")} asChild size="lg">
+          <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("bowling.003", "Request a lane")}</a>
         </Button>
       </PageHeader>
 
@@ -96,7 +96,7 @@ function BowlingPage() {
               <li>
                 <strong className="text-foreground">{text("bowling.015", "Accessibility:")}</strong> {text("bowling.016", "step-free entry from the 50 Street parking lot, accessible washroom, and lanes 1–2 have wheelchair-height seating.")}</li>
               <li>
-                <strong className="text-foreground">{text("bowling.017", "Socks required")}</strong> {text("bowling.018", "with rental shoes — we sell them for $2 if you forget.")}</li>
+                <strong className="text-foreground">{text("bowling.017", "Socks required")}</strong> {text("bowling.018", "with rental shoes — ask at the counter if you need socks.")}</li>
             </ul>
           </div>
         </div>

@@ -21,7 +21,7 @@ export const Route = createFileRoute("/hours")({
 });
 
 function HoursPage() {
-  const { text } = useWebsiteContent();
+  const { text, visible } = useWebsiteContent();
   const CENTRE = useBusiness();
 
 
@@ -29,10 +29,10 @@ function HoursPage() {
     <>
       <PageHeader eyebrow={text("hours.001", "Plan your visit")} title={text("hours.002", "Hours")} intro={text("hours.003", "Regular hours, public bowling, food service and any special or seasonal hours.")}>
         <div className="flex flex-wrap gap-3">
-          <Button asChild size="lg">
-            <Link to="/book">{text("hours.004", "Book a lane")}</Link>
+          <Button hidden={!visible("hours.actions_visible")} asChild size="lg">
+            <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("hours.004", "Book a lane")}</a>
           </Button>
-          <Button asChild size="lg" variant="outline">
+          <Button hidden={!visible("hours.actions_visible")} asChild size="lg" variant="outline">
             <a href={`tel:${CENTRE.phone.replace(/[^0-9]/g, "")}`}>
               <Phone className="h-4 w-4" aria-hidden /> {text("hours.005", "Call")}{CENTRE.phone}
             </a>

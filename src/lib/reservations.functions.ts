@@ -43,15 +43,6 @@ export const getAvailableTimes = createServerFn({ method: "POST" })
       disabled?: boolean;
     };
   });
-export const submitInquiry = createServerFn({ method: "POST" })
-  .inputValidator((input: Record<string, Json | undefined>) => input)
-  .handler(async ({ data }) => {
-    const db = await publicClient();
-    const result = await db.rpc("submit_event_inquiry", { p: data as Json });
-    if (result.error)
-      throw new Error("Your inquiry could not be saved. Check your details and try again.");
-    return result.data as unknown as { received: boolean };
-  });
 export const readStaffSchedule = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {

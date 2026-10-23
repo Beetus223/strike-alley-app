@@ -1,4 +1,4 @@
-import { useWebsiteContent, useBusiness } from "@/lib/website-content";
+import { useOfferings, useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays, Clock, MapPin, Sparkles, Trophy, Users } from "lucide-react";
 import heroLanes from "@/assets/hero-lanes-authentic.jpg.asset.json";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Section } from "@/components/site/PageHeader";
 import { HoursTable } from "@/components/site/HoursTable";
 import { formatWhen, useAnnouncements, useEvents, useLeagues, usePricing } from "@/lib/content";
-import { CENTRE } from "@/lib/site-data";
+import { useHours } from "@/lib/content";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,12 +38,12 @@ export const Route = createFileRoute("/")({
 
 
 function Home() {
-  const { text } = useWebsiteContent();
+  const { text, visible } = useWebsiteContent();
   const CENTRE = useBusiness();
 const QUICK_FACTS = [
-  { icon: Clock, label: text("home.038","Open today"), value: "10:30 AM – 10 PM" },
+  { icon: Clock, label: text("home.038","Open today"), value: text("home.fact_open") },
   { icon: Users, label: text("home.039","6 lanes"), value: "Up to 6 bowlers per lane" },
-  { icon: Sparkles, label: text("home.040","Glow bowling"), value: "Fri & Sat, 7 PM" },
+  { icon: Sparkles, label: text("home.040","Glow bowling"), value: text("home.fact_glow") },
 ];
 const ACTIVITIES = [
   {
@@ -60,7 +60,7 @@ const ACTIVITIES = [
   },
   {
     title: text("home.047","Birthday parties"),
-    body: "Two hours of lanes, shoes, food and a host who handles the setup and the cleanup. Packages start at $18 a guest.",
+    body: text("home.party_body"),
     to: "/parties" as const,
     cta: text("home.048","Party packages"),
   },
@@ -72,6 +72,8 @@ const ACTIVITIES = [
   },
 ];
 
+  const { data: hours } = useHours();
+  const { data: packages } = useOfferings("birthday");
   const { data: events } = useEvents();
   const { data: pricing } = usePricing();
   const { data: leagues } = useLeagues();
@@ -109,10 +111,10 @@ const ACTIVITIES = [
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
             {text("home.004", "We've been rolling five pins on 50 Street for over sixty years. Come by for an afternoon with the kids, a league night with friends, or a party we set up for you.")}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            <Button asChild size="lg">
-              <Link to="/book">{text("home.005", "Book a lane")}</Link>
+            <Button hidden={!visible("home.actions_visible")} asChild size="lg">
+              <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("home.005", "Book a lane")}</a>
             </Button>
-            <Button
+            <Button hidden={!visible("home.actions_visible")}
               asChild
               size="lg"
               variant="outline"
@@ -120,7 +122,7 @@ const ACTIVITIES = [
             >
               <Link to="/hours">{text("home.006", "View hours")}</Link>
             </Button>
-            <Button
+            <Button hidden={!visible("home.actions_visible")}
               asChild
               size="lg"
               variant="ghost"
@@ -206,7 +208,7 @@ const ACTIVITIES = [
                   {text("home.021", "10 frames, three balls each, lighter balls for every age")}</span>
               </li>
             </ul>
-            <Button asChild className="mt-7">
+            <Button hidden={!visible("home.actions_visible")} asChild className="mt-7">
               <Link to="/bowling">{text("home.022", "Prices & lane info")}</Link>
             </Button>
           </div>
@@ -220,7 +222,7 @@ const ACTIVITIES = [
         description={text("home.024", "Something different on the lanes most nights of the week.")}
       >
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {(events ?? []).map((e) => (
+          {(events ?? []).filter(e => e.featured).map((e) => (
             <article
               key={e.id}
               className="flex flex-col rounded-xl border border-white/12 bg-white/[0.04] p-6 transition-colors hover:border-white/25 hover:bg-white/[0.07]"
@@ -238,10 +240,10 @@ const ACTIVITIES = [
           ))}
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button asChild variant="secondary">
+          <Button hidden={!visible("home.actions_visible")} asChild variant="secondary">
             <Link to="/events">{text("home.025", "See the full calendar")}</Link>
           </Button>
-          <Button
+          <Button hidden={!visible("home.actions_visible")}
             asChild
             className="bg-[oklch(0.72_0.24_340)] text-[oklch(0.15_0.03_300)] shadow-[0_0_28px_-6px_oklch(0.72_0.24_340/0.65)] hover:bg-[oklch(0.76_0.22_340)]"
           >
@@ -285,7 +287,7 @@ const ACTIVITIES = [
                 </li>
               ))}
             </ul>
-            <Button asChild className="mt-7">
+            <Button hidden={!visible("home.actions_visible")} asChild className="mt-7">
               <Link to="/leagues">{text("home.030", "Explore our leagues")}</Link>
             </Button>
           </div>
@@ -311,10 +313,10 @@ const ACTIVITIES = [
               {text("home.034", "Free street parking out front, a level entrance and an accessible washroom. Call")}{" "}
               {CENTRE.phone} {text("home.035", "if you need a hand getting set up.")}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild>
-                <Link to="/book">{text("home.036", "Book a lane")}</Link>
+              <Button hidden={!visible("home.actions_visible")} asChild>
+                <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("home.036", "Book a lane")}</a>
               </Button>
-              <Button asChild variant="outline">
+              <Button hidden={!visible("home.actions_visible")} asChild variant="outline">
                 <Link to="/contact">{text("home.037", "Contact & directions")}</Link>
               </Button>
             </div>

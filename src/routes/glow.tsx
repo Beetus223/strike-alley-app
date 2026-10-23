@@ -1,3 +1,4 @@
+import { usePricing } from "@/lib/content";
 import { useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Music, Sparkles, Ticket, Users } from "lucide-react";
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/glow")({
       {
         name: "description",
         content:
-          "Glow bowling every Friday and Saturday from 7 PM in Vegreville: blacklights, music and six lit-up 5-pin lanes. $6.50 per person, per game.",
+          "Glow bowling every Friday and Saturday from 7 PM in Vegreville: blacklights, music and six lit-up 5-pin lanes.",
       },
       { property: "og:title", content: "Glow Bowling Fridays & Saturdays | Vegreville Bowling" },
       {
@@ -33,12 +34,13 @@ export const Route = createFileRoute("/glow")({
 
 
 function GlowPage() {
-  const { text } = useWebsiteContent();
+  const { text, visible } = useWebsiteContent();
   const CENTRE = useBusiness();
+  const {data: prices}=usePricing();
 const NIGHT_DETAILS = [
-  { icon: Ticket, label: text("glow.012","Per person, per game"), value: "$6.50" },
+  { icon: Ticket, label: text("glow.012","Per person, per game"), value: prices?.find(p=>/glow/i.test(p.label))?.price ?? "Call for pricing" },
   { icon: Users, label: text("glow.013","Lane capacity"), value: "6 bowlers" },
-  { icon: Music, label: text("glow.014","Start time"), value: "7 PM Fri & Sat" },
+  { icon: Music, label: text("glow.014","Start time"), value: text("glow.start") },
 ];
 const HIGHLIGHTS = [
   {
@@ -71,14 +73,14 @@ const HIGHLIGHTS = [
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/80">
               {text("glow.003", "Lights down, blacklights up. Two nights a week the lanes light up in neon and the music comes on — the loudest, brightest thing we do all week.")}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button
+              <Button hidden={!visible("glow.actions_visible")}
                 asChild
                 size="lg"
                 className="bg-[oklch(0.72_0.24_340)] text-[oklch(0.15_0.03_300)] shadow-[0_0_34px_-6px_oklch(0.72_0.24_340/0.7)] hover:bg-[oklch(0.76_0.22_340)]"
               >
-                <Link to="/book">{text("glow.004", "Book a glow lane")}</Link>
+                <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("glow.004", "Book a glow lane")}</a>
               </Button>
-              <Button
+              <Button hidden={!visible("glow.actions_visible")}
                 asChild
                 size="lg"
                 variant="outline"
@@ -127,12 +129,12 @@ const HIGHLIGHTS = [
             <p className="mt-1 text-sm text-white/70">
               {text("glow.009", "Reserve ahead, or call")}{CENTRE.phone} {text("glow.010", "and we'll hold one for you.")}</p>
           </div>
-          <Button
+          <Button hidden={!visible("glow.actions_visible")}
             asChild
             size="lg"
             className="shrink-0 bg-[oklch(0.72_0.24_340)] text-[oklch(0.15_0.03_300)] hover:bg-[oklch(0.76_0.22_340)]"
           >
-            <Link to="/book">{text("glow.011", "Book a glow lane")}</Link>
+            <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("glow.011", "Book a glow lane")}</a>
           </Button>
         </div>
       </section>

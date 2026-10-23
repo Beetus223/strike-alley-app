@@ -1,4 +1,4 @@
-import { useWebsiteContent, useBusiness } from "@/lib/website-content";
+import { useOfferings, packageDisplay, useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { PageHeader, Section } from "@/components/site/PageHeader";
@@ -28,40 +28,21 @@ export const Route = createFileRoute("/rentals")({
 
 
 function RentalsPage() {
-  const { text } = useWebsiteContent();
+  const { text, visible } = useWebsiteContent();
   const CENTRE = useBusiness();
-const RENTALS = [
-  {
-    name: text("rentals.011","Single lane"),
-    price: "$32 / hour",
-    detail: "Up to 6 bowlers. Shoes $3 each. Best for small groups and casual practice.",
-  },
-  {
-    name: text("rentals.012","Group lanes (4 lanes)"),
-    price: "$110 / hour",
-    detail: text("rentals.013","Up to 24 people, reserved seating area and your own scoreboard messaging."),
-  },
-  {
-    name: text("rentals.014","Whole house (6 lanes)"),
-    price: "$450 / 3 hours",
-    detail: text("rentals.015","Up to 36 people, private snack bar service and full sound system."),
-  },
-  {
-    name: text("rentals.016","Meeting room"),
-    price: "$60 / 2 hours",
-    detail: text("rentals.017","Seats 24, projector and coffee service. Add bowling at group rates."),
-  },
-];
+  const {data: offers}=useOfferings("rental");
+  const RENTALS=(offers??[]).map(p=>({name:p.name,price:packageDisplay(p).price,detail:[p.description,...p.features].join(" ")}));
+
 
   return (
     <>
       <PageHeader
         eyebrow={text("rentals.001", "Fundraisers · Schools · Staff events")}
         title={text("rentals.002", "Rentals")}
-        intro={`The whole building is available outside league hours. Monday is our quietest day and the easiest to book on short notice.`}
+        intro={text("rentals.intro")}
       >
-        <Button asChild size="lg">
-          <Link to="/inquiries">{text("rentals.003", "Request a rental")}</Link>
+        <Button hidden={!visible("rentals.actions_visible")} asChild size="lg">
+          <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("rentals.003", "Request a rental")}</a>
         </Button>
       </PageHeader>
 
@@ -76,7 +57,7 @@ const RENTALS = [
           ))}
         </div>
 
-        <div className="mt-8 rounded-2xl border border-border p-6">
+        <div hidden={!visible("rentals.terms_verified")} className="mt-8 rounded-2xl border border-border p-6">
           <h2 className="text-3xl">{text("rentals.004", "Rental terms")}</h2>
           <ul className="mt-4 space-y-2 text-muted-foreground">
             <li>{text("rentals.005", "50% deposit due at booking, balance on the day.")}</li>
