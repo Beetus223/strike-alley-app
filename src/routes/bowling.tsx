@@ -1,3 +1,4 @@
+import { useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { PageHeader, Section } from "@/components/site/PageHeader";
@@ -35,21 +36,25 @@ const SCORING = [
 ];
 
 function BowlingPage() {
+  const { text } = useWebsiteContent();
+  const CENTRE = useBusiness();
+
+
   const { data: pricing } = usePricing();
 
   return (
     <>
       <PageHeader
-        eyebrow="Six lanes · Synthetic approach"
-        title="Bowling & Prices"
+        eyebrow={text("bowling.001", "Six lanes · Synthetic approach")}
+        title={text("bowling.002", "Bowling & Prices")}
         intro={`Every lane at ${CENTRE.name} is set up for Canadian 5-pin, with automatic scoring, bumper rails on request and ramps for bowlers who need them.`}
       >
         <Button asChild size="lg">
-          <Link to="/book">Request a lane</Link>
+          <Link to="/book">{text("bowling.003", "Request a lane")}</Link>
         </Button>
       </PageHeader>
 
-      <Section title="Rates">
+      <Section title={text("bowling.004", "Rates")}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {(pricing ?? []).map((p) => (
             <div key={p.id} className="card-soft rounded-xl p-5">
@@ -60,20 +65,16 @@ function BowlingPage() {
           ))}
         </div>
         <p className="mt-4 text-sm text-muted-foreground">
-          Hourly rates are the better deal for groups of four or more. League and school-group rates
-          are quoted separately — call {CENTRE.phone}.
+          {text("bowling.005", "Hourly rates are the better deal for groups of four or more. League and school-group rates are quoted separately — call")}{CENTRE.phone}.
         </p>
       </Section>
 
       <section className="border-y border-border bg-surface">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-2">
           <div>
-            <h2 className="text-4xl">How 5-pin scoring works</h2>
+            <h2 className="text-4xl">{text("bowling.006", "How 5-pin scoring works")}</h2>
             <p className="mt-3 text-muted-foreground">
-              Five pins stand in a V. Knock them all down and you score 15 — the highest
-              single-frame count in the game. You get three balls per frame, and ten frames per
-              game.
-            </p>
+              {text("bowling.007", "Five pins stand in a V. Knock them all down and you score 15 — the highest single-frame count in the game. You get three balls per frame, and ten frames per game.")}</p>
             <dl className="mt-6 divide-y divide-border rounded-xl border border-border">
               {SCORING.map((s) => (
                 <div key={s.label} className="flex justify-between px-4 py-3">
@@ -84,29 +85,18 @@ function BowlingPage() {
             </dl>
           </div>
           <div>
-            <h2 className="text-4xl">Good to know</h2>
+            <h2 className="text-4xl">{text("bowling.008", "Good to know")}</h2>
             <ul className="mt-4 space-y-3 text-muted-foreground">
               <li>
-                <strong className="text-foreground">Perfect game:</strong> 450. The house record is
-                398, set by Dwayne Kozak in 2019.
-              </li>
+                <strong className="text-foreground">{text("bowling.009", "Perfect game:")}</strong> {text("bowling.010", "450. The house record is 398, set by Dwayne Kozak in 2019.")}</li>
               <li>
-                <strong className="text-foreground">Balls:</strong> 5-pin balls fit in your palm —
-                no finger holes and no weight classes, so kids and adults use the same ball.
-              </li>
+                <strong className="text-foreground">{text("bowling.011", "Balls:")}</strong> {text("bowling.012", "5-pin balls fit in your palm — no finger holes and no weight classes, so kids and adults use the same ball.")}</li>
               <li>
-                <strong className="text-foreground">Bumpers & ramps:</strong> free on any lane, just
-                ask at the counter.
-              </li>
+                <strong className="text-foreground">{text("bowling.013", "Bumpers & ramps:")}</strong> {text("bowling.014", "free on any lane, just ask at the counter.")}</li>
               <li>
-                <strong className="text-foreground">Accessibility:</strong> step-free entry from the
-                50 Street parking lot, accessible washroom, and lanes 1–2 have wheelchair-height
-                seating.
-              </li>
+                <strong className="text-foreground">{text("bowling.015", "Accessibility:")}</strong> {text("bowling.016", "step-free entry from the 50 Street parking lot, accessible washroom, and lanes 1–2 have wheelchair-height seating.")}</li>
               <li>
-                <strong className="text-foreground">Socks required</strong> with rental shoes — we
-                sell them for $2 if you forget.
-              </li>
+                <strong className="text-foreground">{text("bowling.017", "Socks required")}</strong> {text("bowling.018", "with rental shoes — we sell them for $2 if you forget.")}</li>
             </ul>
           </div>
         </div>

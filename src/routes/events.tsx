@@ -1,3 +1,4 @@
+import { useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,14 +27,18 @@ export const Route = createFileRoute("/events")({
 });
 
 function EventsPage() {
+  const { text } = useWebsiteContent();
+  const CENTRE = useBusiness();
+
+
   const { data: events } = useEvents();
 
   return (
     <>
       <PageHeader
-        eyebrow="Weekly & seasonal"
-        title="Events"
-        intro="From black-light Fridays to the Pysanka Open, there's usually something happening on the lanes."
+        eyebrow={text("events.001", "Weekly & seasonal")}
+        title={text("events.002", "Events")}
+        intro={text("events.003", "From black-light Fridays to the Pysanka Open, there's usually something happening on the lanes.")}
       />
       <Section>
         <div className="grid gap-5 md:grid-cols-2">
@@ -51,13 +56,11 @@ function EventsPage() {
           ))}
         </div>
         <div className="mt-8 rounded-2xl border border-border p-6">
-          <h2 className="text-3xl">Running your own event?</h2>
+          <h2 className="text-3xl">{text("events.004", "Running your own event?")}</h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">
-            Fundraisers, staff nights, school groups and church groups all bowl here. Tell us your
-            date and headcount and we'll build a quote.
-          </p>
+            {text("events.005", "Fundraisers, staff nights, school groups and church groups all bowl here. Tell us your date and headcount and we'll build a quote.")}</p>
           <Button asChild className="mt-5">
-            <Link to="/inquiries">Send a booking request</Link>
+            <Link to="/inquiries">{text("events.006", "Send a booking request")}</Link>
           </Button>
         </div>
       </Section>

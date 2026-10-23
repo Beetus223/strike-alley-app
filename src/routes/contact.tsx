@@ -1,3 +1,4 @@
+import { useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute } from "@tanstack/react-router";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { PageHeader, Section } from "@/components/site/PageHeader";
@@ -26,12 +27,16 @@ export const Route = createFileRoute("/contact")({
 });
 
 function ContactPage() {
+  const { text } = useWebsiteContent();
+  const CENTRE = useBusiness();
+
+
   return (
     <>
       <PageHeader
-        eyebrow="Downtown Vegreville"
-        title="Contact & Hours"
-        intro="Call the counter during open hours — someone will pick up between frames."
+        eyebrow={text("contact.001", "Downtown Vegreville")}
+        title={text("contact.002", "Contact & Hours")}
+        intro={text("contact.003", "Call the counter during open hours — someone will pick up between frames.")}
       />
       <Section>
         <div className="grid gap-8 lg:grid-cols-2">
@@ -55,16 +60,15 @@ function ContactPage() {
               </li>
             </ul>
             <div>
-              <h2 className="text-3xl">Hours</h2>
+              <h2 className="text-3xl">{text("contact.004", "Hours")}</h2>
               <HoursTable className="mt-4" />
               <p className="mt-2 text-sm text-muted-foreground">
-                Hours shift during tournaments and holidays — check our Facebook page or call ahead.
-              </p>
+                {text("contact.005", "Hours shift during tournaments and holidays — check our Facebook page or call ahead.")}</p>
             </div>
           </div>
           <div className="overflow-hidden rounded-2xl border border-border">
             <iframe
-              title="Map to Vegreville Bowling Lanes"
+              title={text("contact.006", "Map to Vegreville Bowling Lanes")}
               src={`https://www.google.com/maps?q=${CENTRE.mapQuery}&output=embed`}
               loading="lazy"
               className="h-[420px] w-full"

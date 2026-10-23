@@ -1,3 +1,4 @@
+import { useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Megaphone } from "lucide-react";
 import { PageHeader, Section } from "@/components/site/PageHeader";
@@ -22,21 +23,25 @@ function fmt(d: string) {
 }
 
 function AnnouncementsPage() {
+  const { text } = useWebsiteContent();
+  const CENTRE = useBusiness();
+
+
   const { data, isError } = useAnnouncements();
   const items = data ?? [];
   return (
     <>
-      <PageHeader eyebrow="News & notices" title="Announcements" intro="Closures, special offers and important updates from the centre." />
+      <PageHeader eyebrow={text("announcements.001", "News & notices")} title={text("announcements.002", "Announcements")} intro={text("announcements.003", "Closures, special offers and important updates from the centre.")} />
       <Section>
         {isError ? (
-          <p role="alert" className="text-muted-foreground">Announcements couldn't load. Please refresh or call us.</p>
+          <p role="alert" className="text-muted-foreground">{text("announcements.004", "Announcements couldn't load. Please refresh or call us.")}</p>
         ) : items.length === 0 ? (
           <div className="card-soft max-w-2xl rounded-2xl p-8 text-center">
             <Megaphone className="mx-auto h-8 w-8 text-primary" aria-hidden />
-            <p className="mt-3 font-medium">No announcements right now.</p>
+            <p className="mt-3 font-medium">{text("announcements.005", "No announcements right now.")}</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Check our <Link to="/events" className="text-primary hover:underline">upcoming events</Link> or{" "}
-              <Link to="/hours" className="text-primary hover:underline">hours</Link>.
+              {text("announcements.006", "Check our")}<Link to="/events" className="text-primary hover:underline">{text("announcements.007", "upcoming events")}</Link> or{" "}
+              <Link to="/hours" className="text-primary hover:underline">{text("announcements.008", "hours")}</Link>.
             </p>
           </div>
         ) : (
