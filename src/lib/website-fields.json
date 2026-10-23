@@ -1946,5 +1946,19 @@
     "label": "Activity 4 button destination",
     "value": "/rentals",
     "kind": "destination"
+  },
+  {
+    "key": "contact.newsletter_url",
+    "page": "contact",
+    "label": "GoDaddy newsletter signup form link (leave empty to hide the signup)",
+    "value": "",
+    "kind": "link"
+  },
+  {
+    "key": "contact.newsletter_text",
+    "page": "contact",
+    "label": "Newsletter signup message",
+    "value": "Get announcements, glow nights and league news by email. You can unsubscribe anytime.",
+    "kind": "text"
   }
 ]

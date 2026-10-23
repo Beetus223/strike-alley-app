@@ -88,6 +88,8 @@ export type AnnouncementItem = {
   image_url?: string | null;
   is_archived?: boolean;
   featured?: boolean;
+  email_status?: 'not_selected' | 'ready' | 'marked_sent';
+  email_marked_sent_at?: string | null;
   id: string;
   title: string;
   message: string;
