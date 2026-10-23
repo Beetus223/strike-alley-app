@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { passwordSetupFlow } from "@/lib/staff-auth";
@@ -13,6 +13,8 @@ type AuthState = {
   roles: Role[];
   isStaff: boolean;
   loading: boolean;
+  accessError: boolean;
+  retryAccess: () => void;
   passwordSetup: boolean;
   signOut: () => Promise<void>;
 };
@@ -23,6 +25,8 @@ const AuthContext = createContext<AuthState>({
   roles: [],
   isStaff: false,
   loading: true,
+  accessError: false,
+  retryAccess: () => {},
   passwordSetup: false,
   signOut: async () => {},
 });
@@ -32,7 +36,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const router = useRouter();
   const [session, setSession] = useState<Session | null>(null);
-  const [roleState, setRoleState] = useState<{ userId: string; roles: Role[] } | null>(null);
   const [loading, setLoading] = useState(true);
   const [passwordSetup, setPasswordSetup] = useState(false);
 
@@ -45,7 +48,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (next || event === "SIGNED_OUT") initialPasswordSetup = false;
       if (event === "SIGNED_OUT") {
         setPasswordSetup(false);
-        setRoleState(null);
       }
       if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
         void router.invalidate();
@@ -60,32 +62,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => { cancelled = true; sub.subscription.unsubscribe(); };
   }, [queryClient, router]);
 
-  useEffect(() => {
-    const userId = session?.user.id;
-    if (!userId) {
-      setRoleState(null);
-      return;
-    }
-    let cancelled = false;
-    supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .then(({ data, error }) => {
-        if (!cancelled) setRoleState({ userId, roles: error ? [] : (data ?? []).map((r) => r.role as Role) });
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [session?.user.id]);
+  const userId = session?.user.id;
+  const roleQuery = useQuery({
+    queryKey: ["auth", "roles", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      if (!userId) return [];
+      const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+      // A failed check is not evidence that this account lacks staff access.
+      if (error) throw error;
+      return (data ?? []).map((r) => r.role as Role);
+    },
+    retry: 2,
+  });
 
-  const roles = roleState?.userId === session?.user.id ? roleState?.roles ?? [] : [];
+  const roles = userId ? roleQuery.data ?? [] : [];
   const value: AuthState = {
     user: session?.user ?? null,
     session,
     roles,
     isStaff: roles.includes("admin") || roles.includes("staff"),
-    loading: loading || Boolean(session && roleState?.userId !== session.user.id),
+    loading: loading || Boolean(userId && (roleQuery.isPending || (roleQuery.isFetching && !roleQuery.data))),
+    accessError: Boolean(userId && roleQuery.isError),
+    retryAccess: () => { void roleQuery.refetch(); },
     passwordSetup,
     signOut: async () => {
       await queryClient.cancelQueries();

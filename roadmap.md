@@ -20,6 +20,7 @@
 - [ ] Owner review of booking hours, estimates, league blocks and special dates remains required.
 
 # Final staff login
+- [ ] Verify owner access and automatic/manual retry after a failed role check without changing permissions.
 - [x] Remove Google sign-in and add secure recovery/password setup.
 - [x] Review staff and administrator database permissions without changing accounts.
 - [x] Verify safe login and access paths; 10 tests pass. Real password sign-in/recovery completion remains unverified.
