@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PageHeader, Section } from "@/components/site/PageHeader";
+import { StaffReservations } from "@/components/reservations/StaffReservations";
 import { MenuEditor } from "@/components/food/MenuEditor";
 import { Field, PanelIntro, TextField } from "@/components/site/AdminField";
 
@@ -126,7 +127,7 @@ function AdminPage() {
             <MenuEditor />
           </TabsContent>
           <TabsContent value="bookings" className="mt-6">
-            <BookingsPanel />
+            <Tabs defaultValue="reservations"><TabsList><TabsTrigger value="reservations">Lane reservations</TabsTrigger><TabsTrigger value="inquiries">Event inquiries & previous requests</TabsTrigger></TabsList><TabsContent value="reservations" className="mt-6"><StaffReservations /></TabsContent><TabsContent value="inquiries" className="mt-6"><BookingsPanel /></TabsContent></Tabs>
           </TabsContent>
         </Tabs>
       </Section>
