@@ -1,4 +1,6 @@
 # Website content management expansion
+- [ ] Add local/phone photo selection with safe uploads and existing draft/publish controls.
+- [ ] Audit and fill routine content editing gaps across every public page; verify owner flows and report remaining restrictions.
 - [x] Inventory public pages, existing staff controls, stored content and permissions; present a safe implementation plan.
 - [x] Extend the existing content system for page text, central contact details, media, telephone actions and structured packages.
 - [x] Expand simple staff editing, preview, visibility, validation and non-destructive archiving while preserving existing layouts.
