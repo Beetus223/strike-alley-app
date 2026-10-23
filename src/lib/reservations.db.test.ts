@@ -23,7 +23,7 @@ suite("six-lane reservation database rules", () => {
         ? t`select reservation_save(${t.json(p as never)},${id}::uuid) r`
         : t`select reservation_save(${t.json(p as never)}) r`,
     ).then((r) => {
-      const row = (r as { r: Record<string, unknown> }[])[0];
+      const row = (r as { r: { received: boolean; duration: number; lanes: number[]; id: string } }[])[0];
       if (!row) throw new Error("No saved result");
       return row.r;
     });
@@ -243,14 +243,14 @@ suite("six-lane reservation database rules", () => {
     expect(
       Number(
         (await sql`select count(*) from lane_occupancy where reservation_id=${r.id as string}`)[0]
-          ?.count,
+          ?.['count'],
       ),
     ).toBe(0);
     expect(
       Number(
         (
           await sql`select count(*) from reservation_audit where reservation_id=${r.id as string}`
-        )[0]?.count,
+        )[0]?.['count'],
       ),
     ).toBe(2);
   });
@@ -260,8 +260,8 @@ suite("six-lane reservation database rules", () => {
       (t) =>
         t`select submit_event_inquiry(${t.json({ ...contact, booking_type: "Birthday party", requested_date: DAY, requested_time: "12:00", party_size: 20, notes: "" })})`,
     );
-    expect(Number((await sql`select count(*) from booking_requests`)[0]?.count)).toBe(1);
-    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.count)).toBe(0);
+    expect(Number((await sql`select count(*) from booking_requests`)[0]?.['count'])).toBe(1);
+    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.['count'])).toBe(0);
   });
   it("fails closed when booking settings are incomplete", async () => {
     await expect(sql`update reservation_settings set config=config-'enabled'`).rejects.toThrow(
