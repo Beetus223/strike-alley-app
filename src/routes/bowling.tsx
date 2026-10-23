@@ -1,6 +1,6 @@
 import { useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { Phone } from "lucide-react";
 import { PageHeader, Section } from "@/components/site/PageHeader";
 import { usePricing } from "@/lib/content";
 import { CENTRE } from "@/lib/site-data";
@@ -49,9 +49,19 @@ function BowlingPage() {
         title={text("bowling.002", "Bowling & Prices")}
         intro={text("bowling.intro")}
       >
-        <Button hidden={!visible("bowling.actions_visible")} asChild size="lg">
-          <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("bowling.003", "Request a lane")}</a>
-        </Button>
+        <p
+          hidden={!visible("bowling.actions_visible")}
+          className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-primary/40 bg-primary/10 px-5 py-3 text-base sm:text-lg"
+        >
+          <Phone className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+          <span>{text("bowling.003", "Call this number to request a lane")}</span>
+          <a
+            className="font-display text-xl uppercase tracking-wide text-primary underline-offset-4 hover:underline"
+            href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}
+          >
+            {CENTRE.phone}
+          </a>
+        </p>
       </PageHeader>
 
       <Section title={text("bowling.004", "Rates")}>
