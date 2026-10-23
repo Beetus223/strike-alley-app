@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Vegreville's local place for bowling, leagues, birthday parties and family fun. Six 5-pin lanes, a full snack bar and lane bookings.",
+          "Vegreville's local place for bowling, leagues, birthday parties and family fun. Six 5-pin lanes, a full food menu and lane bookings.",
       },
       { property: "og:title", content: "Vegreville Bowling Lanes | 5-Pin Bowling" },
       {

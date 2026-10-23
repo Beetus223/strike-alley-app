@@ -1178,8 +1178,8 @@
   {
     "key": "menu.002",
     "page": "menu",
-    "label": "Snack Bar",
-    "value": "Snack Bar",
+    "label": "Food Menu",
+    "value": "Food Menu",
     "kind": "text-attribute",
     "protected": false
   },
@@ -1537,7 +1537,7 @@
   {
     "key": "contact.snack_phone",
     "page": "contact",
-    "label": "Snack bar phone",
+    "label": "Food menu phone",
     "value": "780-632-7665",
     "kind": "phone"
   },
@@ -1698,7 +1698,7 @@
   {
     "key": "menu.photo",
     "page": "menu",
-    "label": "Snack bar photo",
+    "label": "Food menu photo",
     "value": "/__l5e/assets-v1/ab76de02-0f8f-4b42-a076-064d87f58fde/loaded-gyro-poutine-fries.png",
     "kind": "image"
   },
