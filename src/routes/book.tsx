@@ -31,8 +31,18 @@ function BookPage() {
         title="Ready to go bowling?"
         intro="Give us a call and we’ll help you find a time that works for you!"
       >
-        <a className="mb-5 block font-display text-4xl text-primary" href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{CENTRE.phone}</a>
-        <Button asChild size="lg" className="min-h-14 w-full sm:w-auto"><a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}><Phone />Call Now</a></Button>
+        <a
+          className="mb-5 block font-display text-4xl text-primary"
+          href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}
+        >
+          {CENTRE.phone}
+        </a>
+        <Button asChild size="lg" className="min-h-14 w-full sm:w-auto">
+          <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>
+            <Phone />
+            Call Now
+          </a>
+        </Button>
       </PageHeader>
       <Section>
         <h2 className="text-3xl">Planning something special?</h2>
@@ -44,7 +54,19 @@ function BookPage() {
             { label: "Private bowling-alley rentals", to: "/rentals" },
             { label: "Meeting-room rentals", to: "/rentals" },
             { label: "Other special events", to: "/inquiries" },
-          ].map((item) => <Button key={item.label} asChild variant="outline" className="min-h-14 h-auto justify-between whitespace-normal text-left"><Link to={item.to}>{item.label}<ArrowRight className="shrink-0" /></Link></Button>)}
+          ].map((item) => (
+            <Button
+              key={item.label}
+              asChild
+              variant="outline"
+              className="min-h-14 h-auto justify-between whitespace-normal text-left"
+            >
+              <Link to={item.to}>
+                {item.label}
+                <ArrowRight className="shrink-0" />
+              </Link>
+            </Button>
+          ))}
         </div>
       </Section>
     </>

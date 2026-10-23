@@ -64,37 +64,19 @@ export function ScheduleSettings({ data, onSaved }: { data: StaffSchedule; onSav
           try {
             const next = {
               ...c,
+              enabled: false,
               games: String(f.get("games")).split(",").map(Number),
               weekly: DAYS.map((_, i) => parseWindows(String(f.get(`day-${i}`)))),
               estimates: c.estimates,
             };
-            if (
-              next.enabled &&
-              !data.settings.enabled &&
-              !window.confirm(
-                "Enable public reservations with these hours and rules? Confirm that league blocks and special dates have been reviewed.",
-              )
-            )
-              return;
             await save("settings", next as unknown as Json);
           } catch (e) {
             setError(e instanceof Error ? e.message : "Check settings.");
           }
         }}
       >
-        <h2 className="text-2xl">Reservation rules & bookable hours</h2>
+        <h2 className="text-2xl">Booking hours & duration estimates</h2>
         <div className="flex flex-wrap gap-6">
-          <Label className="flex items-center gap-3">
-            <Switch checked={c.enabled} onCheckedChange={(enabled) => setC({ ...c, enabled })} />
-            Online reservations
-          </Label>
-          <Label className="flex items-center gap-3">
-            <Switch
-              checked={c.approval_required}
-              onCheckedChange={(approval_required) => setC({ ...c, approval_required })}
-            />
-            Staff approval required
-          </Label>
           <Label className="flex items-center gap-3">
             <Switch
               checked={c.use_upper}
@@ -179,8 +161,8 @@ export function ScheduleSettings({ data, onSaved }: { data: StaffSchedule; onSav
           ))}
         </div>
         <p className="text-sm text-muted-foreground">
-          Blank windows mean closed for reservations. Review league blocks and special dates before
-          enabling. Hours changes cannot invalidate active reservations.
+          Blank windows mean closed for reservations. Review league blocks and special dates with
+          the owner. Hours changes cannot invalidate active reservations.
         </p>
         <Button disabled={busy} type="submit">
           Save reservation settings

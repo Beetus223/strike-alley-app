@@ -13,6 +13,8 @@ import {
   minutes,
   prettyTime,
   blockApplies,
+  statusLabel,
+  type EventInquiry,
   type Reservation,
 } from "@/lib/reservations";
 import { ReservationEditor } from "./ReservationEditor";
@@ -32,6 +34,8 @@ export function StaffReservations() {
   const [view, setView] = useState("day");
   const [editing, setEditing] = useState<Reservation | null>(null);
   const [showEditor, setShowEditor] = useState(false);
+  const [event, setEvent] = useState<EventInquiry | null>(null);
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const refreshed = () => {
@@ -57,6 +61,7 @@ export function StaffReservations() {
         },
       });
       refreshed();
+      setMessage("Reservation updated successfully.");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Update failed.");
     } finally {
@@ -81,7 +86,9 @@ export function StaffReservations() {
   });
   const rows = data.reservations.filter(
     (r) =>
-      (view === "pending" ? r.status === "pending" : days.includes(r.starts_at.slice(0, 10))) &&
+      (view === "upcoming"
+        ? r.starts_at.slice(0, 10) >= localDay()
+        : days.includes(r.starts_at.slice(0, 10))) &&
       (laneFilter === "all" || r.lanes.includes(Number(laneFilter))) &&
       (statusFilter === "all" || r.status === statusFilter),
   );
@@ -96,13 +103,8 @@ export function StaffReservations() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-3xl">Lane reservations</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {data.settings.enabled
-              ? "Online reservations enabled"
-              : "Online reservations off · owner scheduling review required"}{" "}
-            · Alberta time
-          </p>
+          <h2 className="text-3xl">Reservation book</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Telephone bookings · Alberta time</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -117,18 +119,25 @@ export function StaffReservations() {
           <Button
             onClick={() => {
               setEditing(null);
+              setEvent(null);
+              setMessage("");
               setShowEditor(true);
             }}
           >
             <Plus />
-            New reservation
+            Add Reservation
           </Button>
         </div>
       </div>
+      {message && (
+        <p role="status" className="border-l-4 border-primary bg-secondary p-4 text-lg">
+          {message}
+        </p>
+      )}
       <Tabs defaultValue="schedule">
         <TabsList>
           <TabsTrigger value="schedule">Schedule</TabsTrigger>
-          <TabsTrigger value="settings">Rules & blocks</TabsTrigger>
+          <TabsTrigger value="settings">Hours & lane closures</TabsTrigger>
           <TabsTrigger value="audit">Activity</TabsTrigger>
         </TabsList>
         <TabsContent value="schedule" className="mt-5 space-y-6">
@@ -189,24 +198,33 @@ export function StaffReservations() {
                 ))}
               </select>
             </div>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDay(localDay());
+                setView("day");
+              }}
+            >
+              Today
+            </Button>
             <div className="flex flex-wrap gap-2">
-              {["day", "week", "pending"].map((v) => (
+              {["day", "week", "upcoming"].map((v) => (
                 <Button
                   key={v}
                   variant={view === v ? "default" : "outline"}
                   onClick={() => setView(v)}
                 >
-                  {v === "pending" ? "Pending requests" : v === "week" ? "Week" : "Day"}
+                  {v === "upcoming" ? "Upcoming bookings" : v === "week" ? "Week" : "Day"}
                 </Button>
               ))}
             </div>
           </div>
-          {view !== "pending" &&
+          {view !== "upcoming" &&
             days.map((d) => (
               <section key={d} className="space-y-3">
                 <h3 className="text-xl">{d}</h3>
                 <div className="overflow-x-auto rounded-md border border-border">
-                  <table className="w-full min-w-[840px] text-sm">
+                  <table className="w-full min-w-[720px] text-base">
                     <thead className="bg-secondary">
                       <tr>
                         {[1, 2, 3, 4, 5, 6].map((l) => (
@@ -241,6 +259,7 @@ export function StaffReservations() {
                                     className="h-auto w-full flex-col items-start whitespace-normal px-2 py-3 text-left"
                                     onClick={() => {
                                       setEditing(r);
+                                      setEvent(null);
                                       setShowEditor(true);
                                     }}
                                   >
@@ -254,7 +273,8 @@ export function StaffReservations() {
                                     </span>
                                     <span className="break-all">{r.contact_name}</span>
                                     <span className="text-xs text-muted-foreground">
-                                      {r.status} · {r.allocations[r.lanes.indexOf(l)]} bowlers
+                                      {statusLabel(r.status)} · {r.allocations[r.lanes.indexOf(l)]}{" "}
+                                      bowlers
                                     </span>
                                   </Button>
                                 ))}
@@ -271,7 +291,7 @@ export function StaffReservations() {
                                   </div>
                                 ))}
                                 {!reservations.length && !blocks.length && (
-                                  <p className="text-muted-foreground">No reservations or blocks</p>
+                                  <p className="text-muted-foreground">No lanes reserved</p>
                                 )}
                               </div>
                             </td>
@@ -289,90 +309,144 @@ export function StaffReservations() {
             </p>
           )}
           <h3 className="text-2xl">
-            {view === "pending" ? "Pending requests" : "Reservation details"}
+            {view === "upcoming" ? "Upcoming lane bookings" : "Regular bowling"}
           </h3>
           {!rows.length && <p className="text-muted-foreground">No reservations for this view.</p>}
           <div className="grid gap-4 lg:grid-cols-2">
-            {rows.map((r) => (
-              <article key={r.id} className="card-soft rounded-lg p-5">
-                <div className="flex flex-wrap justify-between gap-2">
-                  <h3 className="text-2xl">{r.contact_name}</h3>
-                  <span className="font-medium text-primary">{r.status}</span>
-                </div>
-                <p className="mt-2 text-sm">
-                  {r.starts_at.slice(0, 10)} · {prettyTime(r.starts_at.slice(11, 16))} ·{" "}
-                  {r.duration_minutes} minutes
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Lanes {r.lanes.join(", ")} · {r.allocations.reduce((a, b) => a + b, 0)} bowlers ·{" "}
-                  {r.games} games each
-                </p>
-                <a className="mt-3 block text-primary" href={`tel:${r.phone.replace(/\D/g, "")}`}>
-                  {r.phone}
-                </a>
-                <a className="block break-all text-primary" href={`mailto:${r.email}`}>
-                  {r.email}
-                </a>
-                {r.notes && <p className="mt-3 text-sm">{r.notes}</p>}
-                {r.staff_notes && (
-                  <p className="mt-3 border-l-2 border-border pl-3 text-sm">
-                    Staff: {r.staff_notes}
+            {rows
+              .filter((r) => !data.inquiries.some((e) => e.lane_reservation_id === r.id))
+              .map((r) => (
+                <article key={r.id} className="card-soft rounded-lg p-5">
+                  <div className="flex flex-wrap justify-between gap-2">
+                    <h3 className="text-2xl">{r.contact_name}</h3>
+                    <span className="font-medium text-primary">{statusLabel(r.status)}</span>
+                  </div>
+                  <p className="mt-2 text-sm">
+                    {r.starts_at.slice(0, 10)} · {prettyTime(r.starts_at.slice(11, 16))} ·{" "}
+                    {r.duration_minutes} minutes
                   </p>
-                )}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setEditing(r);
-                      setShowEditor(true);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  {r.status === "pending" && (
-                    <>
-                      <Button size="sm" disabled={busy} onClick={() => void status(r, "confirmed")}>
-                        Confirm
-                      </Button>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Lanes {r.lanes.join(", ")} · {r.allocations.reduce((a, b) => a + b, 0)} bowlers
+                    · {r.games} games each
+                  </p>
+                  <a className="mt-3 block text-primary" href={`tel:${r.phone.replace(/\D/g, "")}`}>
+                    {r.phone}
+                  </a>
+                  {r.email && (
+                    <a className="block break-all text-primary" href={`mailto:${r.email}`}>
+                      {r.email}
+                    </a>
+                  )}
+                  {r.notes && <p className="mt-3 text-sm">{r.notes}</p>}
+                  {r.staff_notes && (
+                    <p className="mt-3 border-l-2 border-border pl-3 text-sm">
+                      Staff: {r.staff_notes}
+                    </p>
+                  )}
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setEditing(r);
+                        setEvent(null);
+                        setShowEditor(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    {r.status === "pending" && (
+                      <>
+                        <Button
+                          size="sm"
+                          disabled={busy}
+                          onClick={() => void status(r, "confirmed")}
+                        >
+                          Confirm
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={busy}
+                          onClick={() => void status(r, "declined")}
+                        >
+                          Decline
+                        </Button>
+                      </>
+                    )}
+                    {["pending", "confirmed"].includes(r.status) && (
                       <Button
                         size="sm"
                         variant="outline"
                         disabled={busy}
-                        onClick={() => void status(r, "declined")}
+                        onClick={() => void status(r, "cancelled")}
                       >
-                        Decline
+                        Cancel reservation
                       </Button>
-                    </>
-                  )}
-                  {["pending", "confirmed"].includes(r.status) && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      disabled={busy}
-                      onClick={() => void status(r, "cancelled")}
-                    >
-                      Cancel reservation
-                    </Button>
-                  )}
-                  {r.status === "confirmed" && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      disabled={busy}
-                      onClick={() => void status(r, "completed")}
-                    >
-                      Complete
-                    </Button>
-                  )}
-                </div>
-                <p className="mt-3 text-xs text-muted-foreground">
-                  Updated {new Date(r.updated_at).toLocaleString()} ·{" "}
-                  {r.updated_by ? `Staff ${r.updated_by}` : "Public request"} · No notification sent
-                </p>
-              </article>
-            ))}
+                    )}
+                    {r.status === "confirmed" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={busy}
+                        onClick={() => void status(r, "completed")}
+                      >
+                        Complete
+                      </Button>
+                    )}
+                  </div>
+                </article>
+              ))}
           </div>
+          <section className="space-y-4 border-t border-border pt-6">
+            <h3 className="text-2xl">Special events & inquiries</h3>
+            <div className="grid gap-4 lg:grid-cols-2">
+              {data.inquiries
+                .filter((e) =>
+                  view === "upcoming"
+                    ? e.requested_date >= localDay()
+                    : days.includes(e.requested_date),
+                )
+                .map((e) => (
+                  <article key={e.id} className="card-soft rounded-lg p-5">
+                    <div className="flex flex-wrap justify-between gap-2">
+                      <h4 className="text-2xl">{e.contact_name}</h4>
+                      <span className="font-semibold text-primary">
+                        {statusLabel(e.follow_up_status)}
+                      </span>
+                    </div>
+                    <p className="mt-2 font-medium">{e.booking_type}</p>
+                    <p className="mt-2">
+                      {e.requested_date} ·{" "}
+                      {e.requested_time === "00:00:00"
+                        ? "Time to be arranged"
+                        : prettyTime(e.requested_time.slice(0, 5))}
+                    </p>
+                    <p>
+                      {e.party_size} guests · {e.lanes} lanes requested
+                    </p>
+                    <a
+                      className="mt-2 block text-primary"
+                      href={`tel:${e.phone.replace(/\D/g, "")}`}
+                    >
+                      {e.phone}
+                    </a>
+                    {e.notes && <p className="mt-2">{e.notes}</p>}
+                    <Button
+                      className="mt-4 min-h-11"
+                      variant="outline"
+                      onClick={() => {
+                        setEvent(e);
+                        setEditing(null);
+                        setShowEditor(true);
+                      }}
+                    >
+                      Open event booking
+                    </Button>
+                  </article>
+                ))}
+            </div>
+          </section>
         </TabsContent>
         <TabsContent value="settings" className="mt-6">
           <ScheduleSettings key={JSON.stringify(data.settings)} data={data} onSaved={refreshed} />
@@ -396,9 +470,14 @@ export function StaffReservations() {
       {showEditor && (
         <ReservationEditor
           reservation={editing}
+          inquiry={event}
+          day={day}
           config={data.settings}
           onClose={() => setShowEditor(false)}
-          onSaved={refreshed}
+          onSaved={() => {
+            refreshed();
+            setMessage("Reservation saved successfully.");
+          }}
         />
       )}
     </div>

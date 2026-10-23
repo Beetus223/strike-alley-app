@@ -109,7 +109,8 @@ export const saveStaffInquiry = createServerFn({ method: "POST" })
   .inputValidator((input: { id?: string; values: Json }) => input)
   .handler(async ({ data, context }) => {
     const result = await context.supabase.rpc("reservation_inquiry_save", {
-      p: data.values, ...(data.id ? { p_id: data.id } : {}),
+      p: data.values,
+      ...(data.id ? { p_id: data.id } : {}),
     });
     if (result.error) throw new Error(result.error.message);
     return { saved: true };

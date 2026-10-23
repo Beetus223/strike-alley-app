@@ -98,7 +98,7 @@ function AdminPage() {
         intro="Everything on the website — events, hours, prices, announcements, leagues and the snack bar menu — is edited here. Changes show up on the public pages right away."
       />
       <Section>
-        <Tabs defaultValue="events">
+        <Tabs defaultValue="bookings">
           <TabsList className="flex h-auto flex-wrap justify-start gap-1">
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="leagues">Leagues</TabsTrigger>
@@ -127,7 +127,7 @@ function AdminPage() {
             <MenuEditor />
           </TabsContent>
           <TabsContent value="bookings" className="mt-6">
-            <Tabs defaultValue="reservations"><TabsList><TabsTrigger value="reservations">Lane reservations</TabsTrigger><TabsTrigger value="inquiries">Event inquiries & previous requests</TabsTrigger></TabsList><TabsContent value="reservations" className="mt-6"><StaffReservations /></TabsContent><TabsContent value="inquiries" className="mt-6"><BookingsPanel /></TabsContent></Tabs>
+            <StaffReservations />
           </TabsContent>
         </Tabs>
       </Section>
@@ -512,19 +512,31 @@ function HoursPanel() {
 
   const saveSeasonalSchedule = useMutation({
     mutationFn: async ({ id, values }: { id: string; values: Record<string, unknown> }) => {
-      const { error } = await supabase.from("seasonal_hour_schedules").update(values as never).eq("id", id);
+      const { error } = await supabase
+        .from("seasonal_hour_schedules")
+        .update(values as never)
+        .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Seasonal schedule updated"); invalidate(); },
+    onSuccess: () => {
+      toast.success("Seasonal schedule updated");
+      invalidate();
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
   const saveSeasonalDay = useMutation({
     mutationFn: async ({ id, values }: { id: string; values: Record<string, unknown> }) => {
-      const { error } = await supabase.from("seasonal_hours").update(values as never).eq("id", id);
+      const { error } = await supabase
+        .from("seasonal_hours")
+        .update(values as never)
+        .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Seasonal hours updated"); invalidate(); },
+    onSuccess: () => {
+      toast.success("Seasonal hours updated");
+      invalidate();
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -533,7 +545,10 @@ function HoursPanel() {
       const { error } = await supabase.from("seasonal_hour_schedules").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Seasonal schedule removed"); invalidate(); },
+    onSuccess: () => {
+      toast.success("Seasonal schedule removed");
+      invalidate();
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -593,53 +608,105 @@ function HoursPanel() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   const form = new FormData(e.currentTarget);
-                  saveSeasonalSchedule.mutate({ id: schedule.id, values: {
-                    title: String(form.get("title")),
-                    date_label: String(form.get("date_label")),
-                    starts_on: str(form, "starts_on"),
-                    ends_on: str(form, "ends_on"),
-                    reservation_notice: String(form.get("reservation_notice")),
-                    is_active: form.get("is_active") === "on",
-                  }});
+                  saveSeasonalSchedule.mutate({
+                    id: schedule.id,
+                    values: {
+                      title: String(form.get("title")),
+                      date_label: String(form.get("date_label")),
+                      starts_on: str(form, "starts_on"),
+                      ends_on: str(form, "ends_on"),
+                      reservation_notice: String(form.get("reservation_notice")),
+                      is_active: form.get("is_active") === "on",
+                    },
+                  });
                 }}
               >
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Schedule title" name="title" defaultValue={schedule.title} required />
-                  <Field label="Date range" name="date_label" defaultValue={schedule.date_label} required />
-                  <Field label="Starts on" name="starts_on" type="date" defaultValue={schedule.starts_on} />
-                  <Field label="Ends on" name="ends_on" type="date" defaultValue={schedule.ends_on} />
-                  <Field label="Reservation notice" name="reservation_notice" defaultValue={schedule.reservation_notice} required />
+                  <Field
+                    label="Schedule title"
+                    name="title"
+                    defaultValue={schedule.title}
+                    required
+                  />
+                  <Field
+                    label="Date range"
+                    name="date_label"
+                    defaultValue={schedule.date_label}
+                    required
+                  />
+                  <Field
+                    label="Starts on"
+                    name="starts_on"
+                    type="date"
+                    defaultValue={schedule.starts_on}
+                  />
+                  <Field
+                    label="Ends on"
+                    name="ends_on"
+                    type="date"
+                    defaultValue={schedule.ends_on}
+                  />
+                  <Field
+                    label="Reservation notice"
+                    name="reservation_notice"
+                    defaultValue={schedule.reservation_notice}
+                    required
+                  />
                   <div className="flex items-center gap-3 pt-7">
-                    <Switch id={`seasonal-${schedule.id}`} name="is_active" defaultChecked={schedule.is_active} />
+                    <Switch
+                      id={`seasonal-${schedule.id}`}
+                      name="is_active"
+                      defaultChecked={schedule.is_active}
+                    />
                     <Label htmlFor={`seasonal-${schedule.id}`}>Show on the website</Label>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Button type="submit">Save schedule</Button>
-                  <Button type="button" variant="destructive" onClick={() => {
-                    if (confirm(`Remove “${schedule.title}” and all of its daily hours?`)) removeSeasonal.mutate(schedule.id);
-                  }}>Remove schedule</Button>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => {
+                      if (confirm(`Remove “${schedule.title}” and all of its daily hours?`))
+                        removeSeasonal.mutate(schedule.id);
+                    }}
+                  >
+                    Remove schedule
+                  </Button>
                 </div>
               </form>
 
               <div className="mt-6 space-y-3 border-t border-border pt-5">
                 {schedule.seasonal_hours.map((day: SeasonalHoursDay) => (
-                  <form key={day.id} className="rounded-xl border border-border p-4" onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = new FormData(e.currentTarget);
-                    saveSeasonalDay.mutate({ id: day.id, values: {
-                      food_service: str(form, "food_service"),
-                      bowler_hours: str(form, "bowler_hours"),
-                      note: str(form, "note"),
-                    }});
-                  }}>
+                  <form
+                    key={day.id}
+                    className="rounded-xl border border-border p-4"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      const form = new FormData(e.currentTarget);
+                      saveSeasonalDay.mutate({
+                        id: day.id,
+                        values: {
+                          food_service: str(form, "food_service"),
+                          bowler_hours: str(form, "bowler_hours"),
+                          note: str(form, "note"),
+                        },
+                      });
+                    }}
+                  >
                     <h3 className="text-xl">{day.day_label}</h3>
                     <div className="mt-3 grid gap-4 sm:grid-cols-3">
-                      <Field label="Food service" name="food_service" defaultValue={day.food_service} />
+                      <Field
+                        label="Food service"
+                        name="food_service"
+                        defaultValue={day.food_service}
+                      />
                       <Field label="Bowlers" name="bowler_hours" defaultValue={day.bowler_hours} />
                       <Field label="Note" name="note" defaultValue={day.note} />
                     </div>
-                    <Button type="submit" size="sm" className="mt-4">Save {day.day_label}</Button>
+                    <Button type="submit" size="sm" className="mt-4">
+                      Save {day.day_label}
+                    </Button>
                   </form>
                 ))}
               </div>
