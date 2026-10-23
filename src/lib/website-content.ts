@@ -12,7 +12,7 @@ export function validateField(key: string, value: string) {
  z.string().max(6000).parse(value);
  if (field.kind==='phone' && !/^\+?[\d ()-]{10,25}$/.test(value)) throw new Error('Enter a valid phone number.');
  if (field.kind==='email') z.string().email('Enter a valid email address.').parse(value);
- if (field.kind==='image' && value && !/^https:\/\//.test(value)) throw new Error('Images must use a secure https link.');
+ if (field.kind==='image' && value && !/^https:\/\//.test(value) && !fields.some(f=>f.kind==='image'&&f.value===value)) throw new Error('Images must use a secure https link.');
  if (field.kind==='boolean' && !['true','false'].includes(value)) throw new Error('Choose show or hide.');
  return value;
 }
