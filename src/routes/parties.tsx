@@ -23,6 +23,10 @@ export const Route = createFileRoute("/parties")({
         content:
           "Private party packages, lane rentals, and custom events for birthdays, team wind-ups, company gatherings, and more in Vegreville, AB.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: partyImg.url },
+      { name: "twitter:image", content: partyImg.url },
     ],
   }),
   component: PartiesPage,

@@ -17,6 +17,8 @@ export const Route = createFileRoute("/rentals")({
         property: "og:description",
         content: "Single lanes, the meeting room, or all six lanes for your group event.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: RentalsPage,

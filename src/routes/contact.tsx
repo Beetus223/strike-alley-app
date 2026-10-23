@@ -18,6 +18,8 @@ export const Route = createFileRoute("/contact")({
         property: "og:description",
         content: "Find our hours, phone number and directions in downtown Vegreville.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ContactPage,

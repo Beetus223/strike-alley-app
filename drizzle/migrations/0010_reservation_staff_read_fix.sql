@@ -1,0 +1,1 @@
+DO $$ DECLARE definition text; BEGIN SELECT pg_get_functiondef('public.reservation_staff(text,jsonb)'::regprocedure) INTO definition; definition:=replace(definition,'SELECT jsonb_agg(b) FROM lane_schedule_blocks b','SELECT jsonb_agg(block_row) FROM lane_schedule_blocks block_row'); EXECUTE definition; END $$;

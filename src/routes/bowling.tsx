@@ -19,6 +19,8 @@ export const Route = createFileRoute("/bowling")({
         content:
           "Game rates, hourly lanes, glow bowling and accessibility info for our six 5-pin lanes.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: BowlingPage,
