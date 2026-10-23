@@ -1,6 +1,7 @@
 import { SpecialScheduleEditor } from "@/components/content/SpecialScheduleEditor";
 import { WebsiteEditor } from "@/components/content/WebsiteEditor";
 import { OfferingEditor } from "@/components/content/OfferingEditor";
+import { PhotoFormField } from "@/components/content/PhotoPicker";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -130,7 +131,7 @@ function AdminPage() {
             <TabsTrigger value="menu">Snack Bar Menu</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
           </TabsList>
-          <TabsContent value="website" className="mt-6"><WebsiteEditor /></TabsContent>
+          <TabsContent value="website" className="mt-6"><WebsiteEditor eventEditor={<EventsPanel/>} announcementEditor={<AnnouncementsPanel/>}/></TabsContent>
           <TabsContent value="packages" className="mt-6"><OfferingEditor /></TabsContent>
           <TabsContent value="events" className="mt-6">
             <EventsPanel />
@@ -302,7 +303,7 @@ function EventForm({
         <Field label="End time" name="end_time" type="time" defaultValue={event?.end_time} />
       </div>
       <TextField label="Description" name="description" defaultValue={event?.description} />
-      <Field label="Photo link (optional)" name="image_url" type="url" defaultValue={event?.image_url} />
+      <PhotoFormField label="Event photo (optional)" defaultValue={event?.image_url}/>
       <label className="flex items-center gap-3"><Switch name="featured" defaultChecked={event?.featured ?? true}/>Featured on home page</label>
       <div className="flex flex-wrap items-end gap-6">
         <Field
@@ -1021,7 +1022,7 @@ function AnnouncementFields({ item }: { item?: AnnouncementItem }) {
     <>
       <Field label="Title" name="title" defaultValue={item?.title} required />
       <TextField label="Message" name="message" defaultValue={item?.message} rows={2} />
-      <Field label="Photo link (optional)" name="image_url" type="url" defaultValue={item?.image_url} />
+      <PhotoFormField label="Announcement photo (optional)" defaultValue={item?.image_url}/>
       <label className="flex items-center gap-3"><Switch name="featured" defaultChecked={item?.featured ?? true}/>Featured on home page</label>
       <div className="flex flex-wrap items-end gap-6">
         <Field label="Show from" name="starts_on" type="date" defaultValue={item?.starts_on} />

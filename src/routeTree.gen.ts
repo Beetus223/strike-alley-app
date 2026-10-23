@@ -27,6 +27,7 @@ import { Route as PartiesRouteImport } from './routes/parties'
 import { Route as RentalsRouteImport } from './routes/rentals'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicWebsitePhotoRouteImport } from './routes/api/public/website-photo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -117,6 +118,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicWebsitePhotoRoute = ApiPublicWebsitePhotoRouteImport.update({
+  id: '/api/public/website-photo',
+  path: '/api/public/website-photo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/public/website-photo': typeof ApiPublicWebsitePhotoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -155,6 +162,7 @@ export interface FileRoutesByTo {
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/public/website-photo': typeof ApiPublicWebsitePhotoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/api/public/website-photo': typeof ApiPublicWebsitePhotoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/reset-password'
     | '/admin'
+    | '/api/public/website-photo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/reset-password'
     | '/admin'
+    | '/api/public/website-photo'
   id:
     | '__root__'
     | '/'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/reset-password'
     | '/_authenticated/admin'
+    | '/api/public/website-photo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -256,6 +268,7 @@ export interface RootRouteChildren {
   PartiesRoute: typeof PartiesRoute
   RentalsRoute: typeof RentalsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiPublicWebsitePhotoRoute: typeof ApiPublicWebsitePhotoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -386,6 +399,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/website-photo': {
+      id: '/api/public/website-photo'
+      path: '/api/public/website-photo'
+      fullPath: '/api/public/website-photo'
+      preLoaderRoute: typeof ApiPublicWebsitePhotoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -418,6 +438,7 @@ const rootRouteChildren: RootRouteChildren = {
   PartiesRoute: PartiesRoute,
   RentalsRoute: RentalsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiPublicWebsitePhotoRoute: ApiPublicWebsitePhotoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
