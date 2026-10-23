@@ -6,9 +6,9 @@
 - [x] Test availability, concurrent bookings, privacy, staff management and existing content; document owner setup and hosting limitations.
 
 # Simple telephone and staff reservation book
-- [ ] Replace public regular booking form with telephone booking and special-event links; disable public ordinary reservation writes.
-- [ ] Simplify staff booking types, essential details, review/save and visible success; add staff-managed special inquiries.
-- [ ] Show daily/weekly/upcoming reservations and event inquiries together while preserving their separate records.
+- [x] Replace public regular booking form with telephone booking and special-event links; disable public ordinary reservation writes.
+- [x] Simplify staff booking types, essential details, review/save and visible success; add staff-managed special inquiries.
+- [x] Show daily/weekly/upcoming reservations and event inquiries together while preserving their separate records.
 - [ ] Verify six-lane conflicts, staff permissions, changes/cancellations, accessibility and existing content.
 - [ ] Owner review of booking hours, estimates, league blocks and special dates remains required.
 
