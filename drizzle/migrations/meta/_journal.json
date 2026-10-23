@@ -71,6 +71,13 @@
       "when": 1792777789475,
       "tag": "0009_reservation_validation_guards",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792777973207,
+      "tag": "0010_reservation_staff_read_fix",
+      "breakpoints": true
     }
   ]
 }
