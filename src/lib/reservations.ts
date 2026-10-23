@@ -47,7 +47,18 @@ export type ScheduleBlock = {
   updated_by: string | null;
 };
 export type DateHours = { day: string; windows: number[][]; note: string };
+export type EventInquiry = {
+  id: string; booking_type: string; contact_name: string; phone: string; email: string;
+  requested_date: string; requested_time: string; party_size: number; lanes: number;
+  notes: string | null; follow_up_status: string; facility_requirements: string;
+  lane_reservation_id: string | null; duration_minutes: number;
+};
+export const BOOKING_TYPES = ["Regular Bowling", "Birthday Party", "Group or Fundraiser", "Business or Corporate Event", "Private Rental", "Meeting Room", "Other Booking"];
+export function statusLabel(status: string) {
+  return ({ pending: "Tentative", new: "Inquiry", inquiry: "Inquiry", tentative: "Tentative", confirmed: "Confirmed", declined: "Cancelled", cancelled: "Cancelled", completed: "Completed" } as Record<string, string>)[status] ?? status;
+}
 export type StaffSchedule = {
+  inquiries: EventInquiry[];
   settings: BookingConfig;
   reservations: Reservation[];
   blocks: ScheduleBlock[];
