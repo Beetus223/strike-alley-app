@@ -14,6 +14,7 @@ import {
   prettyTime,
   blockApplies,
   statusLabel,
+  laneAvailability,
   type EventInquiry,
   type Reservation,
 } from "@/lib/reservations";
@@ -32,6 +33,7 @@ export function StaffReservations() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [day, setDay] = useState(localDay);
   const [view, setView] = useState("day");
+  const [availabilityTime, setAvailabilityTime] = useState("12:00");
   const [editing, setEditing] = useState<Reservation | null>(null);
   const [showEditor, setShowEditor] = useState(false);
   const [event, setEvent] = useState<EventInquiry | null>(null);
@@ -79,6 +81,7 @@ export function StaffReservations() {
       </div>
     );
   const data = q.data;
+  const available = laneAvailability(data, day, availabilityTime);
   const days = Array.from({ length: view === "week" ? 7 : 1 }, (_, i) => {
     const d = new Date(`${day}T12:00:00`);
     d.setDate(d.getDate() + i);
@@ -219,6 +222,11 @@ export function StaffReservations() {
               ))}
             </div>
           </div>
+          {view !== "upcoming" &&
+            <div className="flex flex-wrap items-center gap-4 border-y border-border py-4">
+              <div><Label htmlFor="availability-time">Lane availability at · Alberta time</Label><Input id="availability-time" className="mt-2 h-12" type="time" value={availabilityTime} onChange={e => setAvailabilityTime(e.target.value || "12:00")} /></div>
+              <p role="status" className="text-lg font-semibold">{available.closed ? "Closed for lane bookings" : `${available.free.length} of 6 lanes available at ${prettyTime(availabilityTime)}`}</p>
+            </div>}
           {view !== "upcoming" &&
             days.map((d) => (
               <section key={d} className="space-y-3">
