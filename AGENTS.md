@@ -14,5 +14,6 @@
 - `/auth` uses existing Cloud email/password authentication; `/reset-password` is public but requires a provider recovery/invitation session validated by `getUser()` before password updates. Shared auth state owns recovery detection and cache teardown so normal sign-in cannot enter password setup.
 - Bowler-account server functions and UI are retired; retained content uses existing tables and roles, with no account creation or role mutation endpoints in the application.
 - Regular lane reservations use dedicated occupancy records and transaction-locked RPC writes, while special-event inquiries retain booking_requests; this preserves historical inquiry meaning and enforces lane-level overlap safety.
+- Regular bookings are staff-only and the public booking page is telephone-only; event confirmations atomically link inquiry records to lane reservations, and linked bookings are edited through the event form to keep status and occupancy synchronized.
 - Booking availability uses structured owner-editable windows rather than parsing free-text display hours; keep both schedules synchronized when changing business hours.
 - Database integration tests run only against a disposable local PostgreSQL database with actual reservation migrations; this verifies concurrency without changing hosted customer data.

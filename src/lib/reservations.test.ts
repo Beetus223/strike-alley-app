@@ -1,7 +1,61 @@
 import { describe, it, expect } from "vitest";
-import { allocate, estimate, DEFAULT_ESTIMATES, blockApplies } from "./reservations";
+import {
+  allocate,
+  estimate,
+  DEFAULT_ESTIMATES,
+  blockApplies,
+  laneAvailability,
+  type StaffSchedule,
+} from "./reservations";
 const c = { estimates: DEFAULT_ESTIMATES, use_upper: true, before_minutes: 0, after_minutes: 0 };
 describe("reservation rules", () => {
+  const availabilityData = {
+    settings: { weekly: Array.from({ length: 7 }, () => [[600, 1200]]) },
+    date_hours: [],
+    blocks: [],
+    reservations: [
+      {
+        starts_at: "2026-10-23T12:00:00",
+        before_minutes: 0,
+        after_minutes: 0,
+        duration_minutes: 60,
+        lanes: [1, 2],
+        status: "confirmed",
+      },
+    ],
+  } as unknown as StaffSchedule;
+  it("two occupied lanes leave exactly four available", () =>
+    expect(laneAvailability(availabilityData, "2026-10-23", "12:30").free).toEqual([3, 4, 5, 6]));
+  it("all six occupied lanes leave no availability", () =>
+    expect(
+      laneAvailability(
+        {
+          ...availabilityData,
+          reservations: [{ ...availabilityData.reservations[0], lanes: [1, 2, 3, 4, 5, 6] }],
+        } as StaffSchedule,
+        "2026-10-23",
+        "12:30",
+      ).free,
+    ).toEqual([]));
+  it("cancelled bookings release lanes in the schedule", () =>
+    expect(
+      laneAvailability(
+        {
+          ...availabilityData,
+          reservations: availabilityData.reservations.map((r) => ({ ...r, status: "cancelled" })),
+        },
+        "2026-10-23",
+        "12:30",
+      ).free,
+    ).toEqual([1, 2, 3, 4, 5, 6]));
+  it("special-date closure has no available lanes", () =>
+    expect(
+      laneAvailability(
+        { ...availabilityData, date_hours: [{ day: "2026-10-23", windows: [], note: "Closed" }] },
+        "2026-10-23",
+        "12:30",
+      ),
+    ).toEqual({ closed: true, free: [] }));
   const expected = [
     [15, 20],
     [20, 30],

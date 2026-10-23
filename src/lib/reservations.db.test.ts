@@ -17,13 +17,15 @@ suite("six-lane reservation database rules", () => {
       return fn(t);
     });
   }
-  const save = (p: Record<string, unknown>, role: "anon" | "staff" = "anon", id?: string) =>
+  const save = (p: Record<string, unknown>, role: "anon" | "staff" = "staff", id?: string) =>
     as(role, (t) =>
       id
         ? t`select reservation_save(${t.json(p as never)},${id}::uuid) r`
         : t`select reservation_save(${t.json(p as never)}) r`,
     ).then((r) => {
-      const row = (r as { r: { received: boolean; duration: number; lanes: number[]; id: string } }[])[0];
+      const row = (
+        r as { r: { received: boolean; duration: number; lanes: number[]; id: string } }[]
+      )[0];
       if (!row) throw new Error("No saved result");
       return row.r;
     });
@@ -43,6 +45,7 @@ suite("six-lane reservation database rules", () => {
   });
   beforeEach(async () => {
     await sql`delete from reservation_audit`;
+    await sql`delete from booking_requests`;
     await sql`delete from lane_reservations`;
     await sql`delete from lane_schedule_blocks`;
     await sql`delete from reservation_date_hours`;
@@ -242,15 +245,16 @@ suite("six-lane reservation database rules", () => {
     );
     expect(
       Number(
-        (await sql`select count(*) from lane_occupancy where reservation_id=${r.id as string}`)[0]
-          ?.['count'],
+        (
+          await sql`select count(*) from lane_occupancy where reservation_id=${r.id as string}`
+        )[0]?.["count"],
       ),
     ).toBe(0);
     expect(
       Number(
         (
           await sql`select count(*) from reservation_audit where reservation_id=${r.id as string}`
-        )[0]?.['count'],
+        )[0]?.["count"],
       ),
     ).toBe(2);
   });
@@ -260,8 +264,83 @@ suite("six-lane reservation database rules", () => {
       (t) =>
         t`select submit_event_inquiry(${t.json({ ...contact, booking_type: "Birthday party", requested_date: DAY, requested_time: "12:00", party_size: 20, notes: "" })})`,
     );
-    expect(Number((await sql`select count(*) from booking_requests`)[0]?.['count'])).toBe(1);
-    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.['count'])).toBe(0);
+    expect(Number((await sql`select count(*) from booking_requests`)[0]?.["count"])).toBe(1);
+    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.["count"])).toBe(0);
+  });
+  it("telephone-only: anonymous callers cannot save even when enabled", async () => {
+    await expect(
+      save(
+        { ...contact, request_key: key(), day: DAY, time: "12:00", allocations: [1], games: 1 },
+        "anon",
+      ),
+    ).rejects.toThrow(/permission denied/);
+  });
+  it("staff can save without email and adjust duration", async () => {
+    const r = await save({
+      ...contact,
+      email: "",
+      request_key: key(),
+      day: DAY,
+      time: "12:00",
+      allocations: [2],
+      games: 1,
+      duration_minutes: 95,
+      status: "confirmed",
+    });
+    expect(r.duration).toBe(95);
+    expect(r.lanes).toEqual([1]);
+    expect(
+      (
+        await sql`select upper(occupied)-lower(occupied) as duration from lane_occupancy where reservation_id=${r.id}`
+      )[0]?.["duration"],
+    ).toBe("01:35:00");
+  });
+  it("staff inquiry stays separate; confirmation reserves lanes and cancellation releases them", async () => {
+    const p = {
+      ...contact,
+      email: "",
+      booking_type: "Birthday Party",
+      requested_date: DAY,
+      requested_time: "12:00",
+      party_size: 20,
+      lanes: 2,
+      duration_minutes: 90,
+      follow_up_status: "inquiry",
+    };
+    const result = (await as(
+      "staff",
+      (t) => t`select reservation_inquiry_save(${t.json(p)}) r`,
+    )) as { r: { id: string } }[];
+    const id = result[0]?.r.id;
+    if (!id) throw new Error("Missing inquiry");
+    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.["count"])).toBe(0);
+    await as(
+      "staff",
+      (t) =>
+        t`select reservation_inquiry_save(${t.json({ ...p, follow_up_status: "confirmed" })},${id}::uuid)`,
+    );
+    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.["count"])).toBe(2);
+    await as(
+      "staff",
+      (t) =>
+        t`select reservation_inquiry_save(${t.json({ ...p, requested_time: "14:00", follow_up_status: "confirmed" })},${id}::uuid)`,
+    );
+    expect(
+      (
+        await sql`select to_char(lower(occupied),'HH24:MI') as start from lane_occupancy limit 1`
+      )[0]?.["start"],
+    ).toBe("14:00");
+    await as(
+      "staff",
+      (t) =>
+        t`select reservation_inquiry_save(${t.json({ ...p, follow_up_status: "cancelled" })},${id}::uuid)`,
+    );
+    expect(Number((await sql`select count(*) from lane_occupancy`)[0]?.["count"])).toBe(0);
+  });
+  it("public cannot manage special events", async () => {
+    await expect(
+      as("anon", (t) => t`select reservation_inquiry_save('{}'::jsonb)`),
+    ).rejects.toThrow(/permission denied/);
   });
   it("fails closed when booking settings are incomplete", async () => {
     await expect(sql`update reservation_settings set config=config-'enabled'`).rejects.toThrow(

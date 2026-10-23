@@ -43,29 +43,6 @@ export const getAvailableTimes = createServerFn({ method: "POST" })
       disabled?: boolean;
     };
   });
-export const submitReservation = createServerFn({ method: "POST" })
-  .inputValidator((input: Record<string, Json | undefined>) => input)
-  .handler(async ({ data }) => {
-    const db = await publicClient();
-    const result = await db.rpc("reservation_save", { p: data as Json });
-    if (result.error)
-      throw new Error(
-        result.error.message.startsWith("Those lanes") ||
-          result.error.message.startsWith("This reservation") ||
-          result.error.message.startsWith("Choose") ||
-          result.error.message.startsWith("Enter") ||
-          result.error.message.startsWith("Online")
-          ? result.error.message
-          : "Your request could not be saved. Please try again or call the centre.",
-      );
-    return result.data as unknown as {
-      received: boolean;
-      duplicate?: boolean;
-      status?: string;
-      lanes?: number[];
-      duration?: number;
-    };
-  });
 export const submitInquiry = createServerFn({ method: "POST" })
   .inputValidator((input: Record<string, Json | undefined>) => input)
   .handler(async ({ data }) => {
@@ -103,4 +80,15 @@ export const saveStaffReservation = createServerFn({ method: "POST" })
     });
     if (result.error) throw new Error(result.error.message);
     return result.data as unknown as { received: boolean; status: string };
+  });
+export const saveStaffInquiry = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { id?: string; values: Json }) => input)
+  .handler(async ({ data, context }) => {
+    const result = await context.supabase.rpc("reservation_inquiry_save", {
+      p: data.values,
+      ...(data.id ? { p_id: data.id } : {}),
+    });
+    if (result.error) throw new Error(result.error.message);
+    return { saved: true };
   });

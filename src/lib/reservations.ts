@@ -47,7 +47,49 @@ export type ScheduleBlock = {
   updated_by: string | null;
 };
 export type DateHours = { day: string; windows: number[][]; note: string };
+export type EventInquiry = {
+  id: string;
+  booking_type: string;
+  contact_name: string;
+  phone: string;
+  email: string;
+  requested_date: string;
+  requested_time: string;
+  party_size: number;
+  lanes: number;
+  notes: string | null;
+  follow_up_status: string;
+  facility_requirements: string;
+  lane_reservation_id: string | null;
+  duration_minutes: number;
+};
+export const BOOKING_TYPES = [
+  "Regular Bowling",
+  "Birthday Party",
+  "Group or Fundraiser",
+  "Business or Corporate Event",
+  "Private Rental",
+  "Meeting Room",
+  "Other Booking",
+];
+export function statusLabel(status: string) {
+  return (
+    (
+      {
+        pending: "Tentative",
+        new: "Inquiry",
+        inquiry: "Inquiry",
+        tentative: "Tentative",
+        confirmed: "Confirmed",
+        declined: "Cancelled",
+        cancelled: "Cancelled",
+        completed: "Completed",
+      } as Record<string, string>
+    )[status] ?? status
+  );
+}
 export type StaffSchedule = {
+  inquiries: EventInquiry[];
   settings: BookingConfig;
   reservations: Reservation[];
   blocks: ScheduleBlock[];
@@ -134,4 +176,32 @@ export function blockApplies(b: ScheduleBlock, day: string) {
     (b.weekday === null || b.weekday === new Date(`${day}T12:00:00`).getDay()) &&
     !b.exceptions.includes(day)
   );
+}
+export function laneAvailability(
+  data: Pick<StaffSchedule, "settings" | "date_hours" | "blocks" | "reservations">,
+  day: string,
+  time: string,
+) {
+  const minute = minutes(time);
+  const windows =
+    data.date_hours.find((h) => h.day === day)?.windows ??
+    data.settings.weekly[new Date(`${day}T12:00:00`).getDay()] ??
+    [];
+  if (!windows.some((w) => minute >= (w[0] ?? 0) && minute < (w[1] ?? 0)))
+    return { closed: true, free: [] as number[] };
+  const selected = new Date(`${day}T${time}:00`).getTime();
+  const unavailable = new Set<number>();
+  for (const r of data.reservations) {
+    if (!["pending", "confirmed"].includes(r.status)) continue;
+    const start = new Date(r.starts_at).getTime();
+    if (
+      selected >= start - r.before_minutes * 60000 &&
+      selected < start + (r.duration_minutes + r.after_minutes) * 60000
+    )
+      r.lanes.forEach((l) => unavailable.add(l));
+  }
+  for (const b of data.blocks)
+    if (blockApplies(b, day) && minute >= b.start_minute && minute < b.end_minute)
+      b.lanes.forEach((l) => unavailable.add(l));
+  return { closed: false, free: [1, 2, 3, 4, 5, 6].filter((l) => !unavailable.has(l)) };
 }

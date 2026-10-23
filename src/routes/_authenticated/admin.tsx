@@ -59,7 +59,6 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-const STATUSES = ["new", "confirmed", "declined", "completed"] as const;
 
 /** Anything saved here should refresh the public pages too. */
 function useContentInvalidate() {
@@ -98,7 +97,7 @@ function AdminPage() {
         intro="Everything on the website — events, hours, prices, announcements, leagues and the snack bar menu — is edited here. Changes show up on the public pages right away."
       />
       <Section>
-        <Tabs defaultValue="events">
+        <Tabs defaultValue="bookings">
           <TabsList className="flex h-auto flex-wrap justify-start gap-1">
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="leagues">Leagues</TabsTrigger>
@@ -127,7 +126,7 @@ function AdminPage() {
             <MenuEditor />
           </TabsContent>
           <TabsContent value="bookings" className="mt-6">
-            <Tabs defaultValue="reservations"><TabsList><TabsTrigger value="reservations">Lane reservations</TabsTrigger><TabsTrigger value="inquiries">Event inquiries & previous requests</TabsTrigger></TabsList><TabsContent value="reservations" className="mt-6"><StaffReservations /></TabsContent><TabsContent value="inquiries" className="mt-6"><BookingsPanel /></TabsContent></Tabs>
+            <StaffReservations />
           </TabsContent>
         </Tabs>
       </Section>
@@ -512,19 +511,31 @@ function HoursPanel() {
 
   const saveSeasonalSchedule = useMutation({
     mutationFn: async ({ id, values }: { id: string; values: Record<string, unknown> }) => {
-      const { error } = await supabase.from("seasonal_hour_schedules").update(values as never).eq("id", id);
+      const { error } = await supabase
+        .from("seasonal_hour_schedules")
+        .update(values as never)
+        .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Seasonal schedule updated"); invalidate(); },
+    onSuccess: () => {
+      toast.success("Seasonal schedule updated");
+      invalidate();
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
   const saveSeasonalDay = useMutation({
     mutationFn: async ({ id, values }: { id: string; values: Record<string, unknown> }) => {
-      const { error } = await supabase.from("seasonal_hours").update(values as never).eq("id", id);
+      const { error } = await supabase
+        .from("seasonal_hours")
+        .update(values as never)
+        .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Seasonal hours updated"); invalidate(); },
+    onSuccess: () => {
+      toast.success("Seasonal hours updated");
+      invalidate();
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -533,7 +544,10 @@ function HoursPanel() {
       const { error } = await supabase.from("seasonal_hour_schedules").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Seasonal schedule removed"); invalidate(); },
+    onSuccess: () => {
+      toast.success("Seasonal schedule removed");
+      invalidate();
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -593,53 +607,105 @@ function HoursPanel() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   const form = new FormData(e.currentTarget);
-                  saveSeasonalSchedule.mutate({ id: schedule.id, values: {
-                    title: String(form.get("title")),
-                    date_label: String(form.get("date_label")),
-                    starts_on: str(form, "starts_on"),
-                    ends_on: str(form, "ends_on"),
-                    reservation_notice: String(form.get("reservation_notice")),
-                    is_active: form.get("is_active") === "on",
-                  }});
+                  saveSeasonalSchedule.mutate({
+                    id: schedule.id,
+                    values: {
+                      title: String(form.get("title")),
+                      date_label: String(form.get("date_label")),
+                      starts_on: str(form, "starts_on"),
+                      ends_on: str(form, "ends_on"),
+                      reservation_notice: String(form.get("reservation_notice")),
+                      is_active: form.get("is_active") === "on",
+                    },
+                  });
                 }}
               >
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Schedule title" name="title" defaultValue={schedule.title} required />
-                  <Field label="Date range" name="date_label" defaultValue={schedule.date_label} required />
-                  <Field label="Starts on" name="starts_on" type="date" defaultValue={schedule.starts_on} />
-                  <Field label="Ends on" name="ends_on" type="date" defaultValue={schedule.ends_on} />
-                  <Field label="Reservation notice" name="reservation_notice" defaultValue={schedule.reservation_notice} required />
+                  <Field
+                    label="Schedule title"
+                    name="title"
+                    defaultValue={schedule.title}
+                    required
+                  />
+                  <Field
+                    label="Date range"
+                    name="date_label"
+                    defaultValue={schedule.date_label}
+                    required
+                  />
+                  <Field
+                    label="Starts on"
+                    name="starts_on"
+                    type="date"
+                    defaultValue={schedule.starts_on}
+                  />
+                  <Field
+                    label="Ends on"
+                    name="ends_on"
+                    type="date"
+                    defaultValue={schedule.ends_on}
+                  />
+                  <Field
+                    label="Reservation notice"
+                    name="reservation_notice"
+                    defaultValue={schedule.reservation_notice}
+                    required
+                  />
                   <div className="flex items-center gap-3 pt-7">
-                    <Switch id={`seasonal-${schedule.id}`} name="is_active" defaultChecked={schedule.is_active} />
+                    <Switch
+                      id={`seasonal-${schedule.id}`}
+                      name="is_active"
+                      defaultChecked={schedule.is_active}
+                    />
                     <Label htmlFor={`seasonal-${schedule.id}`}>Show on the website</Label>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <Button type="submit">Save schedule</Button>
-                  <Button type="button" variant="destructive" onClick={() => {
-                    if (confirm(`Remove “${schedule.title}” and all of its daily hours?`)) removeSeasonal.mutate(schedule.id);
-                  }}>Remove schedule</Button>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => {
+                      if (confirm(`Remove “${schedule.title}” and all of its daily hours?`))
+                        removeSeasonal.mutate(schedule.id);
+                    }}
+                  >
+                    Remove schedule
+                  </Button>
                 </div>
               </form>
 
               <div className="mt-6 space-y-3 border-t border-border pt-5">
                 {schedule.seasonal_hours.map((day: SeasonalHoursDay) => (
-                  <form key={day.id} className="rounded-xl border border-border p-4" onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = new FormData(e.currentTarget);
-                    saveSeasonalDay.mutate({ id: day.id, values: {
-                      food_service: str(form, "food_service"),
-                      bowler_hours: str(form, "bowler_hours"),
-                      note: str(form, "note"),
-                    }});
-                  }}>
+                  <form
+                    key={day.id}
+                    className="rounded-xl border border-border p-4"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      const form = new FormData(e.currentTarget);
+                      saveSeasonalDay.mutate({
+                        id: day.id,
+                        values: {
+                          food_service: str(form, "food_service"),
+                          bowler_hours: str(form, "bowler_hours"),
+                          note: str(form, "note"),
+                        },
+                      });
+                    }}
+                  >
                     <h3 className="text-xl">{day.day_label}</h3>
                     <div className="mt-3 grid gap-4 sm:grid-cols-3">
-                      <Field label="Food service" name="food_service" defaultValue={day.food_service} />
+                      <Field
+                        label="Food service"
+                        name="food_service"
+                        defaultValue={day.food_service}
+                      />
                       <Field label="Bowlers" name="bowler_hours" defaultValue={day.bowler_hours} />
                       <Field label="Note" name="note" defaultValue={day.note} />
                     </div>
-                    <Button type="submit" size="sm" className="mt-4">Save {day.day_label}</Button>
+                    <Button type="submit" size="sm" className="mt-4">
+                      Save {day.day_label}
+                    </Button>
                   </form>
                 ))}
               </div>
@@ -885,91 +951,3 @@ function AnnouncementFields({ item }: { item?: AnnouncementItem }) {
   );
 }
 
-/* ------------------------------------------------------- scores & averages */
-
-/* ---------------------------------------------------------------- bookings */
-
-function BookingsPanel() {
-  const qc = useQueryClient();
-  const bookings = useQuery({
-    queryKey: ["bookings"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("booking_requests")
-        .select("*")
-        .order("requested_date", { ascending: true });
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const update = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase
-        .from("booking_requests")
-        .update({ status: status as (typeof STATUSES)[number] })
-        .eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success("Booking updated");
-      void qc.invalidateQueries({ queryKey: ["bookings"] });
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
-
-  if (bookings.isLoading) return <p className="text-muted-foreground">Loading…</p>;
-  if ((bookings.data ?? []).length === 0)
-    return <p className="text-muted-foreground">No booking requests yet.</p>;
-
-  return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      {(bookings.data ?? []).map((b) => (
-        <article key={b.id} className="card-soft rounded-2xl p-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h3 className="text-2xl">{b.contact_name}</h3>
-            <span className="rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-primary">
-              {b.status}
-            </span>
-          </div>
-          <p className="mt-1 text-sm text-primary">{b.booking_type}</p>
-          <dl className="mt-3 grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-            <div>
-              <dt className="text-xs uppercase tracking-widest">When</dt>
-              <dd>
-                {b.requested_date} at {b.requested_time}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-widest">Group</dt>
-              <dd>
-                {b.party_size} bowlers · {b.lanes} lane(s)
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-widest">Phone</dt>
-              <dd>{b.phone}</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-widest">Email</dt>
-              <dd className="break-all">{b.email}</dd>
-            </div>
-          </dl>
-          {b.notes ? <p className="mt-3 text-sm">{b.notes}</p> : null}
-          <div className="mt-4 flex flex-wrap gap-2">
-            {STATUSES.map((s) => (
-              <Button
-                key={s}
-                size="sm"
-                variant={b.status === s ? "default" : "outline"}
-                onClick={() => update.mutate({ id: b.id, status: s })}
-              >
-                {s}
-              </Button>
-            ))}
-          </div>
-        </article>
-      ))}
-    </div>
-  );
-}

@@ -53,8 +53,12 @@ export type Database = {
           contact_name: string
           created_at: string
           created_by: string | null
+          duration_minutes: number
           email: string
+          facility_requirements: string
+          follow_up_status: string
           id: string
+          lane_reservation_id: string | null
           lanes: number
           notes: string | null
           party_size: number
@@ -70,8 +74,12 @@ export type Database = {
           contact_name: string
           created_at?: string
           created_by?: string | null
+          duration_minutes?: number
           email: string
+          facility_requirements?: string
+          follow_up_status?: string
           id?: string
+          lane_reservation_id?: string | null
           lanes?: number
           notes?: string | null
           party_size?: number
@@ -87,8 +95,12 @@ export type Database = {
           contact_name?: string
           created_at?: string
           created_by?: string | null
+          duration_minutes?: number
           email?: string
+          facility_requirements?: string
+          follow_up_status?: string
           id?: string
+          lane_reservation_id?: string | null
           lanes?: number
           notes?: string | null
           party_size?: number
@@ -99,7 +111,15 @@ export type Database = {
           status?: Database["public"]["Enums"]["booking_status"]
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "booking_requests_lane_reservation_id_fkey"
+            columns: ["lane_reservation_id"]
+            isOneToOne: false
+            referencedRelation: "lane_reservations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       bowlers: {
         Row: {
@@ -1744,6 +1764,10 @@ export type Database = {
           p_start: string
         }
         Returns: number[]
+      }
+      reservation_inquiry_save: {
+        Args: { p: Json; p_id?: string }
+        Returns: Json
       }
       reservation_public_config: { Args: never; Returns: Json }
       reservation_save: { Args: { p: Json; p_id?: string }; Returns: Json }

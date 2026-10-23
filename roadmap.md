@@ -5,8 +5,12 @@
 - [x] Extend staff dashboard with lane schedule, reservation management, blocks and settings.
 - [x] Test availability, concurrent bookings, privacy, staff management and existing content; document owner setup and hosting limitations.
 
-- [ ] Enable public reservations: owner must review booking windows, league blocks, holidays, estimates and approval settings first.
-- [ ] Hosted public booking success: blocked until owner approves enabling; concurrency/submission rules passed isolated database tests.
+# Simple telephone and staff reservation book
+- [x] Replace public regular booking form with telephone booking and special-event links; disable public ordinary reservation writes.
+- [x] Simplify staff booking types, essential details, review/save and visible success; add staff-managed special inquiries.
+- [x] Show daily/weekly/upcoming reservations and event inquiries together while preserving their separate records.
+- [x] Verify six-lane conflicts, staff permissions, changes/cancellations, accessibility and existing content; 45 tests and signed-in save/read-back checks passed.
+- [ ] Owner review of booking hours, estimates, league blocks and special dates remains required.
 
 # Final staff login
 - [x] Remove Google sign-in and add secure recovery/password setup.
