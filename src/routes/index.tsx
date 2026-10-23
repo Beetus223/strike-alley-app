@@ -1,5 +1,13 @@
 import { useOfferings, useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
+const destination = encodeURIComponent("Vegreville Bowling Lanes, 5026 50 Street, Vegreville, AB T9C 1R8");
+const googleDirections = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+const appleDirections = `https://maps.apple.com/?daddr=${destination}`;
+function openDirections(e: { preventDefault: () => void }) {
+  const ua = navigator.userAgent;
+  const apple = /iPhone|iPad|iPod|Macintosh/.test(ua) && !/Android/.test(ua);
+  if (apple) { e.preventDefault(); window.location.href = appleDirections; }
+}
 import { CalendarDays, Clock, MapPin, Sparkles, Trophy, Users } from "lucide-react";
 import heroLanes from "@/assets/hero-lanes-authentic.jpg.asset.json";
 import how5Pin from "@/assets/how-5-pin-works.jpg.asset.json";
@@ -328,10 +336,21 @@ const ACTIVITIES = [
                 <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("home.036", "Book a lane")}</a>
               </Button>
               <Button hidden={!visible("home.actions_visible")} asChild variant="outline">
-                <Link to="/contact">{text("home.037", "Contact & directions")}</Link>
+                <a href={googleDirections} onClick={openDirections} target="_blank" rel="noopener noreferrer">
+                  <MapPin className="h-4 w-4" aria-hidden /> {text("home.037", "Get directions")}
+                </a>
               </Button>
             </div>
           </div>
+        </div>
+        <div className="mt-8 overflow-hidden rounded-2xl border border-border shadow-[var(--shadow-card)]">
+          <iframe
+            title={`Map to ${CENTRE.address}`}
+            src={`https://www.google.com/maps?q=${encodeURIComponent(CENTRE.address)}&output=embed`}
+            className="h-80 w-full border-0 md:h-96"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </Section>
     </>
