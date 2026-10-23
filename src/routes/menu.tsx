@@ -62,7 +62,7 @@ function MenuPage() {
 
           <div>
             <img
-              src={snackbar.url}
+              src={text("menu.photo", snackbar.url)}
               alt={text("menu.007", "Loaded gyro poutine fries with seasoned meat, tomatoes, cheese curds, and garlic sauce")}
               width={1200}
               height={900}

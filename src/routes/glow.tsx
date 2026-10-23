@@ -100,7 +100,7 @@ const HIGHLIGHTS = [
             </dl>
           </div>
           <img
-            src={glowLanes.url}
+            src={text("glow.photo", glowLanes.url)}
             alt={text("glow.006", "Bowling lanes lit with pink and blue neon during a glow bowling night")}
             width={1920}
             height={1080}

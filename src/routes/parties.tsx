@@ -44,7 +44,7 @@ function PartiesPage() {
         <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 sm:pt-8">
           <div className="relative overflow-hidden rounded-2xl">
             <img
-              src={partyImg.url}
+              src={text("parties.photo", partyImg.url)}
               alt={text("parties.001", "Birthday cake celebration with party guests at Vegreville Bowling Lanes")}
               width={1200}
               height={450}

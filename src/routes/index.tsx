@@ -94,7 +94,7 @@ const ACTIVITIES = [
       {/* 1 — Hero with authentic lanes photo */}
       <section className="relative overflow-hidden border-b border-border">
         <img
-          src={heroLanes.url}
+          src={text("home.hero", heroLanes.url)}
           alt={text("home.001", "The wooden lanes and pinsetters at Vegreville Bowling Centre")}
           width={1920}
           height={1080}
@@ -173,7 +173,7 @@ const ACTIVITIES = [
       <section className="bg-background">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2">
           <img
-            src={how5Pin.url}
+            src={text("home.how", how5Pin.url)}
             alt={text("home.010", "An adult and a child bowling together at Vegreville Bowling Centre")}
             width={1400}
             height={1000}
@@ -290,7 +290,7 @@ const ACTIVITIES = [
             </Button>
           </div>
           <img
-            src={leagueNight.url}
+            src={text("home.league", leagueNight.url)}
             alt={text("home.031", "Bowlers in team shirts celebrating at the scoring table on league night")}
             width={1400}
             height={1000}

@@ -1,3 +1,4 @@
+import { useBusiness } from "@/lib/website-content";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ChevronDown, Menu, X, Phone } from "lucide-react";
@@ -15,6 +16,7 @@ const linkBase =
   "rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.97]";
 
 export function SiteHeader() {
+ const CENTRE = useBusiness();
   const [open, setOpen] = useState(false);
   const items = NAV as readonly NavItem[];
 
