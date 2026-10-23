@@ -226,9 +226,6 @@ function EventsPanel() {
         ...(form.get("is_active") === "on" && (form.has("featured")) ? {is_archived:false} : {}),
         ...(form.has("featured") ? {featured:form.get("featured")==="on"} : {}),
         ...(form.has("image_url") ? {image_url:str(form,"image_url")} : {}),
-        ...(item?.email_status === "marked_sent"
-          ? {}
-          : { email_status: form.get("email_requested") === "on" ? "ready" : "not_selected" }),
       },
     });
     
@@ -976,6 +973,9 @@ function AnnouncementsPanel() {
         ...(form.get("is_active") === "on" && (form.has("featured")) ? {is_archived:false} : {}),
         ...(form.has("featured") ? {featured:form.get("featured")==="on"} : {}),
         ...(form.has("image_url") ? {image_url:str(form,"image_url")} : {}),
+        ...(item?.email_status === "marked_sent"
+          ? {}
+          : { email_status: form.get("email_requested") === "on" ? "ready" : "not_selected" }),
       },
     });
     
