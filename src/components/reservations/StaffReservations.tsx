@@ -197,7 +197,9 @@ export function StaffReservations() {
               >
                 <option value="all">All statuses</option>
                 {["pending", "confirmed", "declined", "cancelled", "completed"].map((v) => (
-                  <option key={v} value={v}>{statusLabel(v)}</option>
+                  <option key={v} value={v}>
+                    {statusLabel(v)}
+                  </option>
                 ))}
               </select>
             </div>
@@ -222,11 +224,25 @@ export function StaffReservations() {
               ))}
             </div>
           </div>
-          {view !== "upcoming" &&
+          {view !== "upcoming" && (
             <div className="flex flex-wrap items-center gap-4 border-y border-border py-4">
-              <div><Label htmlFor="availability-time">Lane availability at · Alberta time</Label><Input id="availability-time" className="mt-2 h-12" type="time" value={availabilityTime} onChange={e => setAvailabilityTime(e.target.value || "12:00")} /></div>
-              <p role="status" className="text-lg font-semibold">{available.closed ? "Closed for lane bookings" : `${available.free.length} of 6 lanes available at ${prettyTime(availabilityTime)}`}</p>
-            </div>}
+              <div>
+                <Label htmlFor="availability-time">Lane availability at · Alberta time</Label>
+                <Input
+                  id="availability-time"
+                  className="mt-2 h-12"
+                  type="time"
+                  value={availabilityTime}
+                  onChange={(e) => setAvailabilityTime(e.target.value || "12:00")}
+                />
+              </div>
+              <p role="status" className="text-lg font-semibold">
+                {available.closed
+                  ? "Closed for lane bookings"
+                  : `${available.free.length} of 6 lanes available at ${prettyTime(availabilityTime)}`}
+              </p>
+            </div>
+          )}
           {view !== "upcoming" &&
             days.map((d) => (
               <section key={d} className="space-y-3">
@@ -266,7 +282,9 @@ export function StaffReservations() {
                                     variant="outline"
                                     className="h-auto w-full flex-col items-start whitespace-normal px-2 py-3 text-left"
                                     onClick={() => {
-                                      const linked = data.inquiries.find(e => e.lane_reservation_id === r.id);
+                                      const linked = data.inquiries.find(
+                                        (e) => e.lane_reservation_id === r.id,
+                                      );
                                       setEditing(linked ? null : r);
                                       setEvent(linked ?? null);
                                       setShowEditor(true);
@@ -282,8 +300,10 @@ export function StaffReservations() {
                                     </span>
                                     <span className="break-all">{r.contact_name}</span>
                                     <span className="text-xs text-muted-foreground">
-                                      {data.inquiries.find(e => e.lane_reservation_id === r.id)?.booking_type ?? "Regular Bowling"} · {statusLabel(r.status)} · {r.allocations[r.lanes.indexOf(l)]}{" "}
-                                      bowlers
+                                      {data.inquiries.find((e) => e.lane_reservation_id === r.id)
+                                        ?.booking_type ?? "Regular Bowling"}{" "}
+                                      · {statusLabel(r.status)} ·{" "}
+                                      {r.allocations[r.lanes.indexOf(l)]} bowlers
                                     </span>
                                   </Button>
                                 ))}

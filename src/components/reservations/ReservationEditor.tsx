@@ -168,7 +168,11 @@ export function ReservationEditor({
                   className="h-auto min-h-16 justify-start whitespace-normal text-left text-base"
                   onClick={() => {
                     setKind(type);
-                    setF({ ...f, status: type === "Regular Bowling" ? "confirmed" : "inquiry", lanes: type === "Regular Bowling" ? Math.max(1, f.lanes) : 0 });
+                    setF({
+                      ...f,
+                      status: type === "Regular Bowling" ? "confirmed" : "inquiry",
+                      lanes: type === "Regular Bowling" ? Math.max(1, f.lanes) : 0,
+                    });
                   }}
                 >
                   <Icon className="size-6 shrink-0" />

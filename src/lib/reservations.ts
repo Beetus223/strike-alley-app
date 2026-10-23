@@ -177,17 +177,31 @@ export function blockApplies(b: ScheduleBlock, day: string) {
     !b.exceptions.includes(day)
   );
 }
-export function laneAvailability(data: Pick<StaffSchedule, "settings" | "date_hours" | "blocks" | "reservations">, day: string, time: string) {
+export function laneAvailability(
+  data: Pick<StaffSchedule, "settings" | "date_hours" | "blocks" | "reservations">,
+  day: string,
+  time: string,
+) {
   const minute = minutes(time);
-  const windows = data.date_hours.find(h => h.day === day)?.windows ?? data.settings.weekly[new Date(`${day}T12:00:00`).getDay()] ?? [];
-  if (!windows.some(w => minute >= (w[0] ?? 0) && minute < (w[1] ?? 0))) return { closed: true, free: [] as number[] };
+  const windows =
+    data.date_hours.find((h) => h.day === day)?.windows ??
+    data.settings.weekly[new Date(`${day}T12:00:00`).getDay()] ??
+    [];
+  if (!windows.some((w) => minute >= (w[0] ?? 0) && minute < (w[1] ?? 0)))
+    return { closed: true, free: [] as number[] };
   const selected = new Date(`${day}T${time}:00`).getTime();
   const unavailable = new Set<number>();
   for (const r of data.reservations) {
     if (!["pending", "confirmed"].includes(r.status)) continue;
     const start = new Date(r.starts_at).getTime();
-    if (selected >= start - r.before_minutes * 60000 && selected < start + (r.duration_minutes + r.after_minutes) * 60000) r.lanes.forEach(l => unavailable.add(l));
+    if (
+      selected >= start - r.before_minutes * 60000 &&
+      selected < start + (r.duration_minutes + r.after_minutes) * 60000
+    )
+      r.lanes.forEach((l) => unavailable.add(l));
   }
-  for (const b of data.blocks) if (blockApplies(b, day) && minute >= b.start_minute && minute < b.end_minute) b.lanes.forEach(l => unavailable.add(l));
-  return { closed: false, free: [1, 2, 3, 4, 5, 6].filter(l => !unavailable.has(l)) };
+  for (const b of data.blocks)
+    if (blockApplies(b, day) && minute >= b.start_minute && minute < b.end_minute)
+      b.lanes.forEach((l) => unavailable.add(l));
+  return { closed: false, free: [1, 2, 3, 4, 5, 6].filter((l) => !unavailable.has(l)) };
 }
