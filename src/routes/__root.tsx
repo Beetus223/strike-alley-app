@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
+import { getPublishedWebsite } from '@/lib/website-content.functions';
+import type { Offering } from '@/lib/website-content';
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -77,6 +79,11 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  loader: async ({context}) => {
+    const data=await getPublishedWebsite();
+    context.queryClient.setQueryData(["content","website"],Object.fromEntries(data.content.map(f=>[f.key,f.value])));
+    for(const category of ["birthday","party-lanes","rental"] as const)context.queryClient.setQueryData(["content","offerings",category,false],data.offerings.filter(p=>p.category===category) as Offering[]);
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -85,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Eight lanes of Canadian 5-pin bowling in Vegreville, Alberta. Leagues, glow bowling, birthday parties and a full snack bar.",
+          "Six lanes of Canadian 5-pin bowling in Vegreville, Alberta. Leagues, glow bowling, birthday parties and a full snack bar.",
       },
       { name: "author", content: "Vegreville Bowling Lanes" },
       { property: "og:type", content: "website" },

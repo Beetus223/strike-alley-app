@@ -17,3 +17,7 @@
 - Regular bookings are staff-only and the public booking page is telephone-only; event confirmations atomically link inquiry records to lane reservations, and linked bookings are edited through the event form to keep status and occupancy synchronized.
 - Booking availability uses structured owner-editable windows rather than parsing free-text display hours; keep both schedules synchronized when changing business hours.
 - Database integration tests run only against a disposable local PostgreSQL database with actual reservation migrations; this verifies concurrency without changing hosted customer data.
+
+- Page copy and central business details use website_content with private website_drafts; structured offerings use website_offerings, while existing content tables remain authoritative to avoid duplicate editing systems.
+- Public website content and verified offerings are loaded anonymously into the root query cache for SSR; drafts and private booking data are never included.
+- Staff content validation lives in a browser-safe pure module shared by forms and authenticated server functions so rules can be tested without browser/database dependencies.
