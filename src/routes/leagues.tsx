@@ -18,6 +18,8 @@ export const Route = createFileRoute("/leagues")({
         content:
           "Four 5-pin leagues running September through April, with handicap divisions for every level.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: LeaguesPage,

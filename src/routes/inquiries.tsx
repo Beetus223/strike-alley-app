@@ -1,11 +1,162 @@
-import {useState} from 'react';
-import {createFileRoute} from '@tanstack/react-router';
-import {useServerFn} from '@tanstack/react-start';
-import {PageHeader,Section} from '@/components/site/PageHeader';
-import {Button} from '@/components/ui/button';
-import {Field,TextField} from '@/components/site/AdminField';
-import {submitInquiry} from '@/lib/reservations.functions';
-import {localDay} from '@/lib/reservations';
-import {CENTRE} from '@/lib/site-data';
-export const Route=createFileRoute('/inquiries')({head:()=>({meta:[{title:'Special Events & Group Inquiries | Vegreville Bowling Lanes'},{name:'description',content:'Ask about birthday parties, fundraisers, group outings and facility rentals at Vegreville Bowling Lanes.'},{property:'og:title',content:'Special Events & Group Inquiries | Vegreville Bowling Lanes'},{property:'og:description',content:'Talk to our staff about your party, group outing or rental.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),component:InquiryPage});
-function InquiryPage(){const send=useServerFn(submitInquiry);const [busy,setBusy]=useState(false);const [done,setDone]=useState(false);const [error,setError]=useState('');return <><PageHeader eyebrow="Let’s plan something special" title="Special events & group inquiries" intro="Birthday parties, fundraisers, group outings and rentals. Tell us what you have in mind."/><Section><div className="grid gap-10 lg:grid-cols-[3fr_2fr]">{done?<div role="status"><h2 className="text-3xl">Inquiry received</h2><p className="mt-3">Staff will review your request. This is not a confirmed reservation and no lanes have been reserved.</p><p className="mt-3 text-muted-foreground">No email or text notification has been sent.</p><Button className="mt-5" onClick={()=>setDone(false)}>Send another inquiry</Button></div>:<form className="space-y-5" onSubmit={async e=>{e.preventDefault();const f=new FormData(e.currentTarget);setBusy(true);setError('');try{const response=await send({data:{contact_name:String(f.get('contact_name')),email:String(f.get('email')),phone:String(f.get('phone')),booking_type:String(f.get('booking_type')),requested_date:String(f.get('requested_date')),requested_time:String(f.get('requested_time')??''),party_size:Number(f.get('party_size')),notes:String(f.get('notes'))}});if(!response.received)throw new Error('Inquiry was not saved.');setDone(true);}catch(e){setError(e instanceof Error?e.message:'Inquiry could not be sent.');}finally{setBusy(false);}}}><div className="grid gap-5 sm:grid-cols-2"><Field label="Your name" name="contact_name" required/><Field label="Phone" name="phone" type="tel" required/><Field label="Email" name="email" type="email" required/><div><label htmlFor="event-type" className="text-sm font-medium">Event type</label><select id="event-type" name="booking_type" className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3">{['Birthday party','Fundraiser','Large group','Whole-building rental','Meeting-room rental','Other special event'].map(t=><option key={t}>{t}</option>)}</select></div><Field label="Preferred date" name="requested_date" type="date" min={localDay()} required/><Field label="Preferred time (optional)" name="requested_time" type="time"/><Field label="Estimated attendance" name="party_size" type="number" min={1} max={1000} required/></div><TextField label="Your message" name="notes"/><p className="text-sm text-muted-foreground">This is an inquiry, not a confirmed reservation. Availability and arrangements must be agreed with staff.</p>{error&&<p role="alert" className="text-destructive">{error}</p>}<Button type="submit" size="lg" disabled={busy}>{busy?'Sending…':'Send event inquiry'}</Button></form>}<aside><h2 className="text-2xl">Prefer to talk it through?</h2><a className="mt-3 block font-semibold text-primary" href={`tel:${CENTRE.phone.replace(/\D/g,'')}`}>{CENTRE.phone}</a><p className="mt-3 text-muted-foreground">{CENTRE.address}</p></aside></div></Section></>;}
+import { useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { PageHeader, Section } from "@/components/site/PageHeader";
+import { Button } from "@/components/ui/button";
+import { Field, TextField } from "@/components/site/AdminField";
+import { submitInquiry } from "@/lib/reservations.functions";
+import { localDay } from "@/lib/reservations";
+import { CENTRE } from "@/lib/site-data";
+export const Route = createFileRoute("/inquiries")({
+  head: () => ({
+    meta: [
+      { title: "Special Events & Group Inquiries | Vegreville Bowling Lanes" },
+      {
+        name: "description",
+        content:
+          "Ask about birthday parties, fundraisers, group outings and facility rentals at Vegreville Bowling Lanes.",
+      },
+      {
+        property: "og:title",
+        content: "Special Events & Group Inquiries | Vegreville Bowling Lanes",
+      },
+      {
+        property: "og:description",
+        content: "Talk to our staff about your party, group outing or rental.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: InquiryPage,
+});
+function InquiryPage() {
+  const send = useServerFn(submitInquiry);
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+  return (
+    <>
+      <PageHeader
+        eyebrow="Let’s plan something special"
+        title="Special events & group inquiries"
+        intro="Birthday parties, fundraisers, group outings and rentals. Tell us what you have in mind."
+      />
+      <Section>
+        <div className="grid gap-10 lg:grid-cols-[3fr_2fr]">
+          {done ? (
+            <div role="status">
+              <h2 className="text-3xl">Inquiry received</h2>
+              <p className="mt-3">
+                Staff will review your request. This is not a confirmed reservation and no lanes
+                have been reserved.
+              </p>
+              <p className="mt-3 text-muted-foreground">
+                No email or text notification has been sent.
+              </p>
+              <Button className="mt-5" onClick={() => setDone(false)}>
+                Send another inquiry
+              </Button>
+            </div>
+          ) : (
+            <form
+              className="space-y-5"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const f = new FormData(e.currentTarget);
+                setBusy(true);
+                setError("");
+                try {
+                  const response = await send({
+                    data: {
+                      contact_name: String(f.get("contact_name")),
+                      email: String(f.get("email")),
+                      phone: String(f.get("phone")),
+                      booking_type: String(f.get("booking_type")),
+                      requested_date: String(f.get("requested_date")),
+                      requested_time: String(f.get("requested_time") ?? ""),
+                      party_size: Number(f.get("party_size")),
+                      notes: String(f.get("notes")),
+                    },
+                  });
+                  if (!response.received) throw new Error("Inquiry was not saved.");
+                  setDone(true);
+                } catch (e) {
+                  setError(e instanceof Error ? e.message : "Inquiry could not be sent.");
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Your name" name="contact_name" required />
+                <Field label="Phone" name="phone" type="tel" required />
+                <Field label="Email" name="email" type="email" required />
+                <div>
+                  <label htmlFor="event-type" className="text-sm font-medium">
+                    Event type
+                  </label>
+                  <select
+                    id="event-type"
+                    name="booking_type"
+                    className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3"
+                  >
+                    {[
+                      "Birthday party",
+                      "Fundraiser",
+                      "Large group",
+                      "Whole-building rental",
+                      "Meeting-room rental",
+                      "Other special event",
+                    ].map((t) => (
+                      <option key={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+                <Field
+                  label="Preferred date"
+                  name="requested_date"
+                  type="date"
+                  min={localDay()}
+                  required
+                />
+                <Field label="Preferred time (optional)" name="requested_time" type="time" />
+                <Field
+                  label="Estimated attendance"
+                  name="party_size"
+                  type="number"
+                  min={1}
+                  max={1000}
+                  required
+                />
+              </div>
+              <TextField label="Your message" name="notes" />
+              <p className="text-sm text-muted-foreground">
+                This is an inquiry, not a confirmed reservation. Availability and arrangements must
+                be agreed with staff.
+              </p>
+              {error && (
+                <p role="alert" className="text-destructive">
+                  {error}
+                </p>
+              )}
+              <Button type="submit" size="lg" disabled={busy}>
+                {busy ? "Sending…" : "Send event inquiry"}
+              </Button>
+            </form>
+          )}
+          <aside>
+            <h2 className="text-2xl">Prefer to talk it through?</h2>
+            <a
+              className="mt-3 block font-semibold text-primary"
+              href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}
+            >
+              {CENTRE.phone}
+            </a>
+            <p className="mt-3 text-muted-foreground">{CENTRE.address}</p>
+          </aside>
+        </div>
+      </Section>
+    </>
+  );
+}

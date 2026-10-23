@@ -1,24 +1,280 @@
-import {useState} from 'react';
-import {useServerFn} from '@tanstack/react-start';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
-import {Label} from '@/components/ui/label';
-import {Textarea} from '@/components/ui/textarea';
-import {Dialog,DialogContent,DialogHeader,DialogTitle} from '@/components/ui/dialog';
-import {saveStaffReservation} from '@/lib/reservations.functions';
-import {allocate,estimate,localDay,type Reservation,type BookingConfig} from '@/lib/reservations';
-import type {Json} from '@/integrations/supabase/types';
-export function ReservationEditor({reservation,config,onClose,onSaved}:{reservation:Reservation|null;config:BookingConfig;onClose:()=>void;onSaved:()=>void}){
- const save=useServerFn(saveStaffReservation);const [busy,setBusy]=useState(false);const [error,setError]=useState('');
- const [alloc,setAlloc]=useState(reservation?.allocations??[4]);const [lanes,setLanes]=useState(reservation?.lanes??[1]);const [games,setGames]=useState(reservation?.games??config.games[0]??1);
- const [duration,setDuration]=useState(reservation?.duration_minutes??estimate(alloc,games,config).duration);
- function changeAlloc(next:number[]){setAlloc(next);if(next.every(n=>n>=1&&n<=6))setDuration(estimate(next,games,config).duration);}
- return <Dialog open onOpenChange={v=>{if(!v&&!busy)onClose();}}><DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl"><DialogHeader><DialogTitle>{reservation?'Edit reservation':'Book on behalf of a customer'}</DialogTitle></DialogHeader><form className="space-y-4" onSubmit={async e=>{e.preventDefault();setBusy(true);setError('');const f=new FormData(e.currentTarget);const values:Json={request_key:reservation?.request_key??crypto.randomUUID(),contact_name:String(f.get('contact_name')),email:String(f.get('email')),phone:String(f.get('phone')),day:String(f.get('day')),time:String(f.get('time')),notes:String(f.get('notes')),staff_notes:String(f.get('staff_notes')),status:String(f.get('status')),games,allocations:alloc,lanes,duration_minutes:duration};try{await save({data:{...(reservation?{id:reservation.id}:{}),values}});onSaved();onClose();}catch(e){setError(e instanceof Error?e.message:'Reservation could not be saved.');}finally{setBusy(false);}}}>
- <div className="grid gap-4 sm:grid-cols-2">{[{key:'contact_name',label:'Customer name',type:'text',value:reservation?.contact_name},{key:'email',label:'Email',type:'email',value:reservation?.email},{key:'phone',label:'Phone',type:'tel',value:reservation?.phone},{key:'day',label:'Date',type:'date',value:reservation?.starts_at.slice(0,10)??localDay()},{key:'time',label:'Start time · Alberta',type:'time',value:reservation?.starts_at.slice(11,16)}].map(x=><div key={x.key}><Label htmlFor={`edit-${x.key}`}>{x.label}</Label><Input className="mt-2" id={`edit-${x.key}`} name={x.key} type={x.type} defaultValue={x.value} required/></div>)}<div><Label htmlFor="edit-status">Status</Label><select id="edit-status" name="status" defaultValue={reservation?.status??'confirmed'} className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3">{['pending','confirmed','declined','cancelled','completed'].map(s=><option key={s}>{s}</option>)}</select></div>
- <div><Label htmlFor="edit-lane-count">Number of lanes</Label><Input className="mt-2" id="edit-lane-count" type="number" min={1} max={6} value={alloc.length} onChange={e=>{const n=Number(e.target.value);if(n<1||n>6)return;changeAlloc(allocate(Math.max(n,Math.min(n*6,alloc.reduce((a,b)=>a+b,0))),n));setLanes(Array.from({length:n},(_,i)=>i+1));}}/></div><div><Label htmlFor="edit-games">Games per person</Label><select id="edit-games" className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3" value={games} onChange={e=>{const g=Number(e.target.value);setGames(g);setDuration(estimate(alloc,g,config).duration);}}>{Array.from(new Set([...config.games,games])).sort((a,b)=>a-b).map(g=><option key={g} value={g}>{g}</option>)}</select></div></div>
- <fieldset><legend className="mb-2 font-medium">Assigned lanes & bowlers</legend><div className="grid gap-3 sm:grid-cols-2">{alloc.map((n,i)=><div key={i} className="flex gap-3"><div className="flex-1"><Label htmlFor={`lane-${i}`}>Physical lane</Label><select id={`lane-${i}`} className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3" value={lanes[i]} onChange={e=>setLanes(lanes.map((l,j)=>j===i?Number(e.target.value):l))}>{[1,2,3,4,5,6].map(l=><option key={l} value={l}>Lane {l}</option>)}</select></div><div className="flex-1"><Label htmlFor={`bowlers-${i}`}>Bowlers</Label><Input id={`bowlers-${i}`} className="mt-2" type="number" min={1} max={6} required value={n} onChange={e=>changeAlloc(alloc.map((v,j)=>j===i?Number(e.target.value):v))}/></div></div>)}</div></fieldset>
- <div><Label htmlFor="edit-duration">Bowling duration (minutes)</Label><Input id="edit-duration" className="mt-2" type="number" min={1} max={1440} required value={duration} onChange={e=>setDuration(Number(e.target.value))}/></div>
- <div><Label htmlFor="edit-notes">Customer notes</Label><Textarea id="edit-notes" name="notes" maxLength={3000} defaultValue={reservation?.notes} className="mt-2"/></div><div><Label htmlFor="edit-staff-notes">Internal staff notes</Label><Textarea id="edit-staff-notes" name="staff_notes" maxLength={5000} defaultValue={reservation?.staff_notes} className="mt-2"/></div>
- <p className="text-sm text-muted-foreground">Pending and confirmed reservations hold lanes. Saving checks conflicts again. No customer notification is sent.</p>{error&&<p className="text-destructive" role="alert">{error}</p>}<div className="flex justify-end gap-3"><Button type="button" variant="outline" disabled={busy} onClick={onClose}>Cancel</Button><Button type="submit" disabled={busy}>{busy?'Saving…':'Save reservation'}</Button></div>
- </form></DialogContent></Dialog>;
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { saveStaffReservation } from "@/lib/reservations.functions";
+import {
+  allocate,
+  estimate,
+  localDay,
+  type Reservation,
+  type BookingConfig,
+} from "@/lib/reservations";
+import type { Json } from "@/integrations/supabase/types";
+export function ReservationEditor({
+  reservation,
+  config,
+  onClose,
+  onSaved,
+}: {
+  reservation: Reservation | null;
+  config: BookingConfig;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const save = useServerFn(saveStaffReservation);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [alloc, setAlloc] = useState(reservation?.allocations ?? [4]);
+  const [lanes, setLanes] = useState(reservation?.lanes ?? [1]);
+  const [games, setGames] = useState(reservation?.games ?? config.games[0] ?? 1);
+  const [duration, setDuration] = useState(
+    reservation?.duration_minutes ?? estimate(alloc, games, config).duration,
+  );
+  function changeAlloc(next: number[]) {
+    setAlloc(next);
+    if (next.every((n) => n >= 1 && n <= 6)) setDuration(estimate(next, games, config).duration);
+  }
+  return (
+    <Dialog
+      open
+      onOpenChange={(v) => {
+        if (!v && !busy) onClose();
+      }}
+    >
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>
+            {reservation ? "Edit reservation" : "Book on behalf of a customer"}
+          </DialogTitle>
+        </DialogHeader>
+        <form
+          className="space-y-4"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setBusy(true);
+            setError("");
+            const f = new FormData(e.currentTarget);
+            const values: Json = {
+              request_key: reservation?.request_key ?? crypto.randomUUID(),
+              contact_name: String(f.get("contact_name")),
+              email: String(f.get("email")),
+              phone: String(f.get("phone")),
+              day: String(f.get("day")),
+              time: String(f.get("time")),
+              notes: String(f.get("notes")),
+              staff_notes: String(f.get("staff_notes")),
+              status: String(f.get("status")),
+              games,
+              allocations: alloc,
+              lanes,
+              duration_minutes: duration,
+            };
+            try {
+              await save({ data: { ...(reservation ? { id: reservation.id } : {}), values } });
+              onSaved();
+              onClose();
+            } catch (e) {
+              setError(e instanceof Error ? e.message : "Reservation could not be saved.");
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              {
+                key: "contact_name",
+                label: "Customer name",
+                type: "text",
+                value: reservation?.contact_name,
+              },
+              { key: "email", label: "Email", type: "email", value: reservation?.email },
+              { key: "phone", label: "Phone", type: "tel", value: reservation?.phone },
+              {
+                key: "day",
+                label: "Date",
+                type: "date",
+                value: reservation?.starts_at.slice(0, 10) ?? localDay(),
+              },
+              {
+                key: "time",
+                label: "Start time · Alberta",
+                type: "time",
+                value: reservation?.starts_at.slice(11, 16),
+              },
+            ].map((x) => (
+              <div key={x.key}>
+                <Label htmlFor={`edit-${x.key}`}>{x.label}</Label>
+                <Input
+                  className="mt-2"
+                  id={`edit-${x.key}`}
+                  name={x.key}
+                  type={x.type}
+                  defaultValue={x.value}
+                  required
+                />
+              </div>
+            ))}
+            <div>
+              <Label htmlFor="edit-status">Status</Label>
+              <select
+                id="edit-status"
+                name="status"
+                defaultValue={reservation?.status ?? "confirmed"}
+                className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3"
+              >
+                {["pending", "confirmed", "declined", "cancelled", "completed"].map((s) => (
+                  <option key={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="edit-lane-count">Number of lanes</Label>
+              <Input
+                className="mt-2"
+                id="edit-lane-count"
+                type="number"
+                min={1}
+                max={6}
+                value={alloc.length}
+                onChange={(e) => {
+                  const n = Number(e.target.value);
+                  if (n < 1 || n > 6) return;
+                  changeAlloc(
+                    allocate(
+                      Math.max(
+                        n,
+                        Math.min(
+                          n * 6,
+                          alloc.reduce((a, b) => a + b, 0),
+                        ),
+                      ),
+                      n,
+                    ),
+                  );
+                  setLanes(Array.from({ length: n }, (_, i) => i + 1));
+                }}
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-games">Games per person</Label>
+              <select
+                id="edit-games"
+                className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3"
+                value={games}
+                onChange={(e) => {
+                  const g = Number(e.target.value);
+                  setGames(g);
+                  setDuration(estimate(alloc, g, config).duration);
+                }}
+              >
+                {Array.from(new Set([...config.games, games]))
+                  .sort((a, b) => a - b)
+                  .map((g) => (
+                    <option key={g} value={g}>
+                      {g}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          </div>
+          <fieldset>
+            <legend className="mb-2 font-medium">Assigned lanes & bowlers</legend>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {alloc.map((n, i) => (
+                <div key={i} className="flex gap-3">
+                  <div className="flex-1">
+                    <Label htmlFor={`lane-${i}`}>Physical lane</Label>
+                    <select
+                      id={`lane-${i}`}
+                      className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3"
+                      value={lanes[i]}
+                      onChange={(e) =>
+                        setLanes(lanes.map((l, j) => (j === i ? Number(e.target.value) : l)))
+                      }
+                    >
+                      {[1, 2, 3, 4, 5, 6].map((l) => (
+                        <option key={l} value={l}>
+                          Lane {l}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor={`bowlers-${i}`}>Bowlers</Label>
+                    <Input
+                      id={`bowlers-${i}`}
+                      className="mt-2"
+                      type="number"
+                      min={1}
+                      max={6}
+                      required
+                      value={n}
+                      onChange={(e) =>
+                        changeAlloc(alloc.map((v, j) => (j === i ? Number(e.target.value) : v)))
+                      }
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </fieldset>
+          <div>
+            <Label htmlFor="edit-duration">Bowling duration (minutes)</Label>
+            <Input
+              id="edit-duration"
+              className="mt-2"
+              type="number"
+              min={1}
+              max={1440}
+              required
+              value={duration}
+              onChange={(e) => setDuration(Number(e.target.value))}
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit-notes">Customer notes</Label>
+            <Textarea
+              id="edit-notes"
+              name="notes"
+              maxLength={3000}
+              defaultValue={reservation?.notes}
+              className="mt-2"
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit-staff-notes">Internal staff notes</Label>
+            <Textarea
+              id="edit-staff-notes"
+              name="staff_notes"
+              maxLength={5000}
+              defaultValue={reservation?.staff_notes}
+              className="mt-2"
+            />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Pending and confirmed reservations hold lanes. Saving checks conflicts again. No
+            customer notification is sent.
+          </p>
+          {error && (
+            <p className="text-destructive" role="alert">
+              {error}
+            </p>
+          )}
+          <div className="flex justify-end gap-3">
+            <Button type="button" variant="outline" disabled={busy} onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={busy}>
+              {busy ? "Saving…" : "Save reservation"}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
 }

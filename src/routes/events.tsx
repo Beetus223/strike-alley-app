@@ -18,6 +18,8 @@ export const Route = createFileRoute("/events")({
         property: "og:description",
         content: "Weekly specials, tournaments and seasonal nights on our six 5-pin lanes.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: EventsPage,
