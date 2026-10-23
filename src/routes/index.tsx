@@ -4,6 +4,7 @@ import { CalendarDays, Clock, MapPin, Sparkles, Trophy, Users } from "lucide-rea
 import heroLanes from "@/assets/hero-lanes-authentic.jpg.asset.json";
 import how5Pin from "@/assets/how-5-pin-works.jpg.asset.json";
 import leagueNight from "@/assets/league-night.jpg.asset.json";
+import storefront from "@/assets/storefront.jpg.asset.json";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/site/PageHeader";
 import { HoursTable } from "@/components/site/HoursTable";
