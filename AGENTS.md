@@ -22,3 +22,4 @@
 - Public website content and verified offerings are loaded anonymously into the root query cache for SSR; drafts and private booking data are never included.
 - Staff content validation lives in a browser-safe pure module shared by forms and authenticated server functions so rules can be tested without browser/database dependencies.
 - Shared auth loads account-scoped roles through the query cache with retries and distinct failure state; a failed permission read must never be presented as confirmed lack of staff access.
+- Website photos use a private Storage bucket: staff upload re-encoded device images and preview signed links; a public photo route reads anonymously through published-reference RLS, so unpublished photos stay private and existing drafts/publishing remain authoritative.

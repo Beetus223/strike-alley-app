@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import fields from './website-fields.json';
+import { photoPath } from './website-photos';
 export const safeDestinations=['/bowling','/leagues','/parties','/rentals','/hours','/events','/contact','/glow','/menu','/announcements'];
 export function validateField(key: string, value: string) {
  const field = fields.find(f=>f.key===key);
@@ -7,7 +8,7 @@ export function validateField(key: string, value: string) {
  z.string().max(6000).parse(value);
  if (field.kind==='phone' && !/^\+?[\d ()-]{10,25}$/.test(value)) throw new Error('Enter a valid phone number.');
  if (field.kind==='email') z.string().email('Enter a valid email address.').parse(value);
- if (field.kind==='image' && value && !/^https:\/\//.test(value) && !fields.some(f=>f.kind==='image'&&f.value===value)) throw new Error('Images must use a secure https link.');
+ if (field.kind==='image' && value && !photoPath(value) && !/^https:\/\//.test(value) && !fields.some(f=>f.kind==='image'&&f.value===value)) throw new Error('Choose a photo or use a secure https link.');
  if (field.kind==='boolean' && !['true','false'].includes(value)) throw new Error('Choose show or hide.');
  if(field.kind==='destination'&&!safeDestinations.includes(value))throw new Error('Choose an existing public page.');
  return value;
