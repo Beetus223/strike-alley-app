@@ -215,12 +215,23 @@ const ACTIVITIES = [
       </section>
 
       {/* 4 — Dark feature: what's on + glow teaser */}
-      <Section
-        tone="dark"
-        title={text("home.023", "What's on this week")}
-        description={text("home.024", "Something different on the lanes most nights of the week.")}
-      >
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="ink-section relative overflow-hidden">
+        <img
+          src={text("home.events_bg", storefront.url)}
+          alt=""
+          aria-hidden
+          width={1920}
+          height={1080}
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/75" />
+        <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
+          <h2 className="brand-title text-3xl sm:text-4xl">{text("home.023", "What's on this week")}</h2>
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-muted">
+            {text("home.024", "Something different on the lanes most nights of the week.")}
+          </p>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {(events ?? []).filter(e => e.featured).map((e) => (
             <article
               key={e.id}
