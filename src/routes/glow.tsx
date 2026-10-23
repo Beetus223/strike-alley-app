@@ -11,12 +11,12 @@ export const Route = createFileRoute("/glow")({
       {
         name: "description",
         content:
-          "Glow bowling every Friday and Saturday from 7 PM in Vegreville: blacklights, music and eight lit-up 5-pin lanes. $6.50 per person, per game.",
+          "Glow bowling every Friday and Saturday from 7 PM in Vegreville: blacklights, music and six lit-up 5-pin lanes. $6.50 per person, per game.",
       },
       { property: "og:title", content: "Glow Bowling Fridays & Saturdays | Vegreville Bowling" },
       {
         property: "og:description",
-        content: "Blacklights, music and eight glowing 5-pin lanes every Friday and Saturday night.",
+        content: "Blacklights, music and six glowing 5-pin lanes every Friday and Saturday night.",
       },
     ],
   }),
@@ -31,7 +31,7 @@ const NIGHT_DETAILS = [
 
 const HIGHLIGHTS = [
   {
-    title: "Blacklights on all eight lanes",
+    title: "Blacklights on all six lanes",
     body: "The whole house goes dark at 7 PM. Glowing pins, glowing balls and the house lights down until close.",
   },
   {

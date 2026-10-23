@@ -16,12 +16,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Vegreville's local place for bowling, leagues, birthday parties and family fun. Eight 5-pin lanes, a full snack bar and lane bookings.",
+          "Vegreville's local place for bowling, leagues, birthday parties and family fun. Six 5-pin lanes, a full snack bar and lane bookings.",
       },
       { property: "og:title", content: "Vegreville Bowling Lanes | 5-Pin Bowling" },
       {
         property: "og:description",
-        content: "Bowling, leagues, parties and family fun on eight 5-pin lanes in Vegreville.",
+        content: "Bowling, leagues, parties and family fun on six 5-pin lanes in Vegreville.",
       },
     ],
   }),
@@ -55,7 +55,7 @@ const ACTIVITIES = [
   },
   {
     title: "Group rentals",
-    body: "Staff socials, school groups, fundraisers and team wind-ups. Take a few lanes or the whole eight-lane house.",
+    body: "Staff socials, school groups, fundraisers and team wind-ups. Take a few lanes or the whole six-lane house.",
     to: "/rentals" as const,
     cta: "Rental options",
   },
@@ -93,7 +93,7 @@ function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/30" />
         <div className="relative z-10 mx-auto flex min-h-[520px] max-w-7xl flex-col justify-center px-4 py-16 sm:min-h-[600px] sm:px-6 sm:py-20 lg:min-h-[680px]">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/80">
-            Vegreville, Alberta · Eight 5-pin lanes
+            Vegreville, Alberta · Six 5-pin lanes
           </p>
           <h1 className="brand-title mt-4 max-w-3xl text-4xl leading-[1.05] text-white sm:text-5xl lg:text-6xl">
             Vegreville's local place for bowling, leagues, parties and family fun.
@@ -145,7 +145,7 @@ function Home() {
       <Section
         tone="neutral"
         title="Everything under one roof"
-        description="Eight lanes, a snack bar and room for the whole crew — whatever you're planning."
+        description="Six lanes, a snack bar and room for the whole crew — whatever you're planning."
       >
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {ACTIVITIES.map((a) => (

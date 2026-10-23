@@ -4,7 +4,7 @@ export const CENTRE = {
   address: "5026 50 Street, Vegreville, AB T9C 1R8",
   phone: "(780) 632-2695",
   email: "hello@vegrevillebowling.ca",
-  lanes: 8,
+  lanes: 6,
   mapQuery: "5026+50+Street+Vegreville+AB",
 };
 
@@ -508,6 +508,7 @@ export const NAV = [
     label: "Bookings",
     children: [
       { to: "/book", label: "Book a lane" },
+      { to: "/inquiries", label: "Special events & group inquiries" },
       { to: "/parties", label: "Birthday parties & groups" },
       { to: "/rentals", label: "Facility rentals" },
     ],

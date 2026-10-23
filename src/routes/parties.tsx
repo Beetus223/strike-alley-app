@@ -68,7 +68,7 @@ function PartiesPage() {
           </p>
           <div className="mt-8 flex justify-center">
             <Button asChild size="lg">
-              <Link to="/book">Request a party date</Link>
+              <Link to="/inquiries">Request a party date</Link>
             </Button>
           </div>
         </div>
@@ -129,7 +129,7 @@ function PartiesPage() {
               ) : null}
 
               <Button asChild className="mt-6 w-full">
-                <Link to="/book">Book {p.name}</Link>
+                <Link to="/inquiries">Book {p.name}</Link>
               </Button>
             </article>
           ))}
@@ -196,7 +196,7 @@ function PartiesPage() {
           </p>
           <div className="mt-8 flex justify-center">
             <Button asChild size="lg">
-              <Link to="/book">Request a party date</Link>
+              <Link to="/inquiries">Request a party date</Link>
             </Button>
           </div>
         </div>
@@ -215,7 +215,7 @@ function PartiesPage() {
           </p>
           <div className="mt-8 flex justify-center">
             <Button asChild size="lg" variant="secondary">
-              <Link to="/book">Request a party date</Link>
+              <Link to="/inquiries">Request a party date</Link>
             </Button>
           </div>
         </div>

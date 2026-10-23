@@ -16,7 +16,7 @@ export const Route = createFileRoute("/events")({
       { property: "og:title", content: "Events & Tournaments | Vegreville Bowling Lanes" },
       {
         property: "og:description",
-        content: "Weekly specials, tournaments and seasonal nights on our eight 5-pin lanes.",
+        content: "Weekly specials, tournaments and seasonal nights on our six 5-pin lanes.",
       },
     ],
   }),
@@ -55,7 +55,7 @@ function EventsPage() {
             date and headcount and we'll build a quote.
           </p>
           <Button asChild className="mt-5">
-            <Link to="/book">Send a booking request</Link>
+            <Link to="/inquiries">Send a booking request</Link>
           </Button>
         </div>
       </Section>

@@ -365,6 +365,143 @@ export type Database = {
         }
         Relationships: []
       }
+      lane_occupancy: {
+        Row: {
+          lane: number
+          occupied: unknown
+          reservation_id: string
+        }
+        Insert: {
+          lane: number
+          occupied: unknown
+          reservation_id: string
+        }
+        Update: {
+          lane?: number
+          occupied?: unknown
+          reservation_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lane_occupancy_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "lane_reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lane_reservations: {
+        Row: {
+          after_minutes: number
+          allocations: number[]
+          before_minutes: number
+          contact_name: string
+          created_at: string
+          created_by: string | null
+          duration_minutes: number
+          email: string
+          games: number
+          id: string
+          lanes: number[]
+          notes: string
+          phone: string
+          request_key: string
+          staff_notes: string
+          starts_at: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          after_minutes?: number
+          allocations: number[]
+          before_minutes?: number
+          contact_name: string
+          created_at?: string
+          created_by?: string | null
+          duration_minutes: number
+          email: string
+          games: number
+          id?: string
+          lanes: number[]
+          notes?: string
+          phone: string
+          request_key: string
+          staff_notes?: string
+          starts_at: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          after_minutes?: number
+          allocations?: number[]
+          before_minutes?: number
+          contact_name?: string
+          created_at?: string
+          created_by?: string | null
+          duration_minutes?: number
+          email?: string
+          games?: number
+          id?: string
+          lanes?: number[]
+          notes?: string
+          phone?: string
+          request_key?: string
+          staff_notes?: string
+          starts_at?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      lane_schedule_blocks: {
+        Row: {
+          created_at: string
+          end_minute: number
+          ends_on: string
+          exceptions: string[]
+          id: string
+          lanes: number[]
+          start_minute: number
+          starts_on: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+          weekday: number | null
+        }
+        Insert: {
+          created_at?: string
+          end_minute?: number
+          ends_on: string
+          exceptions?: string[]
+          id?: string
+          lanes: number[]
+          start_minute?: number
+          starts_on: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+          weekday?: number | null
+        }
+        Update: {
+          created_at?: string
+          end_minute?: number
+          ends_on?: string
+          exceptions?: string[]
+          id?: string
+          lanes?: number[]
+          start_minute?: number
+          starts_on?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          weekday?: number | null
+        }
+        Relationships: []
+      }
       league_sessions: {
         Row: {
           created_at: string
@@ -1220,6 +1357,86 @@ export type Database = {
         }
         Relationships: []
       }
+      reservation_audit: {
+        Row: {
+          action: string
+          actor_id: string | null
+          details: Json
+          id: string
+          occurred_at: string
+          reservation_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          details?: Json
+          id?: string
+          occurred_at?: string
+          reservation_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          details?: Json
+          id?: string
+          occurred_at?: string
+          reservation_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_audit_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "lane_reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reservation_date_hours: {
+        Row: {
+          day: string
+          note: string
+          updated_at: string
+          updated_by: string | null
+          windows: Json
+        }
+        Insert: {
+          day: string
+          note?: string
+          updated_at?: string
+          updated_by?: string | null
+          windows?: Json
+        }
+        Update: {
+          day?: string
+          note?: string
+          updated_at?: string
+          updated_by?: string | null
+          windows?: Json
+        }
+        Relationships: []
+      }
+      reservation_settings: {
+        Row: {
+          config: Json
+          id: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          config?: Json
+          id?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          config?: Json
+          id?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       scores: {
         Row: {
           created_at: string
@@ -1282,30 +1499,36 @@ export type Database = {
         Row: {
           created_at: string
           date_label: string
+          ends_on: string | null
           id: string
           is_active: boolean
           reservation_notice: string
           sort_order: number
+          starts_on: string | null
           title: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           date_label: string
+          ends_on?: string | null
           id?: string
           is_active?: boolean
           reservation_notice: string
           sort_order?: number
+          starts_on?: string | null
           title: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           date_label?: string
+          ends_on?: string | null
           id?: string
           is_active?: boolean
           reservation_notice?: string
           sort_order?: number
+          starts_on?: string | null
           title?: string
           updated_at?: string
         }
@@ -1504,6 +1727,29 @@ export type Database = {
         }[]
       }
       place_food_order: { Args: { payload: Json }; Returns: Json }
+      reservation_available: {
+        Args: { p_alloc: number[]; p_day: string; p_games: number }
+        Returns: Json
+      }
+      reservation_duration: {
+        Args: { p_alloc: number[]; p_games: number }
+        Returns: number
+      }
+      reservation_free_lanes: {
+        Args: {
+          p_after: number
+          p_before: number
+          p_duration: number
+          p_ignore?: string
+          p_start: string
+        }
+        Returns: number[]
+      }
+      reservation_public_config: { Args: never; Returns: Json }
+      reservation_save: { Args: { p: Json; p_id?: string }; Returns: Json }
+      reservation_staff: { Args: { p?: Json; p_action: string }; Returns: Json }
+      reservation_windows: { Args: { p_day: string }; Returns: Json }
+      submit_event_inquiry: { Args: { p: Json }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "staff" | "player"
