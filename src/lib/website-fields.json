@@ -1668,6 +1668,13 @@
     "kind": "image"
   },
   {
+    "key": "home.events_bg",
+    "page": "home",
+    "label": "What's on this week background photo",
+    "value": "/__l5e/assets-v1/4093dfb9-d3e4-45e3-9d45-eaa44bc72dec/storefront.jpg",
+    "kind": "image"
+  },
+  {
     "key": "home.league",
     "page": "home",
     "label": "Home league photo",
