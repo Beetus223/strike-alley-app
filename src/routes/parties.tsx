@@ -26,8 +26,6 @@ export const Route = createFileRoute("/parties")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:image", content: partyImg.url },
-      { name: "twitter:image", content: partyImg.url },
     ],
   }),
   component: PartiesPage,
@@ -137,7 +135,7 @@ function PartiesPage() {
               ) : null}
 
               <Button hidden={!visible("parties.actions_visible")} asChild className="mt-6 w-full">
-                <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("parties.010", "Book")}{p.name}</a>
+                <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("parties.010", "Call to Book")} {p.name}</a>
               </Button>
             </article>
           ))}

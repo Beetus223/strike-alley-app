@@ -42,7 +42,7 @@ function BookPage() {
         >
           {CENTRE.phone}
         </a>
-        <Button asChild size="lg" className="min-h-14 w-full sm:w-auto">
+        <Button hidden={!visible("book.actions_visible")} asChild size="lg" className="min-h-14 w-full sm:w-auto">
           <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>
             <Phone />
             {text("book.004", "Call Now")}</a>
@@ -57,7 +57,7 @@ function BookPage() {
             <article key={item.title} className="card-soft flex flex-col rounded-lg p-6">
               <h3 className="text-2xl">{item.title}</h3>
               <p className="mt-3 mb-6 leading-relaxed text-muted-foreground">{item.description}</p>
-              <Button asChild variant="outline" className="mt-auto min-h-12 h-auto whitespace-normal py-3">
+              <Button hidden={!visible("book.actions_visible")} asChild variant="outline" className="mt-auto min-h-12 h-auto whitespace-normal py-3">
                 <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}><Phone className="shrink-0" />{text("book.007", "Call to Discuss Your Event")}</a>
               </Button>
             </article>

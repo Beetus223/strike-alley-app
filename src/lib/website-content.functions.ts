@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
-import { validateField, offeringSchema } from './website-content';
+import { validateField, offeringSchema } from './website-validation';
 export const saveWebsiteDraft = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((input:unknown)=>z.object({fields:z.array(z.object({key:z.string(),value:z.string()})).max(350),publish:z.boolean()}).parse(input)).handler(async({data,context})=>{
  for(const f of data.fields)validateField(f.key,f.value);
  if(data.fields.length===0)throw new Error('No changes to save.');

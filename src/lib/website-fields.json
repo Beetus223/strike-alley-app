@@ -683,7 +683,7 @@
     "key": "bowling.018",
     "page": "bowling",
     "label": "with rental shoes — we sell them for $2 if you forget.",
-    "value": "with rental shoes — we sell them for $2 if you forget.",
+    "value": "with rental shoes — ask at the counter if you need socks.",
     "kind": "text",
     "protected": false
   },
@@ -939,7 +939,7 @@
     "key": "parties.010",
     "page": "parties",
     "label": "Book",
-    "value": "Book",
+    "value": "Call to Book",
     "kind": "text",
     "protected": false
   },
@@ -1108,62 +1108,6 @@
     "page": "rentals",
     "label": "or email",
     "value": "or email",
-    "kind": "text",
-    "protected": false
-  },
-  {
-    "key": "rentals.011",
-    "page": "rentals",
-    "label": "Single lane",
-    "value": "Single lane",
-    "kind": "text",
-    "protected": false
-  },
-  {
-    "key": "rentals.012",
-    "page": "rentals",
-    "label": "Group lanes (4 lanes)",
-    "value": "Group lanes (4 lanes)",
-    "kind": "text",
-    "protected": false
-  },
-  {
-    "key": "rentals.013",
-    "page": "rentals",
-    "label": "Up to 24 people, reserved seating area and your own scoreboard messagi",
-    "value": "Up to 24 people, reserved seating area and your own scoreboard messaging.",
-    "kind": "text",
-    "protected": false
-  },
-  {
-    "key": "rentals.014",
-    "page": "rentals",
-    "label": "Whole house (6 lanes)",
-    "value": "Whole house (6 lanes)",
-    "kind": "text",
-    "protected": false
-  },
-  {
-    "key": "rentals.015",
-    "page": "rentals",
-    "label": "Up to 36 people, private snack bar service and full sound system.",
-    "value": "Up to 36 people, private snack bar service and full sound system.",
-    "kind": "text",
-    "protected": false
-  },
-  {
-    "key": "rentals.016",
-    "page": "rentals",
-    "label": "Meeting room",
-    "value": "Meeting room",
-    "kind": "text",
-    "protected": false
-  },
-  {
-    "key": "rentals.017",
-    "page": "rentals",
-    "label": "Seats 24, projector and coffee service. Add bowling at group rates.",
-    "value": "Seats 24, projector and coffee service. Add bowling at group rates.",
     "kind": "text",
     "protected": false
   },
@@ -1967,5 +1911,33 @@
     "label": "I have verified these rental terms — show them publicly",
     "value": "false",
     "kind": "boolean"
+  },
+  {
+    "key": "home.activity0.destination",
+    "page": "home",
+    "label": "Activity 1 button destination",
+    "value": "/bowling",
+    "kind": "destination"
+  },
+  {
+    "key": "home.activity1.destination",
+    "page": "home",
+    "label": "Activity 2 button destination",
+    "value": "/leagues",
+    "kind": "destination"
+  },
+  {
+    "key": "home.activity2.destination",
+    "page": "home",
+    "label": "Activity 3 button destination",
+    "value": "/parties",
+    "kind": "destination"
+  },
+  {
+    "key": "home.activity3.destination",
+    "page": "home",
+    "label": "Activity 4 button destination",
+    "value": "/rentals",
+    "kind": "destination"
   }
 ]

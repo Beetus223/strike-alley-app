@@ -22,8 +22,6 @@ export const Route = createFileRoute("/glow")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:image", content: glowLanes.url },
-      { name: "twitter:image", content: glowLanes.url },
     ],
   }),
   component: GlowPage,

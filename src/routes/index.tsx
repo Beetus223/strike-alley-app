@@ -26,8 +26,6 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:image", content: heroLanes.url },
-      { name: "twitter:image", content: heroLanes.url },
     ],
   }),
   component: Home,
@@ -49,25 +47,25 @@ const ACTIVITIES = [
   {
     title: text("home.041","Open bowling"),
     body: text("home.042","Drop in with the family or book ahead. Bumpers, lightweight balls and ramps are always available at no extra cost."),
-    to: "/bowling" as const,
+    to: text("home.activity0.destination", "/bowling"),
     cta: text("home.043","Prices & lane info"),
   },
   {
     title: text("home.044","Leagues"),
     body: text("home.045","Four leagues run September through April, from Tuesday afternoon seniors to the Thursday men's classic. Spares are always welcome."),
-    to: "/leagues" as const,
+    to: text("home.activity1.destination", "/leagues"),
     cta: text("home.046","Find your league"),
   },
   {
     title: text("home.047","Birthday parties"),
     body: text("home.party_body"),
-    to: "/parties" as const,
+    to: text("home.activity2.destination", "/parties"),
     cta: text("home.048","Party packages"),
   },
   {
     title: text("home.049","Group rentals"),
     body: text("home.050","Staff socials, school groups, fundraisers and team wind-ups. Take a few lanes or the whole six-lane house."),
-    to: "/rentals" as const,
+    to: text("home.activity3.destination", "/rentals"),
     cta: text("home.051","Rental options"),
   },
 ];

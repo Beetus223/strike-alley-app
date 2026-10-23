@@ -22,15 +22,13 @@ export const Route = createFileRoute("/menu")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:image", content: snackbar.url },
-      { name: "twitter:image", content: snackbar.url },
     ],
   }),
   component: MenuPage,
 });
 
 function MenuPage() {
-  const { text } = useWebsiteContent();
+  const { text, visible } = useWebsiteContent();
   const CENTRE = useBusiness();
   const SNACK_BAR_PHONE = CENTRE.snackPhone;
 
@@ -46,7 +44,7 @@ function MenuPage() {
           <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold uppercase tracking-wide text-primary">
             {text("menu.004", "Pre-Orders Accepted")}</span>
           <a
-            href={`tel:${SNACK_BAR_PHONE.replace(/-/g, "")}`}
+            hidden={!visible("menu.actions_visible")} href={`tel:${SNACK_BAR_PHONE.replace(/-/g, "")}`}
             className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-base font-medium text-foreground shadow-sm transition hover:border-primary/40 hover:text-primary"
           >
             <Phone className="h-4 w-4" aria-hidden />
@@ -75,7 +73,7 @@ function MenuPage() {
               <p className="mt-1 text-sm text-muted-foreground">
                 {text("menu.009", "Give us a call and we'll have everything ready for your lane or take-out order.")}</p>
               <a
-                href={`tel:${SNACK_BAR_PHONE.replace(/-/g, "")}`}
+                hidden={!visible("menu.actions_visible")} href={`tel:${SNACK_BAR_PHONE.replace(/-/g, "")}`}
                 className="mt-4 inline-flex items-center gap-2 text-lg font-semibold text-primary hover:underline"
               >
                 <Phone className="h-5 w-5" aria-hidden />
