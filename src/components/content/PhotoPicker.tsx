@@ -46,5 +46,26 @@ export function PhotoPicker({ value, onChange, label, id, name, onBusyChange }: 
 
 export function PhotoFormField({ defaultValue, label }: { defaultValue?: string | null; label: string }) {
   const [value, setValue] = useState(defaultValue ?? '');
-  return <PhotoPicker value={value} onChange={setValue} name="image_url" label={label}/>;
+  const [busy, setBusy] = useState(false);
+  const container = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const form = container.current?.closest('form');
+    if (!form) return;
+    const preventSave = (event: Event) => { if (busy) { event.preventDefault(); event.stopPropagation(); } };
+    form.addEventListener('submit', preventSave, true);
+    return () => form.removeEventListener('submit', preventSave, true);
+  }, [busy]);
+  return <div ref={container}><PhotoPicker value={value} onChange={setValue} name="image_url" label={label} onBusyChange={setBusy}/></div>;
+}
+
+export function PhotoPreview({ value, label }: { value: string; label: string }) {
+  const [src, setSrc] = useState('');
+  useEffect(() => {
+    let active = true;
+    const path = photoPath(value);
+    setSrc(path ? '' : value);
+    if (path) void supabase.storage.from(PHOTO_BUCKET).createSignedUrl(path, 3600).then(({ data }) => { if (active) setSrc(data?.signedUrl ?? ''); });
+    return () => { active = false; };
+  }, [value]);
+  return src ? <img src={src} alt={label} className="max-h-64 max-w-full rounded-lg object-contain"/> : null;
 }
