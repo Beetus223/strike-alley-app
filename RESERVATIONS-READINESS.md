@@ -1,23 +1,21 @@
 # Six-lane reservations
 
 ## Implemented
-- `/book`: real configuration reads, allocation and conservative duration estimates, availability, review, server submission and result states.
-- `/inquiries`: special-event requests saved separately to the retained `booking_requests` table; no lane occupancy is created.
-- `/admin` → Bookings: day/week schedule for Lane 1–6, pending requests, date/lane/status filters, edit/create/confirm/decline/cancel/complete, lane reassignment, contact links, internal notes, activity records, recurring/one-time lane blocks, exceptions, special-date hours and owner-editable settings.
-- New storage: `reservation_settings`, `lane_reservations`, `lane_occupancy`, `lane_schedule_blocks`, `reservation_date_hours`, `reservation_audit`. Seasonal schedules gain `starts_on`/`ends_on`; expired schedules are hidden publicly without deleting them.
-- Pending and confirmed reservations hold lanes. Other statuses release them. Every booking and scheduling RPC locks the same transaction key; overlap is additionally prevented by a lane/time-range exclusion constraint. Direct client writes are revoked, staff RPCs check roles, and public reads never expose customer records.
-- Configurable 1–5 game defaults, exact provisional per-lane ranges, longest-lane duration, upper/lower estimate choice, buffers, weekly windows, advance limits and lead time.
+- `/book` is telephone-only with the verified number and event/rental links. The retired ordinary customer booking form and public submission wrapper are removed; anonymous regular booking writes are denied.
+- `/admin` opens the reservation book: Add Reservation → booking type → essential details → review → Save Reservation, with a visible success message. Regular bookings need no email, use automatic lane assignment and allow adjusted duration.
+- Today/day/week/upcoming views, date navigation, six-lane schedule, availability at a selected time, status filters, contact links, changes/cancellations, lane closures, recurring blocks, special-date hours and configurable estimates are retained.
+- Special events have separate inquiry/tentative/confirmed/cancelled states, optional email and facility notes. Only staff confirmation with lanes creates occupancy; changing or cancelling the inquiry updates its linked reservation transactionally. Public event requests remain inquiries.
+- All reservation writes share transaction locking and lane-range exclusion protection. Staff roles and accounts are unchanged; internal schedules and customer details remain private.
 
 ## Verification
-- 17 duration/allocation tests plus 10 isolated database integration tests and 10 existing login/pricing tests passed (37 total).
-- Database integration tests apply the actual migrations to a disposable PostgreSQL instance, including simultaneous attempts for the last lane, full duration, partial capacity, recurring/maintenance blocks, date-hours override, privacy/grants, invalid inputs, staff reassignment/cancellation and inquiry separation.
-- Real hosted staff browser flow: reservation created and read back, cancelled and read back; lane block created and removed. Separate inquiry submitted successfully. Clearly labelled test records removed afterwards.
-- Public disabled state and signed-in staff schedule/editor checked in the browser. Public enabled booking success against the hosted database remains intentionally unverified: reservations have not been enabled before owner review.
-- The isolated database uses a minimal auth helper; hosted account/role permissions remain the existing Cloud policies and are additionally checked by RPC. No accounts or existing roles were changed.
+- 45 tests passed: 21 duration/allocation/schedule tests, 14 isolated database tests, four staff-auth tests and six existing menu/order-rule tests (no online ordering UI was restored).
+- Isolated tests cover simultaneous last-lane attempts, overlap, lane closures, privacy, no anonymous regular bookings, optional staff email, adjusted duration, inquiry creation/confirmation/rescheduling/cancellation and released occupancy.
+- Signed-in browser checks verified regular booking creation, review, success and read-back, cancellation and a meeting-room inquiry saved/read back. The two explicitly labelled test records and related reservation audit entries were removed.
+- Desktop/mobile layouts, native date/time controls, telephone dialler link and staff form interactions checked; no browser runtime errors observed. No deployment, account or provider changes.
 
 ## Owner setup required
-Online reservations remain **off**. Review bookable windows (initially taken from the verified public bowling hours), league blocks, holidays, private events, estimates, buffers and approval workflow before enabling. Display hours and structured booking windows are separate because free-text display hours are not safe to parse; keep them synchronized when changing operating schedules. Special-date booking windows do not automatically overwrite public display wording; use the existing Hours/Announcements editor for visitor notices.
-No reservation email/text provider or newsletter is integrated. On-screen results and the staff queue work without email. A future provider needs verified sender identity, delivery handling, consent/unsubscribe for newsletters and authorized staff notifications. No paid service was added.
+Public regular reservations are permanently telephone-only, not a feature awaiting activation. Owner review of bookable windows, league blocks, holidays, special dates, estimates and buffers remains required for staff scheduling. Public display hours and structured booking windows remain separate; keep them synchronized when changing hours.
+No reservation email/text provider or newsletter is integrated. No paid service was added.
 
 ## External hosting
 Current React/TanStack Start SSR app uses the Lovable Vite configuration and Cloudflare-oriented Nitro target; unchanged to preserve deployment. GoDaddy requires a separately configured Node target, supported Node hosting, startup/reverse proxy/HTTPS, then actual hosting tests. It is not verified ready for GoDaddy.

@@ -9,7 +9,7 @@
 - [x] Replace public regular booking form with telephone booking and special-event links; disable public ordinary reservation writes.
 - [x] Simplify staff booking types, essential details, review/save and visible success; add staff-managed special inquiries.
 - [x] Show daily/weekly/upcoming reservations and event inquiries together while preserving their separate records.
-- [ ] Verify six-lane conflicts, staff permissions, changes/cancellations, accessibility and existing content.
+- [x] Verify six-lane conflicts, staff permissions, changes/cancellations, accessibility and existing content; 45 tests and signed-in save/read-back checks passed.
 - [ ] Owner review of booking hours, estimates, league blocks and special dates remains required.
 
 # Final staff login
