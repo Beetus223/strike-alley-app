@@ -17,6 +17,8 @@ export type Database = {
       announcements: {
         Row: {
           created_at: string
+          email_marked_sent_at: string | null
+          email_status: string
           ends_on: string | null
           featured: boolean
           id: string
@@ -30,6 +32,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          email_marked_sent_at?: string | null
+          email_status?: string
           ends_on?: string | null
           featured?: boolean
           id?: string
@@ -43,6 +47,8 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          email_marked_sent_at?: string | null
+          email_status?: string
           ends_on?: string | null
           featured?: boolean
           id?: string
