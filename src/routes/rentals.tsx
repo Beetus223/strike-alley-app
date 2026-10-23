@@ -11,12 +11,12 @@ export const Route = createFileRoute("/rentals")({
       {
         name: "description",
         content:
-          "Rent single lanes, the meeting room or the whole six-lane house in Vegreville, AB for fundraisers, staff events and school groups.",
+          "Call Vegreville Bowling Lanes to discuss verified rental options for fundraisers, staff events and school groups.",
       },
       { property: "og:title", content: "Lane & Facility Rentals | Vegreville Bowling Lanes" },
       {
         property: "og:description",
-        content: "Single lanes, the meeting room, or all six lanes for your group event.",
+        content: "Discuss group-event rental options with Vegreville Bowling Lanes.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

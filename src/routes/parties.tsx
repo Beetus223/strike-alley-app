@@ -116,6 +116,7 @@ function PartiesPage() {
                 {p.capacity}
               </p>
 
+              {p.description && <p className="mt-3 text-muted-foreground">{p.description}</p>}
               <ul className="mt-5 space-y-2.5 text-sm">
                 {p.includes.map((i) => (
                   <li key={i} className="flex gap-2">

@@ -18,7 +18,7 @@
   {
     "key": "home.003",
     "page": "home",
-    "label": "Vegreville's local place for bowling, leagues, parties and family fun.",
+    "label": "Main heading",
     "value": "Vegreville's local place for bowling, leagues, parties and family fun.",
     "kind": "text",
     "protected": false
@@ -26,7 +26,7 @@
   {
     "key": "home.004",
     "page": "home",
-    "label": "We've been rolling five pins on 50 Street for over sixty years. Come b",
+    "label": "Introductory paragraph",
     "value": "We've been rolling five pins on 50 Street for over sixty years. Come by for an afternoon with the kids, a league night with friends, or a party we set up for you.",
     "kind": "text",
     "protected": false
@@ -34,7 +34,7 @@
   {
     "key": "home.005",
     "page": "home",
-    "label": "Book a lane",
+    "label": "Main call button label",
     "value": "Book a lane",
     "kind": "text",
     "protected": false
@@ -890,7 +890,7 @@
   {
     "key": "parties.004",
     "page": "parties",
-    "label": "All ages welcome. Let's celebrate!",
+    "label": "Page heading",
     "value": "All ages welcome. Let's celebrate!",
     "kind": "text",
     "protected": false
@@ -930,7 +930,7 @@
   {
     "key": "parties.009",
     "page": "parties",
-    "label": "Three great ways to celebrate. Each package includes bowling, shoe ren",
+    "label": "Birthday packages introduction",
     "value": "Three great ways to celebrate. Each package includes bowling, shoe rental, drinks, and more.",
     "kind": "text-attribute",
     "protected": false
