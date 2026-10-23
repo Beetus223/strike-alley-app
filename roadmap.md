@@ -1,11 +1,11 @@
 # Website content management expansion
-- [ ] Add local/phone photo selection with safe uploads and existing draft/publish controls.
-- [ ] Audit and fill routine content editing gaps across every public page; verify owner flows and report remaining restrictions.
+- [x] Add local/phone photo selection with safe private uploads and existing draft/publish controls; owner upload/private draft/public photo rendering verified.
+- [x] Audit every public photo surface: all six fixed photos are editable; event and announcement record editors with photo selection are also available inside Manage Website. Layout and core 5-pin facts remain developer-managed.
 - [x] Inventory public pages, existing staff controls, stored content and permissions; present a safe implementation plan.
 - [x] Extend the existing content system for page text, central contact details, media, telephone actions and structured packages.
 - [x] Expand simple staff editing, preview, visibility, validation and non-destructive archiving while preserving existing layouts.
 - [x] Verify drafts/publishing, offerings, existing saves, anonymous restrictions and telephone links; record remaining coverage limits in WEBSITE-MANAGEMENT.md.
-- [ ] Direct photo uploads require an owner/admin decision on the workspace public-storage restriction; existing photo selection and HTTPS links work.
+- [x] Device photo uploads use private storage and published-reference access without changing the workspace public-storage restriction.
 
 # Website refinement and six-lane reservations
 - [x] Inspect existing bookings, schedules, access policies and hosting dependencies; present the implementation plan.

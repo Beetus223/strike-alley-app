@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useServerFn } from '@tanstack/react-start';
 import { Eye, Save, Send, RotateCcw } from 'lucide-react';
@@ -14,7 +14,7 @@ import { WEBSITE_FIELDS, pageNames, defaults, validateField, safeDestinations } 
 import { saveWebsiteDraft } from '@/lib/website-content.functions';
 import { PhotoPicker, PhotoPreview } from './PhotoPicker';
 
-export function WebsiteEditor(){
+export function WebsiteEditor({ eventEditor, announcementEditor }: { eventEditor?: ReactNode; announcementEditor?: ReactNode }){
  const qc=useQueryClient();const save=useServerFn(saveWebsiteDraft);
  const [filter,setFilter]=useState('');
  const [uploading,setUploading]=useState(false);
@@ -34,5 +34,6 @@ export function WebsiteEditor(){
  {error&&<p role="alert" className="text-destructive">{error}</p>}{message&&<p role="status" className="font-medium text-primary">{message}</p>}
  <div className="sticky bottom-0 flex flex-wrap gap-3 border-t border-border bg-background py-4"><Button type="submit" disabled={busy||uploading||published.isPending||draft.isPending||published.isError||draft.isError}><Save/>{busy?'Saving…':'Save Draft'}</Button><Button type="button" variant="secondary" onClick={()=>setPreview(true)}><Eye/>Preview</Button><Button type="button" onClick={()=>void submit(true)} disabled={busy||uploading||published.isPending||draft.isPending||published.isError||draft.isError}><Send/>Publish Changes</Button><Button type="button" variant="outline" onClick={()=>{if(confirm('Discard unsaved changes?')){setValues({});setError('');setMessage('');}}}><RotateCcw/>Cancel</Button></div></form>
  <Dialog open={preview} onOpenChange={setPreview}><DialogContent className="max-h-[85vh] max-w-3xl overflow-y-auto"><DialogHeader><DialogTitle>{pageNames[page]} — Preview</DialogTitle></DialogHeader><div className="space-y-5">{fields.filter(f=>f.kind!=='boolean').map(f=><div key={f.key}><p className="mb-1 text-xs text-muted-foreground">{f.label}</p>{f.kind==='image'?<PhotoPreview value={value(f.key)} label={f.label}/>:<p className="whitespace-pre-line">{value(f.key)}</p>}</div>)}</div><Button onClick={()=>setPreview(false)}>Close Preview</Button></DialogContent></Dialog>
+ {page==='events'&&eventEditor}{page==='announcements'&&announcementEditor}
  </div>;
 }

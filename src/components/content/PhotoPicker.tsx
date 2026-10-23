@@ -44,7 +44,7 @@ export function PhotoPicker({ value, onChange, label, id, name, onBusyChange }: 
   </div>;
 }
 
-export function PhotoFormField({ defaultValue, label }: { defaultValue?: string | null; label: string }) {
+export function PhotoFormField({ defaultValue, label }: { defaultValue?: string | null | undefined; label: string }) {
   const [value, setValue] = useState(defaultValue ?? '');
   const [busy, setBusy] = useState(false);
   const container = useRef<HTMLDivElement>(null);

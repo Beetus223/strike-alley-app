@@ -131,7 +131,7 @@ function AdminPage() {
             <TabsTrigger value="menu">Snack Bar Menu</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
           </TabsList>
-          <TabsContent value="website" className="mt-6"><WebsiteEditor /></TabsContent>
+          <TabsContent value="website" className="mt-6"><WebsiteEditor eventEditor={<EventsPanel/>} announcementEditor={<AnnouncementsPanel/>}/></TabsContent>
           <TabsContent value="packages" className="mt-6"><OfferingEditor /></TabsContent>
           <TabsContent value="events" className="mt-6">
             <EventsPanel />
