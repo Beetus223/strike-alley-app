@@ -16,6 +16,8 @@ const emptyItem = { category: "", name: "", description: "", price: "", image_ur
 
 export function MenuEditor() {
   const qc = useQueryClient();
+  const [busy,setBusy]=useState(false);
+  const [feedback,setFeedback]=useState("");
   const [showArchived, setShowArchived] = useState(false);
   const { data: items } = useQuery({
     queryKey: ["kitchen-menu"],
@@ -40,11 +42,14 @@ export function MenuEditor() {
   };
 
   async function save() {
+    if(!editing || busy)return;
+    setFeedback("");
     const cents = parseDollarsToCents(form.price);
     if (!form.name.trim() || !form.category.trim() || cents === null) {
       toast.error("Name, category and a valid price are required.");
       return;
     }
+    if(form.image_url && !/^https:\/\//.test(form.image_url)){toast.error("Use a secure https image link.");return;}
     const cat = form.category.trim();
     const row = {
       category: cat,
@@ -54,15 +59,18 @@ export function MenuEditor() {
       price_cents: cents,
       image_url: form.image_url.trim() || null,
     };
+    setBusy(true);
     const { error } =
       editing === "new"
         ? await supabase.from("menu_items").insert({ ...row, sort_order: (items?.length ?? 0) + 1 })
-        : await supabase.from("menu_items").update(row).eq("id", editing!);
+        : await supabase.from("menu_items").update(row).eq("id", editing);
+    setBusy(false);
     if (error) {
       toast.error(error.message);
       return;
     }
     toast.success("Menu saved");
+    setFeedback("Menu saved. The public menu is updated.");
     setEditing(null);
     refresh();
   }
@@ -70,6 +78,7 @@ export function MenuEditor() {
   async function patch(id: string, p: Partial<MenuItemRow>) {
     const { error } = await supabase.from("menu_items").update(p).eq("id", id);
     if (error) toast.error(error.message);
+    else setFeedback("Menu updated.");
     refresh();
   }
 
@@ -77,6 +86,7 @@ export function MenuEditor() {
 
   return (
     <div className="mt-4 space-y-4">
+      {feedback&&<p role="status" className="text-primary">{feedback}</p>}
       <div className="flex flex-wrap items-center gap-4">
         <Button
           onClick={() => {
@@ -119,7 +129,7 @@ export function MenuEditor() {
             <Textarea id="m-desc" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           </div>
           <div className="flex gap-2 sm:col-span-2">
-            <Button onClick={save}>Save</Button>
+            <Button onClick={save} disabled={busy}>{busy?"Saving…":"Save Changes"}</Button>
             <Button variant="outline" onClick={() => setEditing(null)}>
               Cancel
             </Button>
@@ -154,7 +164,7 @@ export function MenuEditor() {
             >
               Edit
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => patch(i.id, { is_archived: !i.is_archived })}>
+            <Button size="sm" variant="ghost" onClick={() => {if(confirm(`${i.is_archived ? "Restore" : "Archive"} “${i.name}”?`))void patch(i.id, { is_archived: !i.is_archived });}}>
               {i.is_archived ? "Restore" : "Archive"}
             </Button>
           </div>

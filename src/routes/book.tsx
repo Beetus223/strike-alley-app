@@ -1,3 +1,4 @@
+import { useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, Section } from "@/components/site/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -24,12 +25,16 @@ export const Route = createFileRoute("/book")({
   component: BookPage,
 });
 function BookPage() {
+  const { text, visible } = useWebsiteContent();
+  const CENTRE = useBusiness();
+
+
   return (
     <>
       <PageHeader
-        eyebrow="Call to book a lane"
-        title="Ready to go bowling?"
-        intro="Give us a call and we’ll help you find a time that works for you! Whether you’re planning a casual game with friends or a family outing, our team will be happy to help."
+        eyebrow={text("book.001", "Call to book a lane")}
+        title={text("book.002", "Ready to go bowling?")}
+        intro={text("book.003", "Give us a call and we’ll help you find a time that works for you! Whether you’re planning a casual game with friends or a family outing, our team will be happy to help.")}
       >
         <a
           className="mb-5 block font-display text-4xl text-primary"
@@ -37,32 +42,23 @@ function BookPage() {
         >
           {CENTRE.phone}
         </a>
-        <Button asChild size="lg" className="min-h-14 w-full sm:w-auto">
+        <Button hidden={!visible("book.actions_visible")} asChild size="lg" className="min-h-14 w-full sm:w-auto">
           <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>
             <Phone />
-            Call Now
-          </a>
+            {text("book.004", "Call Now")}</a>
         </Button>
       </PageHeader>
       <Section>
-        <h2 className="text-3xl">Planning Something Special?</h2>
+        <h2 className="text-3xl">{text("book.005", "Planning Something Special?")}</h2>
         <p className="mt-4 max-w-3xl leading-relaxed text-muted-foreground">
-          From birthday celebrations to group outings, we’re happy to help you plan your visit. Give us a call to discuss your plans, ask questions, and find the best option for your group.
-        </p>
+          {text("book.006", "From birthday celebrations to group outings, we’re happy to help you plan your visit. Give us a call to discuss your plans, ask questions, and find the best option for your group.")}</p>
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { title: "Birthday Parties & Celebrations", description: "Make your next birthday or special occasion memorable with a fun bowling outing! Contact our team to discuss your plans, group size, and available options." },
-            { title: "Group Bookings & Fundraisers", description: "Planning a group outing, school activity, community gathering, or fundraiser? Get in touch with us to discuss your group’s needs and explore the available arrangements." },
-            { title: "Business & Corporate Events", description: "Bring your team together for a relaxed and enjoyable bowling experience. Contact us to discuss company outings, team-building events, and other group activities." },
-            { title: "Private Bowling Alley Rentals", description: "Looking for a more private bowling experience for your group or event? Call us to discuss your requirements and find out what arrangements may be available." },
-            { title: "Meeting Room Rentals", description: "Need a space for a meeting or gathering? Contact our team to ask about meeting-room availability and discuss your requirements." },
-            { title: "Other Special Events", description: "Have another occasion or a unique idea in mind? We’d love to hear about it. Give us a call and we’ll discuss how we may be able to help." },
-          ].map((item) => (
+          {Array.from({length:6},(_,i)=>({title:text(`book.event${i}.title`),description:text(`book.event${i}.description`),shown:visible(`book.event${i}.visible`)})).filter(item=>item.shown).map((item) => (
             <article key={item.title} className="card-soft flex flex-col rounded-lg p-6">
               <h3 className="text-2xl">{item.title}</h3>
               <p className="mt-3 mb-6 leading-relaxed text-muted-foreground">{item.description}</p>
-              <Button asChild variant="outline" className="mt-auto min-h-12 h-auto whitespace-normal py-3">
-                <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}><Phone className="shrink-0" />Call to Discuss Your Event</a>
+              <Button hidden={!visible("book.actions_visible")} asChild variant="outline" className="mt-auto min-h-12 h-auto whitespace-normal py-3">
+                <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}><Phone className="shrink-0" />{text("book.007", "Call to Discuss Your Event")}</a>
               </Button>
             </article>
           ))}

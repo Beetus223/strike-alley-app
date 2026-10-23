@@ -92,6 +92,27 @@
       "when": 1792780482581,
       "tag": "0012_staff_event_bookings",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792781777176,
+      "tag": "0013_website_content_management",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792782079161,
+      "tag": "0014_content_validation_and_special_hours",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1792782212072,
+      "tag": "0015_allow_existing_website_asset_links",
+      "breakpoints": true
     }
   ]
 }

@@ -1,0 +1,1943 @@
+[
+  {
+    "key": "home.001",
+    "page": "home",
+    "label": "The wooden lanes and pinsetters at Vegreville Bowling Centre — alternative text",
+    "value": "The wooden lanes and pinsetters at Vegreville Bowling Centre",
+    "kind": "alt",
+    "protected": false
+  },
+  {
+    "key": "home.002",
+    "page": "home",
+    "label": "Vegreville, Alberta · Six 5-pin lanes",
+    "value": "Vegreville, Alberta · Six 5-pin lanes",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.003",
+    "page": "home",
+    "label": "Vegreville's local place for bowling, leagues, parties and family fun.",
+    "value": "Vegreville's local place for bowling, leagues, parties and family fun.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.004",
+    "page": "home",
+    "label": "We've been rolling five pins on 50 Street for over sixty years. Come b",
+    "value": "We've been rolling five pins on 50 Street for over sixty years. Come by for an afternoon with the kids, a league night with friends, or a party we set up for you.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.005",
+    "page": "home",
+    "label": "Book a lane",
+    "value": "Book a lane",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.006",
+    "page": "home",
+    "label": "View hours",
+    "value": "View hours",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.007",
+    "page": "home",
+    "label": "See prices",
+    "value": "See prices",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.008",
+    "page": "home",
+    "label": "Everything under one roof",
+    "value": "Everything under one roof",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "home.009",
+    "page": "home",
+    "label": "Six lanes, a snack bar and room for the whole crew — whatever you're p",
+    "value": "Six lanes, a snack bar and room for the whole crew — whatever you're planning.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "home.010",
+    "page": "home",
+    "label": "An adult and a child bowling together at Vegreville Bowling Centre — alternative text",
+    "value": "An adult and a child bowling together at Vegreville Bowling Centre",
+    "kind": "alt",
+    "protected": false
+  },
+  {
+    "key": "home.011",
+    "page": "home",
+    "label": "New to the game?",
+    "value": "New to the game?",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.012",
+    "page": "home",
+    "label": "How 5-pin works",
+    "value": "How 5-pin works",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.013",
+    "page": "home",
+    "label": "Canadian 5-pin uses a small handheld ball with no finger holes, five p",
+    "value": "Canadian 5-pin uses a small handheld ball with no finger holes, five pins and three balls per frame. Pins score 2-3-5-3-2 from the outside in, so a full deck is 15 points and a perfect game is 450.",
+    "kind": "text",
+    "protected": true
+  },
+  {
+    "key": "home.014",
+    "page": "home",
+    "label": "Strike",
+    "value": "Strike",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.015",
+    "page": "home",
+    "label": "15 pins, plus your next two balls",
+    "value": "15 pins, plus your next two balls",
+    "kind": "text",
+    "protected": true
+  },
+  {
+    "key": "home.016",
+    "page": "home",
+    "label": "Spare",
+    "value": "Spare",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.017",
+    "page": "home",
+    "label": "15 pins, plus your next ball",
+    "value": "15 pins, plus your next ball",
+    "kind": "text",
+    "protected": true
+  },
+  {
+    "key": "home.018",
+    "page": "home",
+    "label": "Headpin",
+    "value": "Headpin",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.019",
+    "page": "home",
+    "label": "needed for a count — corner pins alone don't score",
+    "value": "needed for a count — corner pins alone don't score",
+    "kind": "text",
+    "protected": true
+  },
+  {
+    "key": "home.020",
+    "page": "home",
+    "label": "Game",
+    "value": "Game",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.021",
+    "page": "home",
+    "label": "10 frames, three balls each, lighter balls for every age",
+    "value": "10 frames, three balls each, lighter balls for every age",
+    "kind": "text",
+    "protected": true
+  },
+  {
+    "key": "home.022",
+    "page": "home",
+    "label": "Prices & lane info",
+    "value": "Prices & lane info",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.023",
+    "page": "home",
+    "label": "What's on this week",
+    "value": "What's on this week",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "home.024",
+    "page": "home",
+    "label": "Something different on the lanes most nights of the week.",
+    "value": "Something different on the lanes most nights of the week.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "home.025",
+    "page": "home",
+    "label": "See the full calendar",
+    "value": "See the full calendar",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.026",
+    "page": "home",
+    "label": "Glow bowling Fri & Sat",
+    "value": "Glow bowling Fri & Sat",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.027",
+    "page": "home",
+    "label": "Walk-in pricing",
+    "value": "Walk-in pricing",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "home.028",
+    "page": "home",
+    "label": "Taxes included. Cash, debit and tap accepted at the counter.",
+    "value": "Taxes included. Cash, debit and tap accepted at the counter.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "home.029",
+    "page": "home",
+    "label": "League nights",
+    "value": "League nights",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.030",
+    "page": "home",
+    "label": "Explore our leagues",
+    "value": "Explore our leagues",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.031",
+    "page": "home",
+    "label": "Bowlers in team shirts celebrating at the scoring table on league nigh — alternative text",
+    "value": "Bowlers in team shirts celebrating at the scoring table on league night",
+    "kind": "alt",
+    "protected": false
+  },
+  {
+    "key": "home.032",
+    "page": "home",
+    "label": "Find us",
+    "value": "Find us",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "home.033",
+    "page": "home",
+    "label": "Downtown Vegreville",
+    "value": "Downtown Vegreville",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.034",
+    "page": "home",
+    "label": "Free street parking out front, a level entrance and an accessible wash",
+    "value": "Free street parking out front, a level entrance and an accessible washroom. Call",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.035",
+    "page": "home",
+    "label": "if you need a hand getting set up.",
+    "value": "if you need a hand getting set up.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.036",
+    "page": "home",
+    "label": "Book a lane",
+    "value": "Book a lane",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.037",
+    "page": "home",
+    "label": "Contact & directions",
+    "value": "Contact & directions",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.038",
+    "page": "home",
+    "label": "Open today",
+    "value": "Open today",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.039",
+    "page": "home",
+    "label": "6 lanes",
+    "value": "6 lanes",
+    "kind": "text",
+    "protected": true
+  },
+  {
+    "key": "home.040",
+    "page": "home",
+    "label": "Glow bowling",
+    "value": "Glow bowling",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.041",
+    "page": "home",
+    "label": "Open bowling",
+    "value": "Open bowling",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.042",
+    "page": "home",
+    "label": "Drop in with the family or book ahead. Bumpers, lightweight balls and ",
+    "value": "Drop in with the family or book ahead. Bumpers, lightweight balls and ramps are always available at no extra cost.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.043",
+    "page": "home",
+    "label": "Prices & lane info",
+    "value": "Prices & lane info",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.044",
+    "page": "home",
+    "label": "Leagues",
+    "value": "Leagues",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.045",
+    "page": "home",
+    "label": "Four leagues run September through April, from Tuesday afternoon senio",
+    "value": "Four leagues run September through April, from Tuesday afternoon seniors to the Thursday men's classic. Spares are always welcome.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.046",
+    "page": "home",
+    "label": "Find your league",
+    "value": "Find your league",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.047",
+    "page": "home",
+    "label": "Birthday parties",
+    "value": "Birthday parties",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.048",
+    "page": "home",
+    "label": "Party packages",
+    "value": "Party packages",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.049",
+    "page": "home",
+    "label": "Group rentals",
+    "value": "Group rentals",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.050",
+    "page": "home",
+    "label": "Staff socials, school groups, fundraisers and team wind-ups. Take a fe",
+    "value": "Staff socials, school groups, fundraisers and team wind-ups. Take a few lanes or the whole six-lane house.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "home.051",
+    "page": "home",
+    "label": "Rental options",
+    "value": "Rental options",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.001",
+    "page": "about",
+    "label": "Family run since 1962",
+    "value": "Family run since 1962",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "about.002",
+    "page": "about",
+    "label": "About the lanes",
+    "value": "About the lanes",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "about.003",
+    "page": "about",
+    "label": "Three generations of Vegreville families have learned to bowl here. We",
+    "value": "Three generations of Vegreville families have learned to bowl here. We're still the same six lanes, just with better lighting and a much better burger.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "about.004",
+    "page": "about",
+    "label": "Our story",
+    "value": "Our story",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.005",
+    "page": "about",
+    "label": "Vegreville Bowling Lanes has been part of downtown since the early six",
+    "value": "Vegreville Bowling Lanes has been part of downtown since the early sixties, when pinsetters were teenagers earning a nickel a frame. Today the building does double duty: a competitive league house four nights a week, and the town's go-to spot for birthdays, first dates and rainy-Sunday family outings.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.006",
+    "page": "about",
+    "label": "We're proudly 5-pin — the Canadian game — and we coach it seriously. O",
+    "value": "We're proudly 5-pin — the Canadian game — and we coach it seriously. Our YBC program has sent bowlers to provincials nine years running.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.007",
+    "page": "about",
+    "label": "Milestones",
+    "value": "Milestones",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.008",
+    "page": "about",
+    "label": "1962",
+    "value": "1962",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.009",
+    "page": "about",
+    "label": "The lanes open on 50 Street with six hand-set 5-pin lanes.",
+    "value": "The lanes open on 50 Street with six hand-set 5-pin lanes.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.010",
+    "page": "about",
+    "label": "1978",
+    "value": "1978",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.011",
+    "page": "about",
+    "label": "Automatic pinsetters installed.",
+    "value": "Automatic pinsetters installed.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.012",
+    "page": "about",
+    "label": "1994",
+    "value": "1994",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.013",
+    "page": "about",
+    "label": "Youth Bowling Canada program starts on Saturday mornings.",
+    "value": "Youth Bowling Canada program starts on Saturday mornings.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.014",
+    "page": "about",
+    "label": "2011",
+    "value": "2011",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.015",
+    "page": "about",
+    "label": "New synthetic approaches, scoring screens and the snack bar remodel.",
+    "value": "New synthetic approaches, scoring screens and the snack bar remodel.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.016",
+    "page": "about",
+    "label": "2023",
+    "value": "2023",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "about.017",
+    "page": "about",
+    "label": "Glow bowling lighting and sound upgrade for Friday and Saturday nights",
+    "value": "Glow bowling lighting and sound upgrade for Friday and Saturday nights.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.001",
+    "page": "bowling",
+    "label": "Six lanes · Synthetic approach",
+    "value": "Six lanes · Synthetic approach",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "bowling.002",
+    "page": "bowling",
+    "label": "Bowling & Prices",
+    "value": "Bowling & Prices",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "bowling.003",
+    "page": "bowling",
+    "label": "Request a lane",
+    "value": "Request a lane",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.004",
+    "page": "bowling",
+    "label": "Rates",
+    "value": "Rates",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "bowling.005",
+    "page": "bowling",
+    "label": "Hourly rates are the better deal for groups of four or more. League an",
+    "value": "Hourly rates are the better deal for groups of four or more. League and school-group rates are quoted separately — call",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.006",
+    "page": "bowling",
+    "label": "How 5-pin scoring works",
+    "value": "How 5-pin scoring works",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.007",
+    "page": "bowling",
+    "label": "Five pins stand in a V. Knock them all down and you score 15 — the hig",
+    "value": "Five pins stand in a V. Knock them all down and you score 15 — the highest single-frame count in the game. You get three balls per frame, and ten frames per game.",
+    "kind": "text",
+    "protected": true
+  },
+  {
+    "key": "bowling.008",
+    "page": "bowling",
+    "label": "Good to know",
+    "value": "Good to know",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.009",
+    "page": "bowling",
+    "label": "Perfect game:",
+    "value": "Perfect game:",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.010",
+    "page": "bowling",
+    "label": "450. The house record is 398, set by Dwayne Kozak in 2019.",
+    "value": "450. The house record is 398, set by Dwayne Kozak in 2019.",
+    "kind": "text",
+    "protected": true
+  },
+  {
+    "key": "bowling.011",
+    "page": "bowling",
+    "label": "Balls:",
+    "value": "Balls:",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.012",
+    "page": "bowling",
+    "label": "5-pin balls fit in your palm — no finger holes and no weight classes, ",
+    "value": "5-pin balls fit in your palm — no finger holes and no weight classes, so kids and adults use the same ball.",
+    "kind": "text",
+    "protected": true
+  },
+  {
+    "key": "bowling.013",
+    "page": "bowling",
+    "label": "Bumpers & ramps:",
+    "value": "Bumpers & ramps:",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.014",
+    "page": "bowling",
+    "label": "free on any lane, just ask at the counter.",
+    "value": "free on any lane, just ask at the counter.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.015",
+    "page": "bowling",
+    "label": "Accessibility:",
+    "value": "Accessibility:",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.016",
+    "page": "bowling",
+    "label": "step-free entry from the 50 Street parking lot, accessible washroom, a",
+    "value": "step-free entry from the 50 Street parking lot, accessible washroom, and lanes 1–2 have wheelchair-height seating.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.017",
+    "page": "bowling",
+    "label": "Socks required",
+    "value": "Socks required",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "bowling.018",
+    "page": "bowling",
+    "label": "with rental shoes — we sell them for $2 if you forget.",
+    "value": "with rental shoes — ask at the counter if you need socks.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.001",
+    "page": "glow",
+    "label": "Friday & Saturday · 7 PM – 10 PM",
+    "value": "Friday & Saturday · 7 PM – 10 PM",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.002",
+    "page": "glow",
+    "label": "Glow Bowling",
+    "value": "Glow Bowling",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.003",
+    "page": "glow",
+    "label": "Lights down, blacklights up. Two nights a week the lanes light up in n",
+    "value": "Lights down, blacklights up. Two nights a week the lanes light up in neon and the music comes on — the loudest, brightest thing we do all week.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.004",
+    "page": "glow",
+    "label": "Book a glow lane",
+    "value": "Book a glow lane",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.005",
+    "page": "glow",
+    "label": "See all events",
+    "value": "See all events",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.006",
+    "page": "glow",
+    "label": "Bowling lanes lit with pink and blue neon during a glow bowling night — alternative text",
+    "value": "Bowling lanes lit with pink and blue neon during a glow bowling night",
+    "kind": "alt",
+    "protected": false
+  },
+  {
+    "key": "glow.007",
+    "page": "glow",
+    "label": "What a glow night looks like",
+    "value": "What a glow night looks like",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.008",
+    "page": "glow",
+    "label": "Lanes go quickly after 7 PM",
+    "value": "Lanes go quickly after 7 PM",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.009",
+    "page": "glow",
+    "label": "Reserve ahead, or call",
+    "value": "Reserve ahead, or call",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.010",
+    "page": "glow",
+    "label": "and we'll hold one for you.",
+    "value": "and we'll hold one for you.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.011",
+    "page": "glow",
+    "label": "Book a glow lane",
+    "value": "Book a glow lane",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.012",
+    "page": "glow",
+    "label": "Per person, per game",
+    "value": "Per person, per game",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.013",
+    "page": "glow",
+    "label": "Lane capacity",
+    "value": "Lane capacity",
+    "kind": "text",
+    "protected": true
+  },
+  {
+    "key": "glow.014",
+    "page": "glow",
+    "label": "Start time",
+    "value": "Start time",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.015",
+    "page": "glow",
+    "label": "Blacklights on all six lanes",
+    "value": "Blacklights on all six lanes",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.016",
+    "page": "glow",
+    "label": "The whole house goes dark at 7 PM. Glowing pins, glowing balls and the",
+    "value": "The whole house goes dark at 7 PM. Glowing pins, glowing balls and the house lights down until close.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.017",
+    "page": "glow",
+    "label": "Music you can actually hear",
+    "value": "Music you can actually hear",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.018",
+    "page": "glow",
+    "label": "A proper sound system with requests taken at the counter. Nothing too ",
+    "value": "A proper sound system with requests taken at the counter. Nothing too loud for younger bowlers.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.019",
+    "page": "glow",
+    "label": "Late snack bar",
+    "value": "Late snack bar",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.020",
+    "page": "glow",
+    "label": "The kitchen stays open until 11 PM on glow nights — nachos, fries, mil",
+    "value": "The kitchen stays open until 11 PM on glow nights — nachos, fries, milkshakes and pitchers of pop.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.021",
+    "page": "glow",
+    "label": "Great for groups",
+    "value": "Great for groups",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "glow.022",
+    "page": "glow",
+    "label": "Teen birthdays, staff socials and grad parties. Book two or more lanes",
+    "value": "Teen birthdays, staff socials and grad parties. Book two or more lanes and we'll keep you together.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.001",
+    "page": "parties",
+    "label": "Birthday cake celebration with party guests at Vegreville Bowling Lane — alternative text",
+    "value": "Birthday cake celebration with party guests at Vegreville Bowling Lanes",
+    "kind": "alt",
+    "protected": false
+  },
+  {
+    "key": "parties.002",
+    "page": "parties",
+    "label": "Special Packaging",
+    "value": "Special Packaging",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.003",
+    "page": "parties",
+    "label": "Parties & Group Bookings",
+    "value": "Parties & Group Bookings",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.004",
+    "page": "parties",
+    "label": "All ages welcome. Let's celebrate!",
+    "value": "All ages welcome. Let's celebrate!",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.005",
+    "page": "parties",
+    "label": "Parties & Group Bookings of all kinds are our specialty!",
+    "value": "Parties & Group Bookings of all kinds are our specialty!",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.006",
+    "page": "parties",
+    "label": "We welcome birthday parties, family gatherings, sports teams, company ",
+    "value": "We welcome birthday parties, family gatherings, sports teams, company events, team building, Christmas parties and celebrations of all kinds.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.007",
+    "page": "parties",
+    "label": "Request a party date",
+    "value": "Call to Request a Party",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.008",
+    "page": "parties",
+    "label": "Birthday Packages",
+    "value": "Birthday Packages",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "parties.009",
+    "page": "parties",
+    "label": "Three great ways to celebrate. Each package includes bowling, shoe ren",
+    "value": "Three great ways to celebrate. Each package includes bowling, shoe rental, drinks, and more.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "parties.010",
+    "page": "parties",
+    "label": "Book",
+    "value": "Call to Book",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.011",
+    "page": "parties",
+    "label": "The 6-lane private party option includes:",
+    "value": "The 6-lane private party option includes:",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.012",
+    "page": "parties",
+    "label": "Not planning a birthday party?",
+    "value": "Not planning a birthday party?",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.013",
+    "page": "parties",
+    "label": "Other Events & Group Bookings",
+    "value": "Other Events & Group Bookings",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.014",
+    "page": "parties",
+    "label": "No problem!",
+    "value": "No problem!",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.015",
+    "page": "parties",
+    "label": "We welcome adult parties, Christmas parties, family gatherings, sports",
+    "value": "We welcome adult parties, Christmas parties, family gatherings, sports teams, company events, team-building events, group celebrations, and other special events.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.016",
+    "page": "parties",
+    "label": "Other events can be custom-made to best fit your group and party needs",
+    "value": "Other events can be custom-made to best fit your group and party needs. We can also cater your event in-house with a custom menu to fit your preferences.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.017",
+    "page": "parties",
+    "label": "Request a party date",
+    "value": "Call to Request a Party",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.018",
+    "page": "parties",
+    "label": "Ready to Plan Your Party?",
+    "value": "Ready to Plan Your Party?",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.019",
+    "page": "parties",
+    "label": "Let's get your group together, hit the lanes, and make it a celebratio",
+    "value": "Let's get your group together, hit the lanes, and make it a celebration to remember!",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.020",
+    "page": "parties",
+    "label": "Use the \"Request a party date\" button to get started.",
+    "value": "Call us to discuss your preferred date and arrangements.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "parties.021",
+    "page": "parties",
+    "label": "Request a party date",
+    "value": "Call to Request a Party",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "rentals.001",
+    "page": "rentals",
+    "label": "Fundraisers · Schools · Staff events",
+    "value": "Fundraisers · Schools · Staff events",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "rentals.002",
+    "page": "rentals",
+    "label": "Rentals",
+    "value": "Rentals",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "rentals.003",
+    "page": "rentals",
+    "label": "Request a rental",
+    "value": "Call to Discuss a Rental",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "rentals.004",
+    "page": "rentals",
+    "label": "Rental terms",
+    "value": "Rental terms",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "rentals.005",
+    "page": "rentals",
+    "label": "50% deposit due at booking, balance on the day.",
+    "value": "50% deposit due at booking, balance on the day.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "rentals.006",
+    "page": "rentals",
+    "label": "Cancellations more than 7 days out are fully refundable.",
+    "value": "Cancellations more than 7 days out are fully refundable.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "rentals.007",
+    "page": "rentals",
+    "label": "Outside food is limited to cake and candy; the snack bar handles the r",
+    "value": "Outside food is limited to cake and candy; the snack bar handles the rest.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "rentals.008",
+    "page": "rentals",
+    "label": "Fundraiser rates available for registered Vegreville-area non-profits.",
+    "value": "Fundraiser rates available for registered Vegreville-area non-profits.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "rentals.009",
+    "page": "rentals",
+    "label": "Questions? Call",
+    "value": "Questions? Call",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "rentals.010",
+    "page": "rentals",
+    "label": "or email",
+    "value": "or email",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "leagues.001",
+    "page": "leagues",
+    "label": "September – April",
+    "value": "September – April",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "leagues.002",
+    "page": "leagues",
+    "label": "Leagues",
+    "value": "Leagues",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "leagues.003",
+    "page": "leagues",
+    "label": "Four leagues, every skill level, handicap scoring so a first-year bowl",
+    "value": "Four leagues, every skill level, handicap scoring so a first-year bowler can beat a 220 average. Spares are always welcome — put your name on the spare list and we'll call you.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "leagues.004",
+    "page": "leagues",
+    "label": "Ask about a spot",
+    "value": "Ask about a spot",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "leagues.005",
+    "page": "leagues",
+    "label": "How averages work here",
+    "value": "How averages work here",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "leagues.006",
+    "page": "leagues",
+    "label": "Your average is your total pinfall divided by games bowled, recalculat",
+    "value": "Your average is your total pinfall divided by games bowled, recalculated after every league night. Handicap is a percentage of the difference between your average and the league base — for Monday Mixed that's 80% of 200. Bowl 15 games and your average is locked in as established for tournament entry.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "leagues.007",
+    "page": "leagues",
+    "label": "Weekly scores and standings are posted at the counter on league nights",
+    "value": "Weekly scores and standings are posted at the counter on league nights.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "menu.001",
+    "page": "menu",
+    "label": "Take Out or Eat In",
+    "value": "Take Out or Eat In",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "menu.002",
+    "page": "menu",
+    "label": "Snack Bar",
+    "value": "Snack Bar",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "menu.003",
+    "page": "menu",
+    "label": "Pre-orders are accepted. Call ahead and we'll have your order ready wh",
+    "value": "Pre-orders are accepted. Call ahead and we'll have your order ready when you arrive.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "menu.004",
+    "page": "menu",
+    "label": "Pre-Orders Accepted",
+    "value": "Pre-Orders Accepted",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "menu.005",
+    "page": "menu",
+    "label": "Delicious Food for You!",
+    "value": "Delicious Food for You!",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "menu.006",
+    "page": "menu",
+    "label": "Brisket coming in September!",
+    "value": "Brisket coming in September!",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "menu.007",
+    "page": "menu",
+    "label": "Loaded gyro poutine fries with seasoned meat, tomatoes, cheese curds,  — alternative text",
+    "value": "Loaded gyro poutine fries with seasoned meat, tomatoes, cheese curds, and garlic sauce",
+    "kind": "alt",
+    "protected": false
+  },
+  {
+    "key": "menu.008",
+    "page": "menu",
+    "label": "Pre-order your food",
+    "value": "Pre-order your food",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "menu.009",
+    "page": "menu",
+    "label": "Give us a call and we'll have everything ready for your lane or take-o",
+    "value": "Give us a call and we'll have everything ready for your lane or take-out order.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "menu.010",
+    "page": "menu",
+    "label": "Gluten-free buns and vegetarian options are available — just ask. Part",
+    "value": "Gluten-free buns and vegetarian options are available — just ask. Party packages include food, so you don't need to order separately.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "events.001",
+    "page": "events",
+    "label": "Weekly & seasonal",
+    "value": "Weekly & seasonal",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "events.002",
+    "page": "events",
+    "label": "Events",
+    "value": "Events",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "events.003",
+    "page": "events",
+    "label": "From black-light Fridays to the Pysanka Open, there's usually somethin",
+    "value": "From black-light Fridays to the Pysanka Open, there's usually something happening on the lanes.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "events.004",
+    "page": "events",
+    "label": "Running your own event?",
+    "value": "Running your own event?",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "events.005",
+    "page": "events",
+    "label": "Fundraisers, staff nights, school groups and church groups all bowl he",
+    "value": "Fundraisers, staff nights, school groups and church groups all bowl here. Tell us your date and headcount and we'll build a quote.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "events.006",
+    "page": "events",
+    "label": "Send a booking request",
+    "value": "Send a booking request",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "announcements.001",
+    "page": "announcements",
+    "label": "News & notices",
+    "value": "News & notices",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "announcements.002",
+    "page": "announcements",
+    "label": "Announcements",
+    "value": "Announcements",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "announcements.003",
+    "page": "announcements",
+    "label": "Closures, special offers and important updates from the centre.",
+    "value": "Closures, special offers and important updates from the centre.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "announcements.004",
+    "page": "announcements",
+    "label": "Announcements couldn't load. Please refresh or call us.",
+    "value": "Announcements couldn't load. Please refresh or call us.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "announcements.005",
+    "page": "announcements",
+    "label": "No announcements right now.",
+    "value": "No announcements right now.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "announcements.006",
+    "page": "announcements",
+    "label": "Check our",
+    "value": "Check our",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "announcements.007",
+    "page": "announcements",
+    "label": "upcoming events",
+    "value": "upcoming events",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "announcements.008",
+    "page": "announcements",
+    "label": "hours",
+    "value": "hours",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "hours.001",
+    "page": "hours",
+    "label": "Plan your visit",
+    "value": "Plan your visit",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "hours.002",
+    "page": "hours",
+    "label": "Hours",
+    "value": "Hours",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "hours.003",
+    "page": "hours",
+    "label": "Regular hours, public bowling, food service and any special or seasona",
+    "value": "Regular hours, public bowling, food service and any special or seasonal hours.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "hours.004",
+    "page": "hours",
+    "label": "Book a lane",
+    "value": "Book a lane",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "hours.005",
+    "page": "hours",
+    "label": "Call",
+    "value": "Call",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "hours.006",
+    "page": "hours",
+    "label": "Hours can change for holidays and tournaments — check",
+    "value": "Hours can change for holidays and tournaments — check",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "hours.007",
+    "page": "hours",
+    "label": "announcements",
+    "value": "announcements",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "hours.008",
+    "page": "hours",
+    "label": "or call ahead.",
+    "value": "or call ahead.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "contact.001",
+    "page": "contact",
+    "label": "Downtown Vegreville",
+    "value": "Downtown Vegreville",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "contact.002",
+    "page": "contact",
+    "label": "Contact & Hours",
+    "value": "Contact & Hours",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "contact.003",
+    "page": "contact",
+    "label": "Call the counter during open hours — someone will pick up between fram",
+    "value": "Call the counter during open hours — someone will pick up between frames.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "contact.004",
+    "page": "contact",
+    "label": "Hours",
+    "value": "Hours",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "contact.005",
+    "page": "contact",
+    "label": "Hours shift during tournaments and holidays — check our Facebook page ",
+    "value": "Hours shift during tournaments and holidays — check our Facebook page or call ahead.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "contact.006",
+    "page": "contact",
+    "label": "Map to Vegreville Bowling Lanes",
+    "value": "Map to Vegreville Bowling Lanes",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "book.001",
+    "page": "book",
+    "label": "Call to book a lane",
+    "value": "Call to book a lane",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "book.002",
+    "page": "book",
+    "label": "Ready to go bowling?",
+    "value": "Ready to go bowling?",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "book.003",
+    "page": "book",
+    "label": "Give us a call and we’ll help you find a time that works for you! Whet",
+    "value": "Give us a call and we’ll help you find a time that works for you! Whether you’re planning a casual game with friends or a family outing, our team will be happy to help.",
+    "kind": "text-attribute",
+    "protected": false
+  },
+  {
+    "key": "book.004",
+    "page": "book",
+    "label": "Call Now",
+    "value": "Call Now",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "book.005",
+    "page": "book",
+    "label": "Planning Something Special?",
+    "value": "Planning Something Special?",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "book.006",
+    "page": "book",
+    "label": "From birthday celebrations to group outings, we’re happy to help you p",
+    "value": "From birthday celebrations to group outings, we’re happy to help you plan your visit. Give us a call to discuss your plans, ask questions, and find the best option for your group.",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "book.007",
+    "page": "book",
+    "label": "Call to Discuss Your Event",
+    "value": "Call to Discuss Your Event",
+    "kind": "text",
+    "protected": false
+  },
+  {
+    "key": "contact.phone",
+    "page": "contact",
+    "label": "Bowling phone",
+    "value": "(780) 632-2695",
+    "kind": "phone"
+  },
+  {
+    "key": "contact.snack_phone",
+    "page": "contact",
+    "label": "Snack bar phone",
+    "value": "780-632-7665",
+    "kind": "phone"
+  },
+  {
+    "key": "contact.name",
+    "page": "contact",
+    "label": "Business name",
+    "value": "Vegreville Bowling Lanes",
+    "kind": "text"
+  },
+  {
+    "key": "contact.tagline",
+    "page": "contact",
+    "label": "Tagline",
+    "value": "Five pins, five decades, one hometown alley.",
+    "kind": "text"
+  },
+  {
+    "key": "contact.address",
+    "page": "contact",
+    "label": "Address",
+    "value": "5026 50 Street, Vegreville, AB T9C 1R8",
+    "kind": "text"
+  },
+  {
+    "key": "contact.email",
+    "page": "contact",
+    "label": "Public email",
+    "value": "hello@vegrevillebowling.ca",
+    "kind": "email"
+  },
+  {
+    "key": "contact.mapQuery",
+    "page": "contact",
+    "label": "Map address",
+    "value": "5026 50 Street Vegreville AB",
+    "kind": "text"
+  },
+  {
+    "key": "contact.hours_note",
+    "page": "contact",
+    "label": "Reservation notice",
+    "value": "Walk-ins are welcome but not guaranteed. Reservations are recommended and guarantee your lane.",
+    "kind": "text"
+  },
+  {
+    "key": "rentals.intro",
+    "page": "rentals",
+    "label": "Introduction",
+    "value": "The whole building is available outside league hours. Monday is our quietest day and the easiest to book on short notice.",
+    "kind": "text"
+  },
+  {
+    "key": "bowling.intro",
+    "page": "bowling",
+    "label": "Introduction",
+    "value": "Every lane at Vegreville Bowling Lanes is set up for Canadian 5-pin, with automatic scoring, bumper rails on request and ramps for bowlers who need them.",
+    "kind": "text"
+  },
+  {
+    "key": "home.party_body",
+    "page": "home",
+    "label": "Birthday activity description",
+    "value": "Explore our birthday packages and call to plan your celebration.",
+    "kind": "text"
+  },
+  {
+    "key": "home.fact_open",
+    "page": "home",
+    "label": "Opening-hours quick fact",
+    "value": "10:30 AM – 10 PM",
+    "kind": "text"
+  },
+  {
+    "key": "home.fact_glow",
+    "page": "home",
+    "label": "Glow quick fact",
+    "value": "Fri & Sat, 7 PM",
+    "kind": "text"
+  },
+  {
+    "key": "glow.start",
+    "page": "glow",
+    "label": "Start time",
+    "value": "7 PM Fri & Sat",
+    "kind": "text"
+  },
+  {
+    "key": "parties.lanes_title",
+    "page": "parties",
+    "label": "Lane and seating heading",
+    "value": "Just Want to Book Lanes & Seating?",
+    "kind": "text"
+  },
+  {
+    "key": "parties.lanes_intro",
+    "page": "parties",
+    "label": "Lane and seating introduction",
+    "value": "You can also simply book the lanes and table-side seating for your group.",
+    "kind": "text"
+  },
+  {
+    "key": "parties.lanes_note",
+    "page": "parties",
+    "label": "Lane and seating note",
+    "value": "See additional options available to add to your party package.",
+    "kind": "text"
+  },
+  {
+    "key": "parties.lanes_features",
+    "page": "parties",
+    "label": "Private party inclusions",
+    "value": "6 lanes\nPool tables\nAir hockey table\nParty host\nTable-side party seating",
+    "kind": "list"
+  },
+  {
+    "key": "home.hero",
+    "page": "home",
+    "label": "Home main photo",
+    "value": "/__l5e/assets-v1/77c5e130-052c-4c14-9a83-a3d01a9216fb/hero-lanes-authentic.jpg",
+    "kind": "image"
+  },
+  {
+    "key": "home.how",
+    "page": "home",
+    "label": "Home bowling photo",
+    "value": "/__l5e/assets-v1/ac298ab6-bbfa-46cd-92bb-edc15e726fe1/how-5-pin-works.jpg",
+    "kind": "image"
+  },
+  {
+    "key": "home.league",
+    "page": "home",
+    "label": "Home league photo",
+    "value": "/__l5e/assets-v1/77143524-6c06-4b45-9769-8c1a9a0fee48/league-night.jpg",
+    "kind": "image"
+  },
+  {
+    "key": "parties.photo",
+    "page": "parties",
+    "label": "Party photo",
+    "value": "/__l5e/assets-v1/4d44198a-467c-44c2-90d7-b8e52575d900/party-details.png",
+    "kind": "image"
+  },
+  {
+    "key": "glow.photo",
+    "page": "glow",
+    "label": "Glow photo",
+    "value": "/__l5e/assets-v1/45f0419d-c1b3-47a6-a8fd-27bf7b04b7f5/neon-glow-bowling-alley.png",
+    "kind": "image"
+  },
+  {
+    "key": "menu.photo",
+    "page": "menu",
+    "label": "Snack bar photo",
+    "value": "/__l5e/assets-v1/ab76de02-0f8f-4b42-a076-064d87f58fde/loaded-gyro-poutine-fries.png",
+    "kind": "image"
+  },
+  {
+    "key": "book.event0.title",
+    "page": "book",
+    "label": "Event category",
+    "value": "Birthday Parties & Celebrations",
+    "kind": "text"
+  },
+  {
+    "key": "book.event0.description",
+    "page": "book",
+    "label": "Description",
+    "value": "Make your next birthday or special occasion memorable with a fun bowling outing! Contact our team to discuss your plans, group size, and available options.",
+    "kind": "text"
+  },
+  {
+    "key": "book.event0.visible",
+    "page": "book",
+    "label": "Show Birthday Parties & Celebrations",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "book.event1.title",
+    "page": "book",
+    "label": "Event category",
+    "value": "Group Bookings & Fundraisers",
+    "kind": "text"
+  },
+  {
+    "key": "book.event1.description",
+    "page": "book",
+    "label": "Description",
+    "value": "Planning a group outing, school activity, community gathering, or fundraiser? Get in touch with us to discuss your group’s needs and explore the available arrangements.",
+    "kind": "text"
+  },
+  {
+    "key": "book.event1.visible",
+    "page": "book",
+    "label": "Show Group Bookings & Fundraisers",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "book.event2.title",
+    "page": "book",
+    "label": "Event category",
+    "value": "Business & Corporate Events",
+    "kind": "text"
+  },
+  {
+    "key": "book.event2.description",
+    "page": "book",
+    "label": "Description",
+    "value": "Bring your team together for a relaxed and enjoyable bowling experience. Contact us to discuss company outings, team-building events, and other group activities.",
+    "kind": "text"
+  },
+  {
+    "key": "book.event2.visible",
+    "page": "book",
+    "label": "Show Business & Corporate Events",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "book.event3.title",
+    "page": "book",
+    "label": "Event category",
+    "value": "Private Bowling Alley Rentals",
+    "kind": "text"
+  },
+  {
+    "key": "book.event3.description",
+    "page": "book",
+    "label": "Description",
+    "value": "Looking for a more private bowling experience for your group or event? Call us to discuss your requirements and find out what arrangements may be available.",
+    "kind": "text"
+  },
+  {
+    "key": "book.event3.visible",
+    "page": "book",
+    "label": "Show Private Bowling Alley Rentals",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "book.event4.title",
+    "page": "book",
+    "label": "Event category",
+    "value": "Meeting Room Rentals",
+    "kind": "text"
+  },
+  {
+    "key": "book.event4.description",
+    "page": "book",
+    "label": "Description",
+    "value": "Need a space for a meeting or gathering? Contact our team to ask about meeting-room availability and discuss your requirements.",
+    "kind": "text"
+  },
+  {
+    "key": "book.event4.visible",
+    "page": "book",
+    "label": "Show Meeting Room Rentals",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "book.event5.title",
+    "page": "book",
+    "label": "Event category",
+    "value": "Other Special Events",
+    "kind": "text"
+  },
+  {
+    "key": "book.event5.description",
+    "page": "book",
+    "label": "Description",
+    "value": "Have another occasion or a unique idea in mind? We’d love to hear about it. Give us a call and we’ll discuss how we may be able to help.",
+    "kind": "text"
+  },
+  {
+    "key": "book.event5.visible",
+    "page": "book",
+    "label": "Show Other Special Events",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "home.actions_visible",
+    "page": "home",
+    "label": "Show page action buttons",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "parties.actions_visible",
+    "page": "parties",
+    "label": "Show page action buttons",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "glow.actions_visible",
+    "page": "glow",
+    "label": "Show page action buttons",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "rentals.actions_visible",
+    "page": "rentals",
+    "label": "Show page action buttons",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "bowling.actions_visible",
+    "page": "bowling",
+    "label": "Show page action buttons",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "menu.actions_visible",
+    "page": "menu",
+    "label": "Show page action buttons",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "book.actions_visible",
+    "page": "book",
+    "label": "Show page action buttons",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "leagues.actions_visible",
+    "page": "leagues",
+    "label": "Show page action buttons",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "events.actions_visible",
+    "page": "events",
+    "label": "Show page action buttons",
+    "value": "true",
+    "kind": "boolean"
+  },
+  {
+    "key": "menu.note.Meals",
+    "page": "menu",
+    "label": "Meals note",
+    "value": "Deliciousness to make you smile!",
+    "kind": "text"
+  },
+  {
+    "key": "menu.note.Homemade Burgers",
+    "page": "menu",
+    "label": "Homemade Burgers note",
+    "value": "Real burgers, just the way you're craving them!",
+    "kind": "text"
+  },
+  {
+    "key": "menu.note.Custom Burgers",
+    "page": "menu",
+    "label": "Custom Burgers note",
+    "value": "Tell us what you like and we'll build it your way! Available toppings include cheese, bacon, lettuce, tomato, onion, pickles, mustard, ketchup, relish, pineapple, olives, and banana peppers.",
+    "kind": "text"
+  },
+  {
+    "key": "rentals.terms_verified",
+    "page": "rentals",
+    "label": "I have verified these rental terms — show them publicly",
+    "value": "false",
+    "kind": "boolean"
+  },
+  {
+    "key": "home.activity0.destination",
+    "page": "home",
+    "label": "Activity 1 button destination",
+    "value": "/bowling",
+    "kind": "destination"
+  },
+  {
+    "key": "home.activity1.destination",
+    "page": "home",
+    "label": "Activity 2 button destination",
+    "value": "/leagues",
+    "kind": "destination"
+  },
+  {
+    "key": "home.activity2.destination",
+    "page": "home",
+    "label": "Activity 3 button destination",
+    "value": "/parties",
+    "kind": "destination"
+  },
+  {
+    "key": "home.activity3.destination",
+    "page": "home",
+    "label": "Activity 4 button destination",
+    "value": "/rentals",
+    "kind": "destination"
+  }
+]

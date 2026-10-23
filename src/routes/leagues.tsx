@@ -1,3 +1,4 @@
+import { useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { PageHeader, Section } from "@/components/site/PageHeader";
@@ -26,17 +27,21 @@ export const Route = createFileRoute("/leagues")({
 });
 
 function LeaguesPage() {
+  const { text, visible } = useWebsiteContent();
+  const CENTRE = useBusiness();
+
+
   const { data: leagues } = useLeagues();
 
   return (
     <>
       <PageHeader
-        eyebrow="September – April"
-        title="Leagues"
-        intro="Four leagues, every skill level, handicap scoring so a first-year bowler can beat a 220 average. Spares are always welcome — put your name on the spare list and we'll call you."
+        eyebrow={text("leagues.001", "September – April")}
+        title={text("leagues.002", "Leagues")}
+        intro={text("leagues.003", "Four leagues, every skill level, handicap scoring so a first-year bowler can beat a 220 average. Spares are always welcome — put your name on the spare list and we'll call you.")}
       >
-        <Button asChild size="lg">
-          <Link to="/contact">Ask about a spot</Link>
+        <Button hidden={!visible("leagues.actions_visible")} asChild size="lg">
+          <Link to="/contact">{text("leagues.004", "Ask about a spot")}</Link>
         </Button>
       </PageHeader>
 
@@ -73,16 +78,11 @@ function LeaguesPage() {
 
       <section className="border-t border-border bg-surface">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-          <h2 className="text-4xl">How averages work here</h2>
+          <h2 className="text-4xl">{text("leagues.005", "How averages work here")}</h2>
           <p className="mt-3 max-w-3xl text-muted-foreground">
-            Your average is your total pinfall divided by games bowled, recalculated after every
-            league night. Handicap is a percentage of the difference between your average and the
-            league base — for Monday Mixed that's 80% of 200. Bowl 15 games and your average is
-            locked in as established for tournament entry.
-          </p>
+            {text("leagues.006", "Your average is your total pinfall divided by games bowled, recalculated after every league night. Handicap is a percentage of the difference between your average and the league base — for Monday Mixed that's 80% of 200. Bowl 15 games and your average is locked in as established for tournament entry.")}</p>
           <p className="mt-4 max-w-3xl text-muted-foreground">
-            Weekly scores and standings are posted at the counter on league nights.
-          </p>
+            {text("leagues.007", "Weekly scores and standings are posted at the counter on league nights.")}</p>
         </div>
       </section>
     </>

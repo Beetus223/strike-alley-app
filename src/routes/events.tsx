@@ -1,3 +1,4 @@
+import { useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,14 +27,18 @@ export const Route = createFileRoute("/events")({
 });
 
 function EventsPage() {
+  const { text, visible } = useWebsiteContent();
+  const CENTRE = useBusiness();
+
+
   const { data: events } = useEvents();
 
   return (
     <>
       <PageHeader
-        eyebrow="Weekly & seasonal"
-        title="Events"
-        intro="From black-light Fridays to the Pysanka Open, there's usually something happening on the lanes."
+        eyebrow={text("events.001", "Weekly & seasonal")}
+        title={text("events.002", "Events")}
+        intro={text("events.003", "From black-light Fridays to the Pysanka Open, there's usually something happening on the lanes.")}
       />
       <Section>
         <div className="grid gap-5 md:grid-cols-2">
@@ -42,7 +47,8 @@ function EventsPage() {
               <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-primary">
                 {e.category}
               </span>
-              <h2 className="mt-3 text-3xl">{e.title}</h2>
+              {e.image_url && <img src={e.image_url} alt="" loading="lazy" className="mb-4 aspect-video w-full rounded-lg object-cover"/>}
+                <h2 className="mt-3 text-3xl">{e.title}</h2>
               <p className="mt-1 flex items-center gap-2 text-sm text-primary">
                 <CalendarDays className="h-4 w-4" aria-hidden /> {formatWhen(e)}
               </p>
@@ -51,13 +57,11 @@ function EventsPage() {
           ))}
         </div>
         <div className="mt-8 rounded-2xl border border-border p-6">
-          <h2 className="text-3xl">Running your own event?</h2>
+          <h2 className="text-3xl">{text("events.004", "Running your own event?")}</h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">
-            Fundraisers, staff nights, school groups and church groups all bowl here. Tell us your
-            date and headcount and we'll build a quote.
-          </p>
-          <Button asChild className="mt-5">
-            <Link to="/inquiries">Send a booking request</Link>
+            {text("events.005", "Fundraisers, staff nights, school groups and church groups all bowl here. Tell us your date and headcount and we'll build a quote.")}</p>
+          <Button hidden={!visible("events.actions_visible")} asChild className="mt-5">
+            <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("events.006", "Send a booking request")}</a>
           </Button>
         </div>
       </Section>

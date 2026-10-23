@@ -1,3 +1,4 @@
+import { useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,16 +21,20 @@ export const Route = createFileRoute("/hours")({
 });
 
 function HoursPage() {
+  const { text, visible } = useWebsiteContent();
+  const CENTRE = useBusiness();
+
+
   return (
     <>
-      <PageHeader eyebrow="Plan your visit" title="Hours" intro="Regular hours, public bowling, food service and any special or seasonal hours.">
+      <PageHeader eyebrow={text("hours.001", "Plan your visit")} title={text("hours.002", "Hours")} intro={text("hours.003", "Regular hours, public bowling, food service and any special or seasonal hours.")}>
         <div className="flex flex-wrap gap-3">
-          <Button asChild size="lg">
-            <Link to="/book">Book a lane</Link>
+          <Button hidden={!visible("hours.actions_visible")} asChild size="lg">
+            <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("hours.004", "Book a lane")}</a>
           </Button>
-          <Button asChild size="lg" variant="outline">
+          <Button hidden={!visible("hours.actions_visible")} asChild size="lg" variant="outline">
             <a href={`tel:${CENTRE.phone.replace(/[^0-9]/g, "")}`}>
-              <Phone className="h-4 w-4" aria-hidden /> Call {CENTRE.phone}
+              <Phone className="h-4 w-4" aria-hidden /> {text("hours.005", "Call")} {CENTRE.phone}
             </a>
           </Button>
         </div>
@@ -38,9 +43,8 @@ function HoursPage() {
         <div className="max-w-3xl">
           <HoursTable />
           <p className="mt-4 text-sm text-muted-foreground">
-            Hours can change for holidays and tournaments — check{" "}
-            <Link to="/announcements" className="font-medium text-primary hover:underline">announcements</Link> or call ahead.
-          </p>
+            {text("hours.006", "Hours can change for holidays and tournaments — check")}{" "}
+            <Link to="/announcements" className="font-medium text-primary hover:underline">{text("hours.007", "announcements")}</Link> {text("hours.008", "or call ahead.")}</p>
         </div>
       </Section>
     </>

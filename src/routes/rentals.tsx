@@ -1,3 +1,4 @@
+import { useOfferings, packageDisplay, useWebsiteContent, useBusiness } from "@/lib/website-content";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { PageHeader, Section } from "@/components/site/PageHeader";
@@ -24,39 +25,24 @@ export const Route = createFileRoute("/rentals")({
   component: RentalsPage,
 });
 
-const RENTALS = [
-  {
-    name: "Single lane",
-    price: "$32 / hour",
-    detail: "Up to 6 bowlers. Shoes $3 each. Best for small groups and casual practice.",
-  },
-  {
-    name: "Group lanes (4 lanes)",
-    price: "$110 / hour",
-    detail: "Up to 24 people, reserved seating area and your own scoreboard messaging.",
-  },
-  {
-    name: "Whole house (6 lanes)",
-    price: "$450 / 3 hours",
-    detail: "Up to 36 people, private snack bar service and full sound system.",
-  },
-  {
-    name: "Meeting room",
-    price: "$60 / 2 hours",
-    detail: "Seats 24, projector and coffee service. Add bowling at group rates.",
-  },
-];
+
 
 function RentalsPage() {
+  const { text, visible } = useWebsiteContent();
+  const CENTRE = useBusiness();
+  const {data: offers}=useOfferings("rental");
+  const RENTALS=(offers??[]).map(p=>({name:p.name,price:packageDisplay(p).price,detail:[p.description,...p.features].join(" ")}));
+
+
   return (
     <>
       <PageHeader
-        eyebrow="Fundraisers · Schools · Staff events"
-        title="Rentals"
-        intro={`The whole building is available outside league hours. Monday is our quietest day and the easiest to book on short notice.`}
+        eyebrow={text("rentals.001", "Fundraisers · Schools · Staff events")}
+        title={text("rentals.002", "Rentals")}
+        intro={text("rentals.intro")}
       >
-        <Button asChild size="lg">
-          <Link to="/inquiries">Request a rental</Link>
+        <Button hidden={!visible("rentals.actions_visible")} asChild size="lg">
+          <a href={`tel:${CENTRE.phone.replace(/\D/g, "")}`}>{text("rentals.003", "Request a rental")}</a>
         </Button>
       </PageHeader>
 
@@ -71,15 +57,15 @@ function RentalsPage() {
           ))}
         </div>
 
-        <div className="mt-8 rounded-2xl border border-border p-6">
-          <h2 className="text-3xl">Rental terms</h2>
+        <div hidden={!visible("rentals.terms_verified")} className="mt-8 rounded-2xl border border-border p-6">
+          <h2 className="text-3xl">{text("rentals.004", "Rental terms")}</h2>
           <ul className="mt-4 space-y-2 text-muted-foreground">
-            <li>50% deposit due at booking, balance on the day.</li>
-            <li>Cancellations more than 7 days out are fully refundable.</li>
-            <li>Outside food is limited to cake and candy; the snack bar handles the rest.</li>
-            <li>Fundraiser rates available for registered Vegreville-area non-profits.</li>
+            <li>{text("rentals.005", "50% deposit due at booking, balance on the day.")}</li>
+            <li>{text("rentals.006", "Cancellations more than 7 days out are fully refundable.")}</li>
+            <li>{text("rentals.007", "Outside food is limited to cake and candy; the snack bar handles the rest.")}</li>
+            <li>{text("rentals.008", "Fundraiser rates available for registered Vegreville-area non-profits.")}</li>
             <li>
-              Questions? Call {CENTRE.phone} or email {CENTRE.email}.
+              {text("rentals.009", "Questions? Call")} {CENTRE.phone} {text("rentals.010", "or email")} {CENTRE.email}.
             </li>
           </ul>
         </div>

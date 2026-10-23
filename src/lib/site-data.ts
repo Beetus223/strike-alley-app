@@ -508,7 +508,6 @@ export const NAV = [
     label: "Bookings",
     children: [
       { to: "/book", label: "Book a lane" },
-      { to: "/inquiries", label: "Special events & group inquiries" },
       { to: "/parties", label: "Birthday parties & groups" },
       { to: "/rentals", label: "Facility rentals" },
     ],

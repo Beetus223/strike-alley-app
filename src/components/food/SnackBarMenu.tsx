@@ -1,3 +1,4 @@
+import { useBusiness, useWebsiteContent } from "@/lib/website-content";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,6 +34,8 @@ export const menuItemsQuery = {
 
 /** View-only snack bar menu. Staff edit items in the Staff Dashboard. */
 export function SnackBarMenu() {
+  const {text}=useWebsiteContent();
+  const SNACK_BAR_PHONE=useBusiness().snackPhone;
   const { data: items, isLoading, isError } = useQuery(menuItemsQuery);
 
   const groups = useMemo(() => {
@@ -40,7 +43,7 @@ export function SnackBarMenu() {
     (items ?? []).forEach((i) => map.set(i.category, [...(map.get(i.category) ?? []), i]));
     return [...map.entries()];
   }, [items]);
-  const notes = Object.fromEntries(MENU.map((g) => [g.section, g.note]));
+  const notes = Object.fromEntries(MENU.map((g) => [g.section, text("menu.note."+g.section,g.note??"")]));
 
   if (isLoading) return <p className="text-muted-foreground" role="status">Loading menu…</p>;
   if (isError || !items) {

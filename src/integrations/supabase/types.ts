@@ -18,8 +18,11 @@ export type Database = {
         Row: {
           created_at: string
           ends_on: string | null
+          featured: boolean
           id: string
+          image_url: string | null
           is_active: boolean
+          is_archived: boolean
           message: string
           starts_on: string | null
           title: string
@@ -28,8 +31,11 @@ export type Database = {
         Insert: {
           created_at?: string
           ends_on?: string | null
+          featured?: boolean
           id?: string
+          image_url?: string | null
           is_active?: boolean
+          is_archived?: boolean
           message: string
           starts_on?: string | null
           title: string
@@ -38,8 +44,11 @@ export type Database = {
         Update: {
           created_at?: string
           ends_on?: string | null
+          featured?: boolean
           id?: string
+          image_url?: string | null
           is_active?: boolean
+          is_archived?: boolean
           message?: string
           starts_on?: string | null
           title?: string
@@ -172,7 +181,9 @@ export type Database = {
           end_time: string | null
           featured: boolean
           id: string
+          image_url: string | null
           is_active: boolean
+          is_archived: boolean
           schedule_text: string | null
           sort_order: number
           start_date: string | null
@@ -188,7 +199,9 @@ export type Database = {
           end_time?: string | null
           featured?: boolean
           id?: string
+          image_url?: string | null
           is_active?: boolean
+          is_archived?: boolean
           schedule_text?: string | null
           sort_order?: number
           start_date?: string | null
@@ -204,7 +217,9 @@ export type Database = {
           end_time?: string | null
           featured?: boolean
           id?: string
+          image_url?: string | null
           is_active?: boolean
+          is_archived?: boolean
           schedule_text?: string | null
           sort_order?: number
           start_date?: string | null
@@ -1709,6 +1724,99 @@ export type Database = {
         }
         Relationships: []
       }
+      website_content: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      website_drafts: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      website_offerings: {
+        Row: {
+          capacity: string
+          category: string
+          description: string
+          features: string[]
+          id: string
+          is_active: boolean
+          is_archived: boolean
+          name: string
+          note: string
+          price_cents: number
+          pricing_note: string
+          sort_order: number
+          tag: string
+          updated_at: string
+          value_note: string
+          verified: boolean
+        }
+        Insert: {
+          capacity?: string
+          category?: string
+          description?: string
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          is_archived?: boolean
+          name: string
+          note?: string
+          price_cents?: number
+          pricing_note?: string
+          sort_order?: number
+          tag?: string
+          updated_at?: string
+          value_note?: string
+          verified?: boolean
+        }
+        Update: {
+          capacity?: string
+          category?: string
+          description?: string
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          is_archived?: boolean
+          name?: string
+          note?: string
+          price_cents?: number
+          pricing_note?: string
+          sort_order?: number
+          tag?: string
+          updated_at?: string
+          value_note?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -1774,6 +1882,8 @@ export type Database = {
       reservation_staff: { Args: { p?: Json; p_action: string }; Returns: Json }
       reservation_windows: { Args: { p_day: string }; Returns: Json }
       submit_event_inquiry: { Args: { p: Json }; Returns: Json }
+      website_publish: { Args: { p_keys: string[] }; Returns: undefined }
+      website_special_schedule: { Args: { p: Json }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "staff" | "player"

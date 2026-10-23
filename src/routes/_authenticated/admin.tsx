@@ -1,3 +1,6 @@
+import { SpecialScheduleEditor } from "@/components/content/SpecialScheduleEditor";
+import { WebsiteEditor } from "@/components/content/WebsiteEditor";
+import { OfferingEditor } from "@/components/content/OfferingEditor";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -94,11 +97,13 @@ function AdminPage() {
       <PageHeader
         eyebrow="Centre staff"
         title="Dashboard"
-        intro="Everything on the website — events, hours, prices, announcements, leagues and the snack bar menu — is edited here. Changes show up on the public pages right away."
+        intro="Bookings and website content"
       />
       <Section>
         <Tabs defaultValue="bookings">
           <TabsList className="flex h-auto flex-wrap justify-start gap-1">
+            <TabsTrigger value="website">Manage Website</TabsTrigger>
+            <TabsTrigger value="packages">Packages & Rentals</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="leagues">Leagues</TabsTrigger>
             <TabsTrigger value="hours">Hours</TabsTrigger>
@@ -107,6 +112,8 @@ function AdminPage() {
             <TabsTrigger value="menu">Snack Bar Menu</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
           </TabsList>
+          <TabsContent value="website" className="mt-6"><WebsiteEditor /></TabsContent>
+          <TabsContent value="packages" className="mt-6"><OfferingEditor /></TabsContent>
           <TabsContent value="events" className="mt-6">
             <EventsPanel />
           </TabsContent>
@@ -165,7 +172,7 @@ function EventsPanel() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("events").delete().eq("id", id);
+      const { error } = await supabase.from("events").update({is_archived:true,is_active:false}).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -178,6 +185,12 @@ function EventsPanel() {
   function submit(e: React.FormEvent<HTMLFormElement>, id?: string) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
+    const start=String(form.get("start_date") || form.get("starts_on") || "");
+    const end=String(form.get("end_date") || form.get("ends_on") || "");
+    if(start && end && end < start){toast.error("End date must be on or after the start date.");return;}
+    if(form.has("message") && !String(form.get("message")).trim()){toast.error("A message is required.");return;}
+    if(form.has("price") && !/^\$?\d+(\.\d{1,2})?$/.test(String(form.get("price")).trim())){toast.error("Enter a valid dollar amount, such as $5.25.");return;}
+
     save.mutate({
       id,
       values: {
@@ -191,9 +204,12 @@ function EventsPanel() {
         description: str(form, "description"),
         sort_order: Number(form.get("sort_order") || 0),
         is_active: form.get("is_active") === "on",
+        ...(form.get("is_active") === "on" && (form.has("featured")) ? {is_archived:false} : {}),
+        ...(form.has("featured") ? {featured:form.get("featured")==="on"} : {}),
+        ...(form.has("image_url") ? {image_url:str(form,"image_url")} : {}),
       },
     });
-    if (!id) e.currentTarget.reset();
+    
   }
 
   return (
@@ -268,6 +284,8 @@ function EventForm({
         <Field label="End time" name="end_time" type="time" defaultValue={event?.end_time} />
       </div>
       <TextField label="Description" name="description" defaultValue={event?.description} />
+      <Field label="Photo link (optional)" name="image_url" type="url" defaultValue={event?.image_url} />
+      <label className="flex items-center gap-3"><Switch name="featured" defaultChecked={event?.featured ?? true}/>Featured on home page</label>
       <div className="flex flex-wrap items-end gap-6">
         <Field
           label="Order on the page"
@@ -339,6 +357,12 @@ function LeaguesPanel() {
   function submit(e: React.FormEvent<HTMLFormElement>, league?: LeagueItem) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
+    const start=String(form.get("start_date") || form.get("starts_on") || "");
+    const end=String(form.get("end_date") || form.get("ends_on") || "");
+    if(start && end && end < start){toast.error("End date must be on or after the start date.");return;}
+    if(form.has("message") && !String(form.get("message")).trim()){toast.error("A message is required.");return;}
+    if(form.has("price") && !/^\$?\d+(\.\d{1,2})?$/.test(String(form.get("price")).trim())){toast.error("Enter a valid dollar amount, such as $5.25.");return;}
+
     const name = String(form.get("name"));
     save.mutate({
       id: league?.id,
@@ -359,10 +383,11 @@ function LeaguesPanel() {
         description: str(form, "description"),
         sort_order: Number(form.get("sort_order") || 0),
         is_active: form.get("is_active") === "on",
+        ...(form.get("is_active") === "on" && (form.has("featured")) ? {is_archived:false} : {}),
         registration_open: form.get("registration_open") === "on",
       },
     });
-    if (!league) e.currentTarget.reset();
+    
   }
 
   return (
@@ -554,6 +579,12 @@ function HoursPanel() {
   function submit(e: React.FormEvent<HTMLFormElement>, id: string) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
+    const start=String(form.get("start_date") || form.get("starts_on") || "");
+    const end=String(form.get("end_date") || form.get("ends_on") || "");
+    if(start && end && end < start){toast.error("End date must be on or after the start date.");return;}
+    if(form.has("message") && !String(form.get("message")).trim()){toast.error("A message is required.");return;}
+    if(form.has("price") && !/^\$?\d+(\.\d{1,2})?$/.test(String(form.get("price")).trim())){toast.error("Enter a valid dollar amount, such as $5.25.");return;}
+
     save.mutate({
       id,
       values: {
@@ -574,6 +605,8 @@ function HoursPanel() {
         that day.
       </PanelIntro>
 
+      <SpecialScheduleEditor />
+      <p className="text-sm text-muted-foreground">When business hours change, update booking windows in Bookings → Settings too. One-off closures are managed there.</p>
       {(hours.data ?? []).map((h) => (
         <form
           key={h.id}
@@ -607,6 +640,12 @@ function HoursPanel() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   const form = new FormData(e.currentTarget);
+    const start=String(form.get("start_date") || form.get("starts_on") || "");
+    const end=String(form.get("end_date") || form.get("ends_on") || "");
+    if(start && end && end < start){toast.error("End date must be on or after the start date.");return;}
+    if(form.has("message") && !String(form.get("message")).trim()){toast.error("A message is required.");return;}
+    if(form.has("price") && !/^\$?\d+(\.\d{1,2})?$/.test(String(form.get("price")).trim())){toast.error("Enter a valid dollar amount, such as $5.25.");return;}
+
                   saveSeasonalSchedule.mutate({
                     id: schedule.id,
                     values: {
@@ -616,6 +655,7 @@ function HoursPanel() {
                       ends_on: str(form, "ends_on"),
                       reservation_notice: String(form.get("reservation_notice")),
                       is_active: form.get("is_active") === "on",
+        ...(form.get("is_active") === "on" && (form.has("featured")) ? {is_archived:false} : {}),
                     },
                   });
                 }}
@@ -683,6 +723,12 @@ function HoursPanel() {
                     onSubmit={(e) => {
                       e.preventDefault();
                       const form = new FormData(e.currentTarget);
+    const start=String(form.get("start_date") || form.get("starts_on") || "");
+    const end=String(form.get("end_date") || form.get("ends_on") || "");
+    if(start && end && end < start){toast.error("End date must be on or after the start date.");return;}
+    if(form.has("message") && !String(form.get("message")).trim()){toast.error("A message is required.");return;}
+    if(form.has("price") && !/^\$?\d+(\.\d{1,2})?$/.test(String(form.get("price")).trim())){toast.error("Enter a valid dollar amount, such as $5.25.");return;}
+
                       saveSeasonalDay.mutate({
                         id: day.id,
                         values: {
@@ -761,18 +807,27 @@ function PricingPanel() {
   function submit(e: React.FormEvent<HTMLFormElement>, item?: PricingItem) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
+    const start=String(form.get("start_date") || form.get("starts_on") || "");
+    const end=String(form.get("end_date") || form.get("ends_on") || "");
+    if(start && end && end < start){toast.error("End date must be on or after the start date.");return;}
+    if(form.has("message") && !String(form.get("message")).trim()){toast.error("A message is required.");return;}
+    if(form.has("price") && !/^\$?\d+(\.\d{1,2})?$/.test(String(form.get("price")).trim())){toast.error("Enter a valid dollar amount, such as $5.25.");return;}
+
     save.mutate({
       id: item?.id,
       values: {
         label: String(form.get("label")),
-        price: String(form.get("price")),
+        price: `$${Number(String(form.get("price")).replace("$", "")).toFixed(2)}`,
         note: str(form, "note"),
         category: String(form.get("category") || "Walk-in"),
         sort_order: Number(form.get("sort_order") || 0),
         is_active: form.get("is_active") === "on",
+        ...(form.get("is_active") === "on" && (form.has("featured")) ? {is_archived:false} : {}),
+        ...(form.has("featured") ? {featured:form.get("featured")==="on"} : {}),
+        ...(form.has("image_url") ? {image_url:str(form,"image_url")} : {}),
       },
     });
-    if (!item) e.currentTarget.reset();
+    
   }
 
   return (
@@ -869,7 +924,7 @@ function AnnouncementsPanel() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("announcements").delete().eq("id", id);
+      const { error } = await supabase.from("announcements").update({is_archived:true,is_active:false}).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -882,6 +937,12 @@ function AnnouncementsPanel() {
   function submit(e: React.FormEvent<HTMLFormElement>, item?: AnnouncementItem) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
+    const start=String(form.get("start_date") || form.get("starts_on") || "");
+    const end=String(form.get("end_date") || form.get("ends_on") || "");
+    if(start && end && end < start){toast.error("End date must be on or after the start date.");return;}
+    if(form.has("message") && !String(form.get("message")).trim()){toast.error("A message is required.");return;}
+    if(form.has("price") && !/^\$?\d+(\.\d{1,2})?$/.test(String(form.get("price")).trim())){toast.error("Enter a valid dollar amount, such as $5.25.");return;}
+
     save.mutate({
       id: item?.id,
       values: {
@@ -890,9 +951,12 @@ function AnnouncementsPanel() {
         starts_on: str(form, "starts_on"),
         ends_on: str(form, "ends_on"),
         is_active: form.get("is_active") === "on",
+        ...(form.get("is_active") === "on" && (form.has("featured")) ? {is_archived:false} : {}),
+        ...(form.has("featured") ? {featured:form.get("featured")==="on"} : {}),
+        ...(form.has("image_url") ? {image_url:str(form,"image_url")} : {}),
       },
     });
-    if (!item) e.currentTarget.reset();
+    
   }
 
   return (
@@ -939,6 +1003,8 @@ function AnnouncementFields({ item }: { item?: AnnouncementItem }) {
     <>
       <Field label="Title" name="title" defaultValue={item?.title} required />
       <TextField label="Message" name="message" defaultValue={item?.message} rows={2} />
+      <Field label="Photo link (optional)" name="image_url" type="url" defaultValue={item?.image_url} />
+      <label className="flex items-center gap-3"><Switch name="featured" defaultChecked={item?.featured ?? true}/>Featured on home page</label>
       <div className="flex flex-wrap items-end gap-6">
         <Field label="Show from" name="starts_on" type="date" defaultValue={item?.starts_on} />
         <Field label="Show until" name="ends_on" type="date" defaultValue={item?.ends_on} />

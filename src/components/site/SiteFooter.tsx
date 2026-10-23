@@ -1,3 +1,4 @@
+import { useBusiness } from "@/lib/website-content";
 import { Link } from "@tanstack/react-router";
 import { MapPin, Phone, Mail } from "lucide-react";
 import { HoursCompact } from "@/components/site/HoursTable";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export function SiteFooter() {
+ const CENTRE = useBusiness();
   const { user, signOut } = useAuth();
   return (
     <footer className="ink-section border-t border-border">
@@ -43,7 +45,7 @@ export function SiteFooter() {
         <div>
           <h3 className="font-display text-lg text-ink-foreground">Hours</h3>
           <HoursCompact />
-          <p className="mt-3 text-xs leading-relaxed text-ink-muted">{HOURS_NOTE}</p>
+          <p className="mt-3 text-xs leading-relaxed text-ink-muted">{CENTRE.hoursNote}</p>
         </div>
 
         <div>
