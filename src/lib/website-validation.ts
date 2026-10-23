@@ -10,6 +10,7 @@ export function validateField(key: string, value: string) {
  if (field.kind==='email') z.string().email('Enter a valid email address.').parse(value);
  if (field.kind==='image' && value && !photoPath(value) && !/^https:\/\//.test(value) && !fields.some(f=>f.kind==='image'&&f.value===value)) throw new Error('Choose a photo or use a secure https link.');
  if (field.kind==='boolean' && !['true','false'].includes(value)) throw new Error('Choose show or hide.');
+ if(field.kind==='link'&&value&&!/^https:\/\/[^\s]+$/.test(value))throw new Error('Use a secure https link, such as your GoDaddy signup form link.');
  if(field.kind==='destination'&&!safeDestinations.includes(value))throw new Error('Choose an existing public page.');
  return value;
 }
