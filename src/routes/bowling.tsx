@@ -65,7 +65,7 @@ function BowlingPage() {
           ))}
         </div>
         <p className="mt-4 text-sm text-muted-foreground">
-          {text("bowling.005", "Hourly rates are the better deal for groups of four or more. League and school-group rates are quoted separately — call")}{CENTRE.phone}.
+          {text("bowling.005", "Hourly rates are the better deal for groups of four or more. League and school-group rates are quoted separately — call")} {CENTRE.phone}.
         </p>
       </Section>
 

@@ -127,7 +127,7 @@ const HIGHLIGHTS = [
           <div>
             <h3 className="text-xl text-white">{text("glow.008", "Lanes go quickly after 7 PM")}</h3>
             <p className="mt-1 text-sm text-white/70">
-              {text("glow.009", "Reserve ahead, or call")}{CENTRE.phone} {text("glow.010", "and we'll hold one for you.")}</p>
+              {text("glow.009", "Reserve ahead, or call")} {CENTRE.phone} {text("glow.010", "and we'll hold one for you.")}</p>
           </div>
           <Button hidden={!visible("glow.actions_visible")}
             asChild

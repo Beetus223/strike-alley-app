@@ -65,7 +65,7 @@ function RentalsPage() {
             <li>{text("rentals.007", "Outside food is limited to cake and candy; the snack bar handles the rest.")}</li>
             <li>{text("rentals.008", "Fundraiser rates available for registered Vegreville-area non-profits.")}</li>
             <li>
-              {text("rentals.009", "Questions? Call")}{CENTRE.phone} {text("rentals.010", "or email")}{CENTRE.email}.
+              {text("rentals.009", "Questions? Call")} {CENTRE.phone} {text("rentals.010", "or email")} {CENTRE.email}.
             </li>
           </ul>
         </div>

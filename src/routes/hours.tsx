@@ -34,7 +34,7 @@ function HoursPage() {
           </Button>
           <Button hidden={!visible("hours.actions_visible")} asChild size="lg" variant="outline">
             <a href={`tel:${CENTRE.phone.replace(/[^0-9]/g, "")}`}>
-              <Phone className="h-4 w-4" aria-hidden /> {text("hours.005", "Call")}{CENTRE.phone}
+              <Phone className="h-4 w-4" aria-hidden /> {text("hours.005", "Call")} {CENTRE.phone}
             </a>
           </Button>
         </div>

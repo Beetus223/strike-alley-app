@@ -1,3 +1,4 @@
+import { SpecialScheduleEditor } from "@/components/content/SpecialScheduleEditor";
 import { WebsiteEditor } from "@/components/content/WebsiteEditor";
 import { OfferingEditor } from "@/components/content/OfferingEditor";
 import { useState } from "react";
@@ -604,6 +605,8 @@ function HoursPanel() {
         that day.
       </PanelIntro>
 
+      <SpecialScheduleEditor />
+      <p className="text-sm text-muted-foreground">When business hours change, update booking windows in Bookings → Settings too. One-off closures are managed there.</p>
       {(hours.data ?? []).map((h) => (
         <form
           key={h.id}
