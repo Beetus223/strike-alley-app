@@ -596,6 +596,8 @@ function HoursPanel() {
                   saveSeasonalSchedule.mutate({ id: schedule.id, values: {
                     title: String(form.get("title")),
                     date_label: String(form.get("date_label")),
+                    starts_on: str(form, "starts_on"),
+                    ends_on: str(form, "ends_on"),
                     reservation_notice: String(form.get("reservation_notice")),
                     is_active: form.get("is_active") === "on",
                   }});
@@ -604,6 +606,8 @@ function HoursPanel() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Schedule title" name="title" defaultValue={schedule.title} required />
                   <Field label="Date range" name="date_label" defaultValue={schedule.date_label} required />
+                  <Field label="Starts on" name="starts_on" type="date" defaultValue={schedule.starts_on} />
+                  <Field label="Ends on" name="ends_on" type="date" defaultValue={schedule.ends_on} />
                   <Field label="Reservation notice" name="reservation_notice" defaultValue={schedule.reservation_notice} required />
                   <div className="flex items-center gap-3 pt-7">
                     <Switch id={`seasonal-${schedule.id}`} name="is_active" defaultChecked={schedule.is_active} />

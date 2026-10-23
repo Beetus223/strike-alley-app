@@ -1,8 +1,12 @@
+import { useHydrated } from "@tanstack/react-router";
+import { localDay } from "@/lib/reservations";
 import { useHours, useSeasonalHours } from "@/lib/content";
 import { HOURS_NOTE } from "@/lib/site-data";
 
 /** Detailed hours: open, public bowling, food service and glow per day. */
 export function HoursTable({ className = "" }: { className?: string }) {
+  const hydrated = useHydrated();
+  const today = hydrated ? localDay() : null;
   const { data: hours } = useHours();
   const { data: seasonalSchedules } = useSeasonalHours();
 
@@ -27,7 +31,7 @@ export function HoursTable({ className = "" }: { className?: string }) {
         ))}
       </dl>
       <p className="mt-3 text-sm text-muted-foreground">{HOURS_NOTE}</p>
-      {(seasonalSchedules ?? []).map((schedule) => (
+      {(seasonalSchedules ?? []).filter(s => today && (!s.starts_on || s.starts_on <= today) && (!s.ends_on || s.ends_on >= today)).map((schedule) => (
         <section key={schedule.id} className="mt-8" aria-labelledby={`seasonal-hours-${schedule.id}`}>
           <div className="mb-4 border-l-4 border-primary pl-4">
             <h3 id={`seasonal-hours-${schedule.id}`} className="text-2xl">

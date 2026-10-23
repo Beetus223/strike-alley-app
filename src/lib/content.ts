@@ -51,6 +51,8 @@ export type SeasonalHoursSchedule = {
   reservation_notice: string;
   is_active: boolean;
   sort_order: number;
+  starts_on: string | null;
+  ends_on: string | null;
   seasonal_hours: SeasonalHoursDay[];
 };
 
@@ -128,6 +130,8 @@ const FALLBACK_HOURS: HoursItem[] = HOURS.map((h) => ({
 const FALLBACK_SUMMER_HOURS: SeasonalHoursSchedule[] = [
   {
     id: "summer-2025",
+    starts_on: "2025-07-01",
+    ends_on: "2025-08-31",
     title: "SUMMER PUBLIC BOWLING HOURS",
     date_label: "July 1 – August 31, 2025",
     reservation_notice: "RESERVATION ONLY",
