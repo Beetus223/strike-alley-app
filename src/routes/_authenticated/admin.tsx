@@ -75,9 +75,23 @@ function str(form: FormData, key: string) {
 }
 
 function AdminPage() {
-  const { isStaff, loading } = useAuth();
+  const { isStaff, loading, accessError, retryAccess, signOut } = useAuth();
 
   if (loading) return <Section>Loading…</Section>;
+  if (accessError) {
+    return (
+      <Section>
+        <div className="mx-auto max-w-lg border border-border rounded-lg p-8 text-center">
+          <h1 className="text-3xl">Unable to check staff access</h1>
+          <p className="mt-2 text-muted-foreground">Your account access could not be checked. Please try again.</p>
+          <div className="mt-4 flex justify-center gap-3">
+            <Button onClick={retryAccess}>Try again</Button>
+            <Button variant="outline" onClick={() => void signOut()}>Sign out</Button>
+          </div>
+        </div>
+      </Section>
+    );
+  }
   if (!isStaff) {
     return (
       <Section>
@@ -87,6 +101,10 @@ function AdminPage() {
             This area is for centre staff. If you manage a league and need access, ask an
             administrator to add your account.
           </p>
+          <div className="mt-4 flex justify-center gap-3">
+            <Button onClick={retryAccess}>Check access again</Button>
+            <Button variant="outline" onClick={() => void signOut()}>Sign out</Button>
+          </div>
         </div>
       </Section>
     );
