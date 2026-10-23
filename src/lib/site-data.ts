@@ -502,7 +502,7 @@ export const NAV = [
   { to: "/hours", label: "Hours" },
   { to: "/bowling", label: "Pricing" },
   { to: "/announcements", label: "Announcements" },
-  { to: "/menu", label: "Snack Bar" },
+  { to: "/menu", label: "Food Menu" },
   {
     to: "/book",
     label: "Bookings",

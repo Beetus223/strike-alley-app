@@ -92,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Six lanes of Canadian 5-pin bowling in Vegreville, Alberta. Leagues, glow bowling, birthday parties and a full snack bar.",
+          "Six lanes of Canadian 5-pin bowling in Vegreville, Alberta. Leagues, glow bowling, birthday parties and a full food menu.",
       },
       { name: "author", content: "Vegreville Bowling Lanes" },
       { property: "og:type", content: "website" },

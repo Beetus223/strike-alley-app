@@ -9,13 +9,13 @@ import { SnackBarMenu } from "@/components/food/SnackBarMenu";
 export const Route = createFileRoute("/menu")({
   head: () => ({
     meta: [
-      { title: "Snack Bar Menu | Vegreville Bowling Lanes" },
+      { title: "Food Menu | Vegreville Bowling Lanes" },
       {
         name: "description",
         content:
-          "Burgers, perogy bowls, nachos, milkshakes and pitchers of pop — the full snack bar menu at Vegreville Bowling Lanes.",
+          "Burgers, perogy bowls, nachos, milkshakes and pitchers of pop — the full food menu at Vegreville Bowling Lanes.",
       },
-      { property: "og:title", content: "Snack Bar Menu | Vegreville Bowling Lanes" },
+      { property: "og:title", content: "Food Menu | Vegreville Bowling Lanes" },
       {
         property: "og:description",
         content: "Grill items, shareables and sweets served lane-side all day.",
@@ -37,7 +37,7 @@ function MenuPage() {
     <>
       <PageHeader
         eyebrow={text("menu.001", "Take Out or Eat In")}
-        title={text("menu.002", "Snack Bar")}
+        title={text("menu.002", "Food Menu")}
         intro={text("menu.003", "Pre-orders are accepted. Call ahead and we'll have your order ready when you arrive.")}
       >
         <div className="mt-6 flex flex-wrap items-center gap-4">

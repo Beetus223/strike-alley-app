@@ -7,7 +7,7 @@ import fields from './website-fields.json';
 import { formatCents } from './food-order';
 export const WEBSITE_FIELDS = fields;
 export const defaults = Object.fromEntries(fields.map(f => [f.key, f.value]));
-export const pageNames: Record<string,string> = {home:'Home Page',about:'About & Facility Information',bowling:'Bowling & Prices',glow:'Glow Bowling',parties:'Parties & Group Bookings',rentals:'Rentals & Meeting Rooms',leagues:'Bowling Leagues',menu:'Snack Bar Page',events:'Events Page',announcements:'Announcements Page',hours:'Hours Page',contact:'Contact Information',book:'Book a Lane Page'};
+export const pageNames: Record<string,string> = {home:'Home Page',about:'About & Facility Information',bowling:'Bowling & Prices',glow:'Glow Bowling',parties:'Parties & Group Bookings',rentals:'Rentals & Meeting Rooms',leagues:'Bowling Leagues',menu:'Food Menu Page',events:'Events Page',announcements:'Announcements Page',hours:'Hours Page',contact:'Contact Information',book:'Book a Lane Page'};
 export function useWebsiteContent() {
  const query=useQuery({queryKey:['content','website'],queryFn:async()=>{const {data,error}=await supabase.from('website_content').select('key,value');if(error)throw error;return Object.fromEntries(data.map(f=>[f.key,f.value]));},initialData:{} as Record<string,string>,staleTime:0});
  return {...query,text:(key:string,fallback='')=>query.data?.[key] ?? defaults[key] ?? fallback, visible:(key:string)=> (query.data?.[key] ?? defaults[key] ?? 'true')!=='false'};
