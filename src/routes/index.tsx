@@ -259,8 +259,9 @@ const ACTIVITIES = [
           >
             <Link to="/glow">{text("home.026", "Glow bowling Fri & Sat")}</Link>
           </Button>
+          </div>
         </div>
-      </Section>
+      </section>
 
       {/* 5 — Light: pricing */}
       <Section
