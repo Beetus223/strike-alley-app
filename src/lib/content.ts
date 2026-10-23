@@ -9,6 +9,8 @@ import { EVENTS, HOURS, LEAGUES, PRICING } from "@/lib/site-data";
  */
 
 export type EventItem = {
+  image_url?: string | null;
+  is_archived?: boolean;
   id: string;
   title: string;
   description: string | null;
@@ -83,6 +85,9 @@ export type LeagueItem = {
 };
 
 export type AnnouncementItem = {
+  image_url?: string | null;
+  is_archived?: boolean;
+  featured?: boolean;
   id: string;
   title: string;
   message: string;
@@ -186,7 +191,7 @@ export function useEvents(includeInactive = false) {
       if (!includeInactive) q = q.eq("is_active", true);
       const { data, error } = await q;
       if (error) throw error;
-      return data as EventItem[];
+      return (data as EventItem[]).filter(e=>includeInactive || (!e.is_archived && (!e.end_date || e.end_date>=new Date().toISOString().slice(0,10))));
     },
     initialData: includeInactive ? undefined : FALLBACK_EVENTS,
   });

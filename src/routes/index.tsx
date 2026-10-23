@@ -84,7 +84,7 @@ const ACTIVITIES = [
       {(announcements ?? []).length > 0 ? (
         <div className="border-b border-border bg-secondary">
           <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
-            {(announcements ?? []).map((a) => (
+            {(announcements ?? []).filter(a=>a.featured !== false).map((a) => (
               <p key={a.id} className="text-sm">
                 <span className="font-semibold text-primary">{a.title}</span>{" "}
                 <span className="text-muted-foreground">{a.message}</span>

@@ -47,7 +47,8 @@ function EventsPage() {
               <span className="w-fit rounded-full bg-secondary px-3 py-1 text-xs uppercase tracking-widest text-primary">
                 {e.category}
               </span>
-              <h2 className="mt-3 text-3xl">{e.title}</h2>
+              {e.image_url && <img src={e.image_url} alt="" loading="lazy" className="mb-4 aspect-video w-full rounded-lg object-cover"/>}
+                <h2 className="mt-3 text-3xl">{e.title}</h2>
               <p className="mt-1 flex items-center gap-2 text-sm text-primary">
                 <CalendarDays className="h-4 w-4" aria-hidden /> {formatWhen(e)}
               </p>

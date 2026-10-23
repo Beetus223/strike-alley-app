@@ -48,6 +48,7 @@ function AnnouncementsPage() {
           <ul className="grid max-w-3xl gap-4">
             {items.map((a) => (
               <li key={a.id} className="card-soft rounded-2xl border-l-4 border-l-primary p-6">
+                {a.image_url && <img src={a.image_url} alt="" loading="lazy" className="mb-4 aspect-video w-full rounded-lg object-cover"/>}
                 <h2 className="text-2xl">{a.title}</h2>
                 {a.starts_on || a.ends_on ? (
                   <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
