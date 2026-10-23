@@ -17,7 +17,7 @@ export const Route = createFileRoute("/bowling")({
       {
         property: "og:description",
         content:
-          "Game rates, hourly lanes, glow bowling and accessibility info for our eight 5-pin lanes.",
+          "Game rates, hourly lanes, glow bowling and accessibility info for our six 5-pin lanes.",
       },
     ],
   }),
@@ -38,7 +38,7 @@ function BowlingPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Eight lanes · Synthetic approach"
+        eyebrow="Six lanes · Synthetic approach"
         title="Bowling & Prices"
         intro={`Every lane at ${CENTRE.name} is set up for Canadian 5-pin, with automatic scoring, bumper rails on request and ramps for bowlers who need them.`}
       >

@@ -12,6 +12,8 @@ export function Field({
   required,
   placeholder,
   hint,
+  min,
+  max,
 }: {
   label: string;
   name: string;
@@ -20,6 +22,8 @@ export function Field({
   required?: boolean | undefined;
   placeholder?: string | undefined;
   hint?: string | undefined;
+  min?: string | number;
+  max?: string | number;
 }) {
   const id = useId();
   return (
@@ -29,6 +33,8 @@ export function Field({
         id={id}
         name={name}
         type={type}
+        min={min}
+        max={max}
         required={required}
         placeholder={placeholder}
         defaultValue={defaultValue ?? ""}

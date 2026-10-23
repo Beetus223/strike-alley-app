@@ -22,7 +22,7 @@ export const Route = createFileRoute("/about")({
 
 const TIMELINE = [
   { year: "1962", text: "The lanes open on 50 Street with six hand-set 5-pin lanes." },
-  { year: "1978", text: "Automatic pinsetters installed; two lanes added to make eight." },
+  { year: "1978", text: "Automatic pinsetters installed." },
   { year: "1994", text: "Youth Bowling Canada program starts on Saturday mornings." },
   { year: "2011", text: "New synthetic approaches, scoring screens and the snack bar remodel." },
   { year: "2023", text: "Glow bowling lighting and sound upgrade for Friday and Saturday nights." },
@@ -34,7 +34,7 @@ function AboutPage() {
       <PageHeader
         eyebrow="Family run since 1962"
         title="About the lanes"
-        intro="Three generations of Vegreville families have learned to bowl here. We're still the same eight lanes, just with better lighting and a much better burger."
+        intro="Three generations of Vegreville families have learned to bowl here. We're still the same six lanes, just with better lighting and a much better burger."
       />
       <Section>
         <div className="grid gap-10 lg:grid-cols-2">

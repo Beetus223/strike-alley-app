@@ -10,12 +10,12 @@ export const Route = createFileRoute("/rentals")({
       {
         name: "description",
         content:
-          "Rent single lanes, the meeting room or the whole eight-lane house in Vegreville, AB for fundraisers, staff events and school groups.",
+          "Rent single lanes, the meeting room or the whole six-lane house in Vegreville, AB for fundraisers, staff events and school groups.",
       },
       { property: "og:title", content: "Lane & Facility Rentals | Vegreville Bowling Lanes" },
       {
         property: "og:description",
-        content: "Single lanes, the meeting room, or all eight lanes for your group event.",
+        content: "Single lanes, the meeting room, or all six lanes for your group event.",
       },
     ],
   }),
@@ -29,14 +29,14 @@ const RENTALS = [
     detail: "Up to 6 bowlers. Shoes $3 each. Best for small groups and casual practice.",
   },
   {
-    name: "Half house (4 lanes)",
+    name: "Group lanes (4 lanes)",
     price: "$110 / hour",
     detail: "Up to 24 people, reserved seating area and your own scoreboard messaging.",
   },
   {
-    name: "Whole house (8 lanes)",
+    name: "Whole house (6 lanes)",
     price: "$450 / 3 hours",
-    detail: "Up to 48 people, private snack bar service and full sound system.",
+    detail: "Up to 36 people, private snack bar service and full sound system.",
   },
   {
     name: "Meeting room",
@@ -54,7 +54,7 @@ function RentalsPage() {
         intro={`The whole building is available outside league hours. Monday is our quietest day and the easiest to book on short notice.`}
       >
         <Button asChild size="lg">
-          <Link to="/book">Request a rental</Link>
+          <Link to="/inquiries">Request a rental</Link>
         </Button>
       </PageHeader>
 
