@@ -1,3 +1,9 @@
+# Website content management expansion
+- [ ] Inventory public pages, existing staff controls, stored content and permissions; present a safe implementation plan.
+- [ ] Extend the existing content system for page text, central contact details, media, telephone actions and structured packages.
+- [ ] Expand simple staff editing, preview, visibility, validation and non-destructive archiving while preserving existing layouts.
+- [ ] Verify each editing/public-display flow, staff-only writes, telephone links and retained features; document remaining limitations.
+
 # Website refinement and six-lane reservations
 - [x] Inspect existing bookings, schedules, access policies and hosting dependencies; present the implementation plan.
 - [x] Implement concurrency-safe reservations, configurable duration/rules and lane availability without changing existing inquiry records.
