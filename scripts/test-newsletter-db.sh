@@ -9,7 +9,7 @@ initdb -D "$DIR/data" -A trust >/dev/null
 pg_ctl -D "$DIR/data" -o "-p $PORT -k $DIR -c listen_addresses=''" -l "$DIR/log" start >/dev/null
 Q() { psql -h "$DIR" -p "$PORT" -d postgres -v ON_ERROR_STOP=1 -qtA "$@"; }
 Q <<'SQL'
-CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_role;
+CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_role BYPASSRLS;
 CREATE SCHEMA auth; CREATE SCHEMA private; CREATE SCHEMA storage;
 CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
 CREATE TABLE storage.objects(bucket_id text, name text); ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
