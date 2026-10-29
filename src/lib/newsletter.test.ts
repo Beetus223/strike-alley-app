@@ -27,8 +27,10 @@ describe('newsletter test safeguards', () => {
     expect(safeNewsletterUrl('blob:https://example.com/test', true)).toBeNull();
     expect(safeNewsletterUrl('https://example.com/photo.jpg', true)).toBe('https://example.com/photo.jpg');
   });
-  it('keeps sending locked pending chat approval', () => {
-    expect(NEWSLETTER_TEST_SEND_APPROVED).toBe(false);
+  it('test sending is approved only for the fixed test address', () => {
+    expect(NEWSLETTER_TEST_SEND_APPROVED).toBe(true);
+    expect(recipientSchema.safeParse('someone@example.com').success).toBe(false);
+    expect(recipientSchema.safeParse('JONAH.BEATTIE78@gmail.com').success).toBe(true);
   });
   it('uses the specified sender', () => {
     expect(TEST_EMAIL).toBe('jonah.beattie78@gmail.com');

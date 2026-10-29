@@ -4,7 +4,7 @@ import emailCss from './newsletter-email.css?raw';
 export const TEST_EMAIL = 'jonah.beattie78@gmail.com';
 export const TEST_SENDER_NAME = 'Vegreville Bowling Lanes';
 // Change only after explicit chat approval; no settings or UI can bypass this gate.
-export const NEWSLETTER_TEST_SEND_APPROVED = false;
+export const NEWSLETTER_TEST_SEND_APPROVED = true; // Approved in chat 2026-10-29 for single test sends to TEST_EMAIL only.
 export const recipientSchema = z.string().trim().email().transform(value => value.toLowerCase())
   .refine(value => value === TEST_EMAIL, `Tests may only be sent to ${TEST_EMAIL}.`);
 export const draftSchema = z.object({
