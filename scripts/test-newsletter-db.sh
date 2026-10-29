@@ -27,7 +27,7 @@ CONSENT="I agree to receive email updates from Vegreville Bowling Lanes."
 fail=0
 check() { if [ "$2" = "$3" ]; then echo "PASS $1"; else echo "FAIL $1 (got '$2', want '$3')"; fail=1; fi; }
 svc() { Q -c "SET ROLE service_role; $1" | tail -1; }
-as() { Q -c "BEGIN; SELECT set_config('request.jwt.claim.sub','$1',true); SET LOCAL ROLE $2; $3; ROLLBACK;" 2>&1 | grep -v '^$' | sed -n '2p'; }
+as() { Q -c "BEGIN; SELECT set_config('request.jwt.claim.sub','$1',true) IS NULL; SET LOCAL ROLE $2; $3; ROLLBACK;" 2>&1 | grep -v '^$' | sed -n '2p'; }
 
 check "invalid email rejected" "$(svc "SELECT newsletter_signup('bad','$CONSENT','$H1','c1')->>'ok'")" "false"
 check "signup creates pending" "$(svc "SELECT newsletter_signup('Test@Example.com','$CONSENT','$H1','c1')->>'send'")" "true"
