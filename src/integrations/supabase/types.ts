@@ -1228,6 +1228,42 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_drafts: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string
+          id: string
+          last_test_at: string | null
+          last_test_recipient: string | null
+          last_test_status: string | null
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          last_test_at?: string | null
+          last_test_recipient?: string | null
+          last_test_status?: string | null
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          last_test_at?: string | null
+          last_test_recipient?: string | null
+          last_test_status?: string | null
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ordering_settings: {
         Row: {
           customer_message: string | null
@@ -1860,6 +1896,7 @@ export type Database = {
           week_number: number
         }[]
       }
+      newsletter_staff_access: { Args: never; Returns: boolean }
       place_food_order: { Args: { payload: Json }; Returns: Json }
       reservation_available: {
         Args: { p_alloc: number[]; p_day: string; p_games: number }

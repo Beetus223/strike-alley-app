@@ -134,6 +134,13 @@
       "when": 1792786930495,
       "tag": "0018_announcement_newsletter_status",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1793236443447,
+      "tag": "0019_newsletter_test_drafts",
+      "breakpoints": true
     }
   ]
 }
