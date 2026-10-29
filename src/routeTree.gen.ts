@@ -27,6 +27,7 @@ import { Route as PartiesRouteImport } from './routes/parties'
 import { Route as RentalsRouteImport } from './routes/rentals'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicNewsletterImageRouteImport } from './routes/api/public/newsletter-image'
 import { Route as ApiPublicWebsitePhotoRouteImport } from './routes/api/public/website-photo'
 
 const IndexRoute = IndexRouteImport.update({
@@ -118,6 +119,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicNewsletterImageRoute =
+  ApiPublicNewsletterImageRouteImport.update({
+    id: '/api/public/newsletter-image',
+    path: '/api/public/newsletter-image',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicWebsitePhotoRoute = ApiPublicWebsitePhotoRouteImport.update({
   id: '/api/public/website-photo',
   path: '/api/public/website-photo',
@@ -142,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/public/newsletter-image': typeof ApiPublicNewsletterImageRoute
   '/api/public/website-photo': typeof ApiPublicWebsitePhotoRoute
 }
 export interface FileRoutesByTo {
@@ -162,6 +170,7 @@ export interface FileRoutesByTo {
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/public/newsletter-image': typeof ApiPublicNewsletterImageRoute
   '/api/public/website-photo': typeof ApiPublicWebsitePhotoRoute
 }
 export interface FileRoutesById {
@@ -184,6 +193,7 @@ export interface FileRoutesById {
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/api/public/newsletter-image': typeof ApiPublicNewsletterImageRoute
   '/api/public/website-photo': typeof ApiPublicWebsitePhotoRoute
 }
 export interface FileRouteTypes {
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/reset-password'
     | '/admin'
+    | '/api/public/newsletter-image'
     | '/api/public/website-photo'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/reset-password'
     | '/admin'
+    | '/api/public/newsletter-image'
     | '/api/public/website-photo'
   id:
     | '__root__'
@@ -247,6 +259,7 @@ export interface FileRouteTypes {
     | '/rentals'
     | '/reset-password'
     | '/_authenticated/admin'
+    | '/api/public/newsletter-image'
     | '/api/public/website-photo'
   fileRoutesById: FileRoutesById
 }
@@ -268,6 +281,7 @@ export interface RootRouteChildren {
   PartiesRoute: typeof PartiesRoute
   RentalsRoute: typeof RentalsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiPublicNewsletterImageRoute: typeof ApiPublicNewsletterImageRoute
   ApiPublicWebsitePhotoRoute: typeof ApiPublicWebsitePhotoRoute
 }
 
@@ -399,6 +413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/newsletter-image': {
+      id: '/api/public/newsletter-image'
+      path: '/api/public/newsletter-image'
+      fullPath: '/api/public/newsletter-image'
+      preLoaderRoute: typeof ApiPublicNewsletterImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/website-photo': {
       id: '/api/public/website-photo'
       path: '/api/public/website-photo'
@@ -438,6 +459,7 @@ const rootRouteChildren: RootRouteChildren = {
   PartiesRoute: PartiesRoute,
   RentalsRoute: RentalsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiPublicNewsletterImageRoute: ApiPublicNewsletterImageRoute,
   ApiPublicWebsitePhotoRoute: ApiPublicWebsitePhotoRoute,
 }
 export const routeTree = rootRouteImport
