@@ -2,6 +2,7 @@ import { SpecialScheduleEditor } from "@/components/content/SpecialScheduleEdito
 import { WebsiteEditor } from "@/components/content/WebsiteEditor";
 import { OfferingEditor } from "@/components/content/OfferingEditor";
 import { NewsletterEditor } from "@/components/content/NewsletterEditor";
+import { SubscribersPanel } from "@/components/content/SubscribersPanel";
 import { PhotoFormField } from "@/components/content/PhotoPicker";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -77,7 +78,8 @@ function str(form: FormData, key: string) {
 }
 
 function AdminPage() {
-  const { isStaff, loading, accessError, retryAccess, signOut } = useAuth();
+  const { isStaff, roles, loading, accessError, retryAccess, signOut } = useAuth();
+  const isAdmin = roles.includes("admin");
 
   if (loading) return <Section>Loading…</Section>;
   if (accessError) {
@@ -130,6 +132,7 @@ function AdminPage() {
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="announcements">Announcements</TabsTrigger>
             <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
+            {isAdmin && <TabsTrigger value="subscribers">Subscribers</TabsTrigger>}
             <TabsTrigger value="menu">Food Menu</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
           </TabsList>
@@ -156,6 +159,7 @@ function AdminPage() {
           <TabsContent value="newsletter" className="mt-6">
             <NewsletterEditor />
           </TabsContent>
+          {isAdmin && <TabsContent value="subscribers" className="mt-6"><SubscribersPanel /></TabsContent>}
           <TabsContent value="bookings" className="mt-6">
             <StaffReservations />
           </TabsContent>
