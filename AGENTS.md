@@ -23,3 +23,4 @@
 - Staff content validation lives in a browser-safe pure module shared by forms and authenticated server functions so rules can be tested without browser/database dependencies.
 - Shared auth loads account-scoped roles through the query cache with retries and distinct failure state; a failed permission read must never be presented as confirmed lack of staff access.
 - Website photos use a private Storage bucket: staff upload re-encoded device images and preview signed links; a public photo route reads anonymously through published-reference RLS, so unpublished photos stay private and existing drafts/publishing remain authoritative.
+- Newsletter is a staff-authorized test module: shared pure validation/rendering and CSS email tokens feed both sandboxed preview and authenticated direct-provider server functions, with RLS drafts and a server-side chat-approval gate, so preview matches sending without exposing credentials or permitting unintended recipients.

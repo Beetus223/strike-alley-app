@@ -1,6 +1,7 @@
 import { SpecialScheduleEditor } from "@/components/content/SpecialScheduleEditor";
 import { WebsiteEditor } from "@/components/content/WebsiteEditor";
 import { OfferingEditor } from "@/components/content/OfferingEditor";
+import { NewsletterEditor } from "@/components/content/NewsletterEditor";
 import { PhotoFormField } from "@/components/content/PhotoPicker";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -128,6 +129,7 @@ function AdminPage() {
             <TabsTrigger value="hours">Hours</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="announcements">Announcements</TabsTrigger>
+            <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
             <TabsTrigger value="menu">Food Menu</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
           </TabsList>
@@ -150,6 +152,9 @@ function AdminPage() {
           </TabsContent>
           <TabsContent value="menu" className="mt-6">
             <MenuEditor />
+          </TabsContent>
+          <TabsContent value="newsletter" className="mt-6">
+            <NewsletterEditor />
           </TabsContent>
           <TabsContent value="bookings" className="mt-6">
             <StaffReservations />
