@@ -1,4 +1,6 @@
 # Website content management expansion
+- [ ] Investigate Brevo outbound IP authorization without live changes; confirm request path and safe testing options before connecting.
+- [ ] Connect Brevo securely and implement staff-only newsletter draft/preview/single-address testing; blocked pending IP authorization investigation and secure connection.
 - [x] Add local/phone photo selection with safe private uploads and existing draft/publish controls; owner upload/private draft/public photo rendering verified.
 - [x] Audit every public photo surface: all six fixed photos are editable; event and announcement record editors with photo selection are also available inside Manage Website. Layout and core 5-pin facts remain developer-managed.
 - [x] Inventory public pages, existing staff controls, stored content and permissions; present a safe implementation plan.
