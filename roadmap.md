@@ -1,7 +1,7 @@
 # Website content management expansion
 - [x] Inspect Brevo request code, connection state, logs and official IP guidance: no app calls or linked connection exist; Workers/gateway fixed egress is not established.
 - [ ] Identify the blocked request's actual source IP and path; requires Brevo Authorized IPs evidence and identification of the environment that made the request.
-- [ ] Implement newsletter test drafts, formatted previews, allowlisted server-side test sending and focused tests in this draft.
+- [x] Implement newsletter test drafts, formatted previews, allowlisted authenticated server-side test sending behind chat-approval gate; 7 newsletter tests and 4 staff-auth tests pass; signed-in desktop/mobile previews and recipient validation verified. No email sent and no hosted schema changed.
 - [ ] Verify newsletter save/reopen/delete after acceptance activates its staged storage; new draft schema cannot run here.
 - [ ] Send one real newsletter test only after explicit chat approval; no customer/bulk/scheduled sending.
 - [x] Add local/phone photo selection with safe private uploads and existing draft/publish controls; owner upload/private draft/public photo rendering verified.

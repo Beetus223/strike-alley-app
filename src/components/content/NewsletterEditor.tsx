@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { draftSchema, recipientSchema, renderNewsletter, TEST_EMAIL, NEWSLETTER_TEST_SEND_APPROVED, type NewsletterDraft } from '@/lib/newsletter';
+import { draftSchema, recipientSchema, renderNewsletter, safeNewsletterUrl, TEST_EMAIL, NEWSLETTER_TEST_SEND_APPROVED, type NewsletterDraft } from '@/lib/newsletter';
 import { listNewsletterDrafts, saveNewsletterDraft, deleteNewsletterDraft, sendNewsletterTest } from '@/lib/newsletter.functions';
 
 const formatDate = (date: string | null) => date ? new Date(date).toLocaleString() : '—';
@@ -74,10 +74,14 @@ export function NewsletterEditor() {
     input?.focus();
   }
   function insertUrl() {
-    const parsed = /^https:\/\//i.test(url) && !/[\s)"<>]/.test(url);
+    const parsed = safeNewsletterUrl(url, true) && !/[\s)"<>]/.test(url);
     if (!parsed || !caption.trim() || /[\]\n]/.test(caption)) { toast.error('Enter an HTTPS address and a short label.'); return; }
     if (urlMode === 'image') setBody(value => `${value}${value ? '\n\n' : ''}![${caption}](${url})\n\n`);
-    else format(`[${caption}](${url})`, '', '');
+    else {
+      const start = textRef.current?.selectionStart ?? body.length;
+      const end = textRef.current?.selectionEnd ?? start;
+      setBody(body.slice(0, start) + `[${caption}](${url})` + body.slice(end));
+    }
     setUrlMode(null); setUrl(''); setCaption('');
   }
   const current = drafts.data?.find(draft => draft.id === selected?.id) ?? selected;
