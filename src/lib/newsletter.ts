@@ -39,7 +39,7 @@ function inlineText(value: string): string {
   const escaped = escapeHtml(value);
   return escaped.split(/(\[[^\]\n]+\]\([^\s)]+\))/g).map(part => {
     const link = /^\[([^\]\n]+)\]\(([^\s)]+)\)$/.exec(part);
-    if (link) {
+    if (link?.[1] && link[2]) {
       const url = safeNewsletterUrl(link[2].replace(/&amp;/g, '&'));
       return url ? `<a href="${escapeHtml(url)}" style="color:${emailToken('accent')};text-decoration:underline">${link[1]}</a>` : link[1];
     }
@@ -49,12 +49,12 @@ function inlineText(value: string): string {
 export function renderNewsletter(subject: string, body: string): string {
   const content = body.split(/\n\s*\n/).map(block => {
     const image = /^!\[([^\]\n]*)\]\(([^\s)]+)\)$/.exec(block.trim());
-    if (image) {
+    if (image?.[1] !== undefined && image[2]) {
       const url = safeNewsletterUrl(image[2], true);
       return url ? `<p><img src="${escapeHtml(url)}" alt="${escapeHtml(image[1])}" width="552" style="display:block;width:100%;max-width:552px;height:auto;border:0" /></p>` : `<p>${escapeHtml(block)}</p>`;
     }
     const heading = /^(#{1,3})\s+([\s\S]*)$/.exec(block);
-    if (heading) return `<h2 style="color:${emailToken('primary')};font-size:22px;line-height:1.4;margin:24px 0 12px">${inlineText(heading[2]).replace(/\n/g, '<br />')}</h2>`;
+    if (heading?.[2]) return `<h2 style="color:${emailToken('primary')};font-size:22px;line-height:1.4;margin:24px 0 12px">${inlineText(heading[2]).replace(/\n/g, '<br />')}</h2>`;
     return `<p style="margin:0 0 18px;line-height:1.7">${inlineText(block).replace(/\n/g, '<br />')}</p>`;
   }).join('');
   return `<!doctype html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${escapeHtml(subject)}</title></head><body style="margin:0;background:${emailToken('background')};color:${emailToken('text')};font-family:Arial,Helvetica,sans-serif"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:24px 12px"><table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;background:${emailToken('surface')}"><tr><td style="padding:24px;border-top:4px solid ${emailToken('primary')}"><p style="color:${emailToken('accent')};font-size:14px;margin:0 0 18px">Vegreville Bowling Lanes</p><h1 style="font-size:28px;line-height:1.3;margin:0 0 24px;overflow-wrap:anywhere">${escapeHtml(subject)}</h1><div style="overflow-wrap:anywhere">${content}</div><p style="font-size:12px;color:${emailToken('muted')};margin-top:32px">Test newsletter · Not a customer campaign</p></td></tr></table></td></tr></table></body></html>`;

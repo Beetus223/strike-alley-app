@@ -1,4 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// Vitest stubs CSS imports by default; read the real template tokens instead.
+vi.mock('./newsletter-email.css?raw', async () => {
+  const { readFileSync } = await import('node:fs');
+  return { default: readFileSync(new URL('./newsletter-email.css', import.meta.url), 'utf8') };
+});
 import { draftSchema, recipientSchema, renderNewsletter, safeNewsletterUrl, NEWSLETTER_TEST_SEND_APPROVED, TEST_EMAIL, TEST_SENDER_NAME } from './newsletter';
 
 describe('newsletter test safeguards', () => {
