@@ -130,7 +130,7 @@ export function NewsletterEditor() {
               <Button type="button" variant="outline" size="icon" aria-label="Bold" title="Bold" disabled={busy} onClick={() => format('**', '**')}><Bold /></Button>
               <Button type="button" variant="outline" size="icon" aria-label="Italic" title="Italic" disabled={busy} onClick={() => format('*', '*')}><Italic /></Button>
               <Button type="button" variant="outline" size="icon" aria-label="Insert link" title="Insert link" disabled={busy} onClick={() => setUrlMode('link')}><Link /></Button>
-              <Button type="button" variant="outline" size="icon" aria-label="Insert image from link" title="Insert image from link" disabled={busy} onClick={() => setImageOpen(true)}><Image /></Button>
+              <Button type="button" variant="outline" size="icon" aria-label="Insert image from link" title="Insert image from link" disabled={busy} onClick={() => setUrlMode('image')}><Image /></Button>
               <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => setImageOpen(true)}><Image />Add image</Button>
             </div>
             {urlMode && <div className="grid gap-2 sm:grid-cols-2"><Input aria-label={urlMode === 'image' ? 'Image description' : 'Link label'} placeholder={urlMode === 'image' ? 'Image description' : 'Link label'} value={caption} onChange={event => setCaption(event.target.value)} /><Input type="url" aria-label="HTTPS address" placeholder="https://" value={url} onChange={event => setUrl(event.target.value)} /><div className="flex gap-2"><Button type="button" variant="outline" onClick={insertUrl}>Insert</Button><Button type="button" variant="ghost" onClick={() => setUrlMode(null)}>Cancel</Button></div></div>}
