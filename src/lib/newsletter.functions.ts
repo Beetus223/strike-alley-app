@@ -1,6 +1,8 @@
 import { createServerFn, createServerOnlyFn } from '@tanstack/react-start';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { getRequest } from '@tanstack/react-start/server';
+import { siteOrigin } from './newsletter.server';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import type { Database } from '@/integrations/supabase/types';
 import { draftSchema, sendSchema, renderNewsletter, NEWSLETTER_TEST_SEND_APPROVED, TEST_EMAIL, TEST_SENDER_NAME, type NewsletterDraft } from './newsletter';
@@ -67,7 +69,7 @@ export const sendNewsletterTest = createServerFn({ method: 'POST' })
     try {
       const response = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'api-key': key },
-        body: JSON.stringify({ sender: { email: TEST_EMAIL, name: TEST_SENDER_NAME }, to: [{ email: TEST_EMAIL }], subject: draft.subject, htmlContent: renderNewsletter(draft.subject, draft.body), textContent: draft.body }),
+        body: JSON.stringify({ sender: { email: TEST_EMAIL, name: TEST_SENDER_NAME }, to: [{ email: TEST_EMAIL }], subject: draft.subject, htmlContent: renderNewsletter(draft.subject, draft.body, { baseUrl: siteOrigin(getRequest().url) }), textContent: draft.body }),
         signal: AbortSignal.timeout(20000),
       });
       // Do not parse, log or expose the provider response body.

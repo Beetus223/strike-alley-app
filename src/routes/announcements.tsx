@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Megaphone } from "lucide-react";
 import { PageHeader, Section } from "@/components/site/PageHeader";
 import { useAnnouncements } from "@/lib/content";
+import { NewsletterSignup } from "@/components/site/NewsletterSignup";
 
 export const Route = createFileRoute("/announcements")({
   head: () => ({
@@ -60,6 +61,7 @@ function AnnouncementsPage() {
             ))}
           </ul>
         )}
+        <NewsletterSignup />
       </Section>
     </>
   );

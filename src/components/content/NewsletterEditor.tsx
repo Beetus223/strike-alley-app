@@ -1,4 +1,6 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { NewsletterImagePicker, NEWSLETTER_BUCKET } from './NewsletterImagePicker';
 import { useServerFn } from '@tanstack/react-start';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Bold, Italic, Heading2, Link, Image, Monitor, Smartphone, Plus, Save, Send, Trash2 } from 'lucide-react';
@@ -7,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { draftSchema, recipientSchema, renderNewsletter, safeNewsletterUrl, TEST_EMAIL, NEWSLETTER_TEST_SEND_APPROVED, type NewsletterDraft } from '@/lib/newsletter';
+import { draftSchema, recipientSchema, renderNewsletter, safeNewsletterUrl, imageMarkup, NEWSLETTER_IMAGE_PREFIX, newsletterImagePathPattern, TEST_EMAIL, NEWSLETTER_TEST_SEND_APPROVED, type NewsletterDraft } from '@/lib/newsletter';
 import { listNewsletterDrafts, saveNewsletterDraft, deleteNewsletterDraft, sendNewsletterTest } from '@/lib/newsletter.functions';
 
 const formatDate = (date: string | null) => date ? new Date(date).toLocaleString() : '—';
@@ -34,6 +36,25 @@ export function NewsletterEditor() {
   const [url, setUrl] = useState('');
   const [caption, setCaption] = useState('');
   const textRef = useRef<HTMLTextAreaElement>(null);
+  const [imageOpen, setImageOpen] = useState(false);
+  const [signed, setSigned] = useState<Record<string, string>>({});
+  // Preview uploaded photos through temporary staff-only links; sent emails use permanent site links.
+  useEffect(() => {
+    const paths = [...body.matchAll(/\/api\/public\/newsletter-image\?path=([0-9a-f-]{36}\/[0-9a-f-]{36}\.jpg)/g)].map(m => m[1]!).filter(p => newsletterImagePathPattern.test(p) && !signed[p]);
+    if (!paths.length) return;
+    void supabase.storage.from(NEWSLETTER_BUCKET).createSignedUrls(paths, 3600).then(({ data }) => {
+      const next: Record<string, string> = {};
+      data?.forEach((item, index) => { if (item.signedUrl) next[paths[index]!] = item.signedUrl; });
+      if (Object.keys(next).length) setSigned(current => ({ ...current, ...next }));
+    });
+  }, [body, signed]);
+  function insertImage(path: string, alt: string, size: Parameters<typeof imageMarkup>[2], align: Parameters<typeof imageMarkup>[3]) {
+    const start = textRef.current?.selectionStart ?? body.length;
+    const end = textRef.current?.selectionEnd ?? start;
+    const before = body.slice(0, start).replace(/\s*$/, '');
+    const after = body.slice(end).replace(/^\s*/, '');
+    setBody(`${before}${before ? '\n\n' : ''}${imageMarkup(alt, NEWSLETTER_IMAGE_PREFIX + path, size, align)}\n\n${after}`);
+  }
   const dirty = subject !== (selected?.subject ?? '') || body !== (selected?.body ?? '');
   const refresh = () => void queryClient.invalidateQueries({ queryKey: ['staff', 'newsletter-drafts'] });
   const saving = useMutation({
@@ -109,7 +130,8 @@ export function NewsletterEditor() {
               <Button type="button" variant="outline" size="icon" aria-label="Bold" title="Bold" disabled={busy} onClick={() => format('**', '**')}><Bold /></Button>
               <Button type="button" variant="outline" size="icon" aria-label="Italic" title="Italic" disabled={busy} onClick={() => format('*', '*')}><Italic /></Button>
               <Button type="button" variant="outline" size="icon" aria-label="Insert link" title="Insert link" disabled={busy} onClick={() => setUrlMode('link')}><Link /></Button>
-              <Button type="button" variant="outline" size="icon" aria-label="Insert image" title="Insert image" disabled={busy} onClick={() => setUrlMode('image')}><Image /></Button>
+              <Button type="button" variant="outline" size="icon" aria-label="Insert image from link" title="Insert image from link" disabled={busy} onClick={() => setUrlMode('image')}><Image /></Button>
+              <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => setImageOpen(true)}><Image />Add image</Button>
             </div>
             {urlMode && <div className="grid gap-2 sm:grid-cols-2"><Input aria-label={urlMode === 'image' ? 'Image description' : 'Link label'} placeholder={urlMode === 'image' ? 'Image description' : 'Link label'} value={caption} onChange={event => setCaption(event.target.value)} /><Input type="url" aria-label="HTTPS address" placeholder="https://" value={url} onChange={event => setUrl(event.target.value)} /><div className="flex gap-2"><Button type="button" variant="outline" onClick={insertUrl}>Insert</Button><Button type="button" variant="ghost" onClick={() => setUrlMode(null)}>Cancel</Button></div></div>}
             <Textarea ref={textRef} id="newsletter-body" value={body} onChange={event => setBody(event.target.value)} rows={10} maxLength={20000} required disabled={busy} />
@@ -118,7 +140,7 @@ export function NewsletterEditor() {
         </form>
         <section aria-label="Email preview" className="space-y-3 border-t border-border pt-5">
           <div className="flex flex-wrap items-center justify-between gap-3"><h3 className="font-display text-xl">Email preview</h3><div className="flex gap-1" role="group" aria-label="Preview width"><Button variant={mobile ? 'outline' : 'secondary'} size="icon" aria-label="Desktop preview" title="Desktop preview" aria-pressed={!mobile} onClick={() => setMobile(false)}><Monitor /></Button><Button variant={mobile ? 'secondary' : 'outline'} size="icon" aria-label="Mobile preview" title="Mobile preview" aria-pressed={mobile} onClick={() => setMobile(true)}><Smartphone /></Button></div></div>
-          <iframe title="Newsletter email preview" sandbox="" referrerPolicy="no-referrer" srcDoc={renderNewsletter(subject, body)} className={`mx-auto h-[540px] w-full rounded-lg border border-border ${mobile ? 'max-w-[375px]' : 'max-w-[640px]'}`} />
+          <iframe title="Newsletter email preview" sandbox="" referrerPolicy="no-referrer" srcDoc={renderNewsletter(subject, body, { resolveImage: path => signed[path] ?? null })} className={`mx-auto h-[540px] w-full rounded-lg border border-border ${mobile ? 'max-w-[375px]' : 'max-w-[640px]'}`} />
         </section>
         <section className="space-y-3 border-t border-border pt-5" aria-label="Newsletter test send">
           <h3 className="font-display text-xl">Send a test</h3>
@@ -132,5 +154,6 @@ export function NewsletterEditor() {
         </section>
       </div>
     </div>
+    <NewsletterImagePicker open={imageOpen} onOpenChange={setImageOpen} onInsert={insertImage} />
   </div>;
 }

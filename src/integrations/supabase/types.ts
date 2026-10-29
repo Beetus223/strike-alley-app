@@ -1264,6 +1264,113 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_signup_limits: {
+        Row: {
+          attempts: number
+          bucket: string
+          window_start: string
+        }
+        Insert: {
+          attempts?: number
+          bucket: string
+          window_start: string
+        }
+        Update: {
+          attempts?: number
+          bucket?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
+      newsletter_subscriber_events: {
+        Row: {
+          actor_id: string | null
+          event: string
+          id: string
+          occurred_at: string
+          subscriber_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          event: string
+          id?: string
+          occurred_at?: string
+          subscriber_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          event?: string
+          id?: string
+          occurred_at?: string
+          subscriber_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_subscriber_events_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "newsletter_subscribers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      newsletter_subscribers: {
+        Row: {
+          confirm_expires_at: string | null
+          confirm_sends_today: number
+          confirm_token_hash: string | null
+          confirmed_at: string | null
+          consent_at: string
+          consent_source: string
+          consent_text: string
+          created_at: string
+          email: string
+          id: string
+          last_confirm_sent_at: string | null
+          status: string
+          unsubscribe_source: string | null
+          unsubscribed_at: string | null
+          updated_at: string
+          welcome_sent_at: string | null
+        }
+        Insert: {
+          confirm_expires_at?: string | null
+          confirm_sends_today?: number
+          confirm_token_hash?: string | null
+          confirmed_at?: string | null
+          consent_at?: string
+          consent_source?: string
+          consent_text: string
+          created_at?: string
+          email: string
+          id?: string
+          last_confirm_sent_at?: string | null
+          status?: string
+          unsubscribe_source?: string | null
+          unsubscribed_at?: string | null
+          updated_at?: string
+          welcome_sent_at?: string | null
+        }
+        Update: {
+          confirm_expires_at?: string | null
+          confirm_sends_today?: number
+          confirm_token_hash?: string | null
+          confirmed_at?: string | null
+          consent_at?: string
+          consent_source?: string
+          consent_text?: string
+          created_at?: string
+          email?: string
+          id?: string
+          last_confirm_sent_at?: string | null
+          status?: string
+          unsubscribe_source?: string | null
+          unsubscribed_at?: string | null
+          updated_at?: string
+          welcome_sent_at?: string | null
+        }
+        Relationships: []
+      }
       ordering_settings: {
         Row: {
           customer_message: string | null
@@ -1896,7 +2003,35 @@ export type Database = {
           week_number: number
         }[]
       }
+      newsletter_admin_unsubscribe: { Args: { p_id: string }; Returns: boolean }
+      newsletter_confirm: { Args: { p_confirm_hash: string }; Returns: Json }
+      newsletter_image_in_use: { Args: { p_name: string }; Returns: boolean }
+      newsletter_mark_welcome: { Args: { p_id: string }; Returns: undefined }
+      newsletter_marketing_recipients: {
+        Args: never
+        Returns: {
+          email: string
+          id: string
+        }[]
+      }
+      newsletter_signup: {
+        Args: {
+          p_client_hash: string
+          p_confirm_hash: string
+          p_consent_text: string
+          p_email: string
+        }
+        Returns: Json
+      }
       newsletter_staff_access: { Args: never; Returns: boolean }
+      newsletter_take_limit: {
+        Args: { p_bucket: string; p_max: number; p_window: string }
+        Returns: boolean
+      }
+      newsletter_unsubscribe: {
+        Args: { p_id: string; p_source: string }
+        Returns: boolean
+      }
       place_food_order: { Args: { payload: Json }; Returns: Json }
       reservation_available: {
         Args: { p_alloc: number[]; p_day: string; p_games: number }

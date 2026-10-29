@@ -11,7 +11,6 @@ export function SiteFooter() {
  const CENTRE = useBusiness();
   const { user, signOut } = useAuth();
   const { text } = useWebsiteContent();
-  const newsletterUrl = text("contact.newsletter_url");
   return (
     <footer className="ink-section border-t border-border">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
@@ -64,21 +63,6 @@ export function SiteFooter() {
           {user && <Button variant="ghost" size="sm" className="mt-3 text-ink-foreground" onClick={() => void signOut().catch(() => toast.error("Sign-out failed. Please try again."))}>Sign out</Button>}
         </div>
       </div>
-      {newsletterUrl && (
-        <div className="border-t border-white/10 px-4 py-8 sm:px-6">
-          <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="font-display text-lg text-ink-foreground">Join our newsletter</h3>
-              <p className="mt-1 max-w-xl text-sm text-ink-muted">{text("contact.newsletter_text")}</p>
-            </div>
-            <Button asChild>
-              <a href={newsletterUrl} target="_blank" rel="noopener noreferrer">
-                <Mail className="h-4 w-4" aria-hidden /> Sign up by email
-              </a>
-            </Button>
-          </div>
-        </div>
-      )}
       <div className="border-t border-white/10 px-4 py-5 text-center text-xs text-ink-muted sm:px-6">
         © {new Date().getFullYear()} {CENTRE.name}. Proudly 5-pin, proudly Vegreville.
       </div>
