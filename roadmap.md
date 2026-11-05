@@ -1,9 +1,8 @@
 # Roadmap
 
-- [ ] Investigate 9 RLS findings (players, team_matchups, teams, ordering_settings, booking_requests, league_settings, league_sessions, hours_of_operation, website_content); explain before changing; apply least-privilege where data is not intentionally public
-- [ ] Investigate website-photos storage warning; keep published images working on Lovable + Cloudflare; staff-only write
-- [ ] Verify whether Jonah's unsubscribe was recorded; do not delete test subscriber until verified
-- [ ] After verification: newsletter cleanup (remove test subscriber + spam counters, preserve audit history + draft), keep all email sending + bulk disabled
-- [ ] Run security scan + tests after fixes
-- [ ] Republish Lovable + trigger Cloudflare deployment; verify bridge still works without sending emails
-- [ ] Final status report: resolved vs. needs further action
+- [x] Investigate 9 RLS findings; dropped unused public reads (players, teams, team_matchups, league_settings, league_sessions, ordering_settings) and open booking insert; kept intentional public reads (hours, website_content)
+- [x] website-photos warning: expected by design (published-reference-only public reads, staff-only writes); photos verified loading on Lovable + Cloudflare; ignore proposed to user
+- [x] Unsubscribe investigation: Jonah's click never reached the server; mechanism proven working (fake token correctly rejected, relay 200)
+- [x] Newsletter cleanup: test subscriber + events + spam counters removed; draft preserved; all email sending + bulk disabled
+- [x] Tests (77 pass) + security rescan (7 findings cleared, 2 info ignored as intentional)
+- [x] Lovable republish scheduled; Cloudflare deploy follows via GitHub sync of commit 0ed602e; bridge re-verified with dummy signup (no email sent)
