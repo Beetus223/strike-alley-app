@@ -30,6 +30,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as NewsletterConfirmRouteImport } from './routes/newsletter.confirm'
 import { Route as NewsletterUnsubscribeRouteImport } from './routes/newsletter.unsubscribe'
 import { Route as ApiPublicNewsletterImageRouteImport } from './routes/api/public/newsletter-image'
+import { Route as ApiPublicNewsletterRelayRouteImport } from './routes/api/public/newsletter-relay'
 import { Route as ApiPublicWebsitePhotoRouteImport } from './routes/api/public/website-photo'
 
 const IndexRoute = IndexRouteImport.update({
@@ -137,6 +138,12 @@ const ApiPublicNewsletterImageRoute =
     path: '/api/public/newsletter-image',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicNewsletterRelayRoute =
+  ApiPublicNewsletterRelayRouteImport.update({
+    id: '/api/public/newsletter-relay',
+    path: '/api/public/newsletter-relay',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicWebsitePhotoRoute = ApiPublicWebsitePhotoRouteImport.update({
   id: '/api/public/website-photo',
   path: '/api/public/website-photo',
@@ -164,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/newsletter/unsubscribe': typeof NewsletterUnsubscribeRoute
   '/api/public/newsletter-image': typeof ApiPublicNewsletterImageRoute
+  '/api/public/newsletter-relay': typeof ApiPublicNewsletterRelayRoute
   '/api/public/website-photo': typeof ApiPublicWebsitePhotoRoute
 }
 export interface FileRoutesByTo {
@@ -187,6 +195,7 @@ export interface FileRoutesByTo {
   '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/newsletter/unsubscribe': typeof NewsletterUnsubscribeRoute
   '/api/public/newsletter-image': typeof ApiPublicNewsletterImageRoute
+  '/api/public/newsletter-relay': typeof ApiPublicNewsletterRelayRoute
   '/api/public/website-photo': typeof ApiPublicWebsitePhotoRoute
 }
 export interface FileRoutesById {
@@ -212,6 +221,7 @@ export interface FileRoutesById {
   '/newsletter/confirm': typeof NewsletterConfirmRoute
   '/newsletter/unsubscribe': typeof NewsletterUnsubscribeRoute
   '/api/public/newsletter-image': typeof ApiPublicNewsletterImageRoute
+  '/api/public/newsletter-relay': typeof ApiPublicNewsletterRelayRoute
   '/api/public/website-photo': typeof ApiPublicWebsitePhotoRoute
 }
 export interface FileRouteTypes {
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/newsletter/confirm'
     | '/newsletter/unsubscribe'
     | '/api/public/newsletter-image'
+    | '/api/public/newsletter-relay'
     | '/api/public/website-photo'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/newsletter/confirm'
     | '/newsletter/unsubscribe'
     | '/api/public/newsletter-image'
+    | '/api/public/newsletter-relay'
     | '/api/public/website-photo'
   id:
     | '__root__'
@@ -284,6 +296,7 @@ export interface FileRouteTypes {
     | '/newsletter/confirm'
     | '/newsletter/unsubscribe'
     | '/api/public/newsletter-image'
+    | '/api/public/newsletter-relay'
     | '/api/public/website-photo'
   fileRoutesById: FileRoutesById
 }
@@ -308,6 +321,7 @@ export interface RootRouteChildren {
   NewsletterConfirmRoute: typeof NewsletterConfirmRoute
   NewsletterUnsubscribeRoute: typeof NewsletterUnsubscribeRoute
   ApiPublicNewsletterImageRoute: typeof ApiPublicNewsletterImageRoute
+  ApiPublicNewsletterRelayRoute: typeof ApiPublicNewsletterRelayRoute
   ApiPublicWebsitePhotoRoute: typeof ApiPublicWebsitePhotoRoute
 }
 
@@ -460,6 +474,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNewsletterImageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/newsletter-relay': {
+      id: '/api/public/newsletter-relay'
+      path: '/api/public/newsletter-relay'
+      fullPath: '/api/public/newsletter-relay'
+      preLoaderRoute: typeof ApiPublicNewsletterRelayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/website-photo': {
       id: '/api/public/website-photo'
       path: '/api/public/website-photo'
@@ -502,6 +523,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsletterConfirmRoute: NewsletterConfirmRoute,
   NewsletterUnsubscribeRoute: NewsletterUnsubscribeRoute,
   ApiPublicNewsletterImageRoute: ApiPublicNewsletterImageRoute,
+  ApiPublicNewsletterRelayRoute: ApiPublicNewsletterRelayRoute,
   ApiPublicWebsitePhotoRoute: ApiPublicWebsitePhotoRoute,
 }
 export const routeTree = rootRouteImport
