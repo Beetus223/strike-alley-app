@@ -28,3 +28,4 @@
 - Newsletter photos live in the private `newsletter-images` bucket and are served by `/api/public/newsletter-image` only while referenced by a saved draft; sent emails use absolute site links (PUBLIC_SITE_URL or request origin), previews use signed links.
 - Copies of the site without the database master key (Cloudflare Workers) forward newsletter signup/confirm/unsubscribe to the Lovable-hosted copy via the HMAC-signed /api/public/newsletter-relay (NEWSLETTER_RELAY_SECRET, 5-min window), so the master key and link secret stay in Lovable Cloud.
 - Public browser backend address/publishable key live in committed .env.production (VITE_ only, never server secrets) because .env is git-ignored and external builds (Cloudflare via GitHub) would otherwise bake in no backend config.
+- Root wrangler.jsonc holds only public backend vars with keep_vars so GitHub→Cloudflare deploys (wrangler deploy) never wipe server config; secrets stay Cloudflare Secrets.

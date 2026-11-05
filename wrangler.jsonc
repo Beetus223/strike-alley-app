@@ -1,0 +1,11 @@
+{
+  // Cloudflare Workers settings for the GitHub -> Cloudflare deployment.
+  // Only PUBLIC values belong here (backend address + publishable key, already shipped to every browser).
+  // Private secrets (BREVO_API_KEY, NEWSLETTER_*_SECRET, PUBLIC_SITE_URL) stay as Cloudflare "Secret" entries.
+  "name": "strike-alley-app",
+  "keep_vars": true,
+  "vars": {
+    "SUPABASE_URL": "https://msbrmpwagewicctxfjzf.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_LFG24BzefYf92UAZxdtusQ_UidUq95r"
+  }
+}
