@@ -11,6 +11,17 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -952,14 +963,16 @@ function AnnouncementsPanel() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("announcements").update({is_archived:true,is_active:false}).eq("id", id);
+      // Permanently delete the announcement record. Photos in storage are left
+      // untouched — they may be referenced by other content.
+      const { error } = await supabase.from("announcements").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Announcement removed");
+      toast.success("Announcement permanently deleted");
       invalidate();
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(`Couldn't delete the announcement: ${e.message}`),
   });
 
   function submit(e: React.FormEvent<HTMLFormElement>, item?: AnnouncementItem) {
@@ -1017,15 +1030,29 @@ function AnnouncementsPanel() {
           }} />
           <div className="flex flex-wrap gap-3">
             <Button type="submit">Save</Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                if (confirm(`Remove “${a.title}”?`)) remove.mutate(a.id);
-              }}
-            >
-              Delete
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button type="button" variant="outline">Delete</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Permanently delete this announcement?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    “{a.title}” will be permanently deleted from the website and the staff
+                    dashboard. This cannot be undone. Any photo it used will be kept in storage.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => remove.mutate(a.id)}
+                    disabled={remove.isPending}
+                  >
+                    {remove.isPending ? "Deleting…" : "Delete permanently"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </form>
       ))}

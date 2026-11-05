@@ -269,6 +269,8 @@ export function useAnnouncements(includeInactive = false) {
     queryKey: ["content", "announcements", includeInactive],
     queryFn: async () => {
       let q = supabase.from("announcements").select("*").order("created_at", { ascending: false });
+      // Archived announcements are hidden everywhere, including the staff list.
+      q = q.eq("is_archived", false);
       if (!includeInactive) q = q.eq("is_active", true);
       const { data, error } = await q;
       if (error) throw error;
