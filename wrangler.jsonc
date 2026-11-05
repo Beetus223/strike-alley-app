@@ -6,6 +6,8 @@
   "keep_vars": true,
   "vars": {
     "SUPABASE_URL": "https://msbrmpwagewicctxfjzf.supabase.co",
-    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_LFG24BzefYf92UAZxdtusQ_UidUq95r"
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_LFG24BzefYf92UAZxdtusQ_UidUq95r",
+    // Public address of the Lovable-hosted copy that holds the master key (newsletter bridge target).
+    "NEWSLETTER_RELAY_URL": "https://strike-alley-app.lovable.app"
   }
 }

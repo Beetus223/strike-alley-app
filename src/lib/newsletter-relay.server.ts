@@ -54,7 +54,7 @@ export function hasDatabaseMasterKey(): boolean {
 export async function relayNewsletter<T>(payload: RelayPayload): Promise<T | null> {
   const secret = relaySecret();
   const target = process.env['NEWSLETTER_RELAY_URL'];
-  if (!secret || !target || !/^https:\/\/[^/\s]+$/.test(target)) { console.error('Newsletter relay is not configured'); return null; }
+  if (!secret || !target || !/^https:\/\/[^/\s]+$/.test(target)) { console.error(`Newsletter relay is not configured (secret: ${secret ? 'ok' : 'missing/short'}, url: ${target && /^https:\/\/[^/\s]+$/.test(target) ? 'ok' : 'missing/invalid'})`); return null; }
   const body = JSON.stringify(payload);
   const { timestamp, signature } = await signRelayRequest(secret, body);
   try {
