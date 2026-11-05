@@ -65,9 +65,6 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-white/10 px-4 py-5 text-center text-xs text-ink-muted sm:px-6">
         © {new Date().getFullYear()} {CENTRE.name}. Proudly 5-pin, proudly Vegreville.
-        <p className="mt-1 text-[10px] leading-none tracking-wide text-ink-muted/60">
-          Website Update Test
-        </p>
       </div>
     </footer>
   );
