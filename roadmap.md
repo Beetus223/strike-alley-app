@@ -1,39 +1,9 @@
-# Website content management expansion
-- [x] Inspect Brevo request code, connection state, logs and official IP guidance: no app calls or linked connection exist; Workers/gateway fixed egress is not established.
-- [ ] Identify the blocked request's actual source IP and path; requires Brevo Authorized IPs evidence and identification of the environment that made the request.
-- [x] Implement newsletter test drafts, formatted previews, allowlisted authenticated server-side test sending behind chat-approval gate; 7 newsletter tests and 4 staff-auth tests pass; signed-in desktop/mobile previews and recipient validation verified. No email sent and no hosted schema changed.
-- [x] Verify newsletter save/reopen/delete and staff-only access.
-- [x] Test sending enabled for the fixed owner address only (owner sends when ready).
-- [x] Public signup with consent, pending/confirm/unsubscribe flow, admin Subscribers tab, Add image (device/galleries); subscriber emails switched off.
-- [ ] Before launch: authenticate sender domain in Brevo, owner approval, then enable subscriber emails and set PUBLIC_SITE_URL; re-enable Brevo IP restrictions with a static route.
-- [x] Add local/phone photo selection with safe private uploads and existing draft/publish controls; owner upload/private draft/public photo rendering verified.
-- [x] Audit every public photo surface: all six fixed photos are editable; event and announcement record editors with photo selection are also available inside Manage Website. Layout and core 5-pin facts remain developer-managed.
-- [x] Inventory public pages, existing staff controls, stored content and permissions; present a safe implementation plan.
-- [x] Extend the existing content system for page text, central contact details, media, telephone actions and structured packages.
-- [x] Expand simple staff editing, preview, visibility, validation and non-destructive archiving while preserving existing layouts.
-- [x] Verify drafts/publishing, offerings, existing saves, anonymous restrictions and telephone links; record remaining coverage limits in WEBSITE-MANAGEMENT.md.
-- [x] Device photo uploads use private storage and published-reference access without changing the workspace public-storage restriction.
+# Roadmap
 
-# Website refinement and six-lane reservations
-- [x] Inspect existing bookings, schedules, access policies and hosting dependencies; present the implementation plan.
-- [x] Implement concurrency-safe reservations, configurable duration/rules and lane availability without changing existing inquiry records.
-- [x] Add regular reservation flow and separate special-event inquiries; preserve public content and staff authentication.
-- [x] Extend staff dashboard with lane schedule, reservation management, blocks and settings.
-- [x] Test availability, concurrent bookings, privacy, staff management and existing content; document owner setup and hosting limitations.
-
-# Simple telephone and staff reservation book
-- [x] Replace public regular booking form with telephone booking and special-event links; disable public ordinary reservation writes.
-- [x] Simplify staff booking types, essential details, review/save and visible success; add staff-managed special inquiries.
-- [x] Show daily/weekly/upcoming reservations and event inquiries together while preserving their separate records.
-- [x] Verify six-lane conflicts, staff permissions, changes/cancellations, accessibility and existing content; 45 tests and signed-in save/read-back checks passed.
-- [ ] Owner review of booking hours, estimates, league blocks and special dates remains required.
-
-# Final staff login
-- [x] Verified owner dashboard and Manage Website access; failed role reads now retry and show a recoverable error instead of “Staff only”; browser-tested retry and refresh without permission changes.
-- [x] Remove Google sign-in and add secure recovery/password setup.
-- [x] Review staff and administrator database permissions without changing accounts.
-- [x] Verify safe login and access paths; 10 tests pass. Real password sign-in/recovery completion remains unverified.
-- [x] Document owner invitations, authorization, revocation and external hosting requirements in STAFF-HOSTING-READINESS.md.
-- [x] Owner onboarding: account created for vegrevillebowling1@hotmail.com via More → Users → Add user; admin role assigned alongside existing player role; staff dashboard verified open with all tabs via test session; test announcement save and delete confirmed her write permissions (no test record left). Owner signed in herself with her own email/password and confirmed everything works. Current administrator/staff accounts preserved.
-- [ ] Real recovery email/password test: requires owner sign-in and approved recovery testing.
-- [ ] External Node hosting verification: requires selected host/domain and approved hosting configuration changes.- [x] Cloudflare: newsletter relay bridge + .env template for Workers Variables (no secrets committed)
+- [ ] Investigate 9 RLS findings (players, team_matchups, teams, ordering_settings, booking_requests, league_settings, league_sessions, hours_of_operation, website_content); explain before changing; apply least-privilege where data is not intentionally public
+- [ ] Investigate website-photos storage warning; keep published images working on Lovable + Cloudflare; staff-only write
+- [ ] Verify whether Jonah's unsubscribe was recorded; do not delete test subscriber until verified
+- [ ] After verification: newsletter cleanup (remove test subscriber + spam counters, preserve audit history + draft), keep all email sending + bulk disabled
+- [ ] Run security scan + tests after fixes
+- [ ] Republish Lovable + trigger Cloudflare deployment; verify bridge still works without sending emails
+- [ ] Final status report: resolved vs. needs further action
