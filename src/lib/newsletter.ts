@@ -14,6 +14,9 @@ export const draftSchema = z.object({
 });
 // Subscriber confirmation/welcome emails stay off until the owner approves public launch and sender authentication.
 export const NEWSLETTER_SUBSCRIBER_EMAILS_ENABLED = false;
+// TEMPORARY controlled test: confirmation/welcome emails allowed ONLY for TEST_EMAIL. Set false after testing.
+export const NEWSLETTER_TEST_RECIPIENT_EMAILS_ENABLED = true;
+export const subscriberEmailAllowed = (email: string) => NEWSLETTER_SUBSCRIBER_EMAILS_ENABLED || (NEWSLETTER_TEST_RECIPIENT_EMAILS_ENABLED && email.trim().toLowerCase() === TEST_EMAIL);
 export const NEWSLETTER_CONSENT_TEXT = 'I agree to receive email updates from Vegreville Bowling Lanes. I understand I can unsubscribe at any time.';
 export const NEWSLETTER_IMAGE_PREFIX = '/api/public/newsletter-image?path=';
 export const newsletterImagePathPattern = /^[0-9a-f-]{36}\/[0-9a-f-]{36}\.jpg$/;
